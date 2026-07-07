@@ -1,0 +1,38 @@
+name: local_db_kit_example
+description: Minimal example app for local_db_kit — defines its own schema.
+publish_to: "none"
+version: 1.0.0
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  local_db_kit:
+    path: ../
+  drift: ^2.33.0
+  flutter_riverpod: ^3.3.0
+
+# Encrypt-capable sqlite build, so the encryption examples work. Plain databases
+# opened without a key remain unencrypted.
+hooks:
+  user_defines:
+    sqlite3:
+      source: sqlite3mc
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  # Drives the integration tests in integration_test/ on a real device/desktop —
+  # exercises on-disk persistence, encryption, and the Riverpod providers, which
+  # need a real filesystem (path_provider) that host unit tests don't provide.
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.15.0
+  drift_dev: ^2.33.0
+
+flutter:
+  uses-material-design: true

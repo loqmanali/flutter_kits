@@ -1,0 +1,15 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    # The original modules ship examples files that reference the host app's
+    # paths (e.g. `package:my_app/...`). They're kept inside the
+    # package source for reference but excluded from the analyzer.
+    - lib/src/picker/examples/**
+    - lib/src/tracking/example/**
+
+linter:
+  rules:
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    prefer_single_quotes: true
