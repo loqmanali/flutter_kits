@@ -4,3 +4,5 @@ build/
 .idea/
 *.iml
 pubspec_overrides.yaml
+.flutter-plugins-dependencies
+pubspec.lock
