@@ -203,9 +203,9 @@ final class AppLogger {
   static bool _enabled = kDebugMode;
   static AppLogLevel _level = AppLogLevel.info;
   static AppLogHandler? _customHandler;
-  static bool _showLocation = true;
+  static bool _showLocation = false;
 
-  static const String _tag = 'Samnan';
+  static String _tag = 'Log';
 
   /// Whether logging is currently enabled.
   ///
@@ -272,6 +272,17 @@ final class AppLogger {
   /// ```
   static void setShowLocation(bool show) {
     _showLocation = show;
+  }
+
+  /// Sets the tag shown in log output, e.g. `[Chat]`.
+  ///
+  /// Defaults to `'Log'`. Set once at app startup:
+  ///
+  /// ```dart
+  /// AppLogger.setTag('Chat');
+  /// ```
+  static void setTag(String tag) {
+    _tag = tag;
   }
 
   /// Logs a debug message.
@@ -470,11 +481,13 @@ final class AppLogger {
   /// - Enables logging in debug mode, disables in release mode
   /// - Sets level to [AppLogLevel.info]
   /// - Removes any custom log handler
-  /// - Restores location display
+  /// - Keeps location display disabled
+  /// - Restores the default `'Log'` tag
   static void reset() {
     _enabled = kDebugMode;
     _level = AppLogLevel.info;
     _customHandler = null;
-    _showLocation = true;
+    _showLocation = false;
+    _tag = 'Log';
   }
 }
