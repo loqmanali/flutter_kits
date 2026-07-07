@@ -1,0 +1,33 @@
+name: otp_kit
+description: >-
+  A comprehensive, high-performance OTP input solution for Flutter — hand-written
+  Riverpod state management, validation, theming, animations, RTL support, paste
+  handling, and a resend-cooldown timer. No code generation.
+version: 1.0.0
+publish_to: "none"
+resolution: workspace
+
+environment:
+  sdk: ^3.8.0
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # StateNotifier providers (hooks_riverpod/legacy.dart).
+  hooks_riverpod: ^3.3.2
+
+  # ResendCooldownService persists cooldown timestamps.
+  shared_preferences: ^2.2.2
+
+  # AppLogger — used by the resend cooldown service.
+  logging_kit:
+    path: ../logging_kit
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:

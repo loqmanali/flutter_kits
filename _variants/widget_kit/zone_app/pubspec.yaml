@@ -1,0 +1,37 @@
+name: widget_kit
+description: A project-agnostic collection of reusable Flutter widgets — buttons, inputs, dialogs, feedback states, media, shimmer, and effects. Drop-in for any project, fully customizable via theme extension or per-widget overrides.
+version: 1.0.0
+publish_to: "none"
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Used by accordion + shimmer examples
+  flutter_hooks: ^0.18.5
+
+  # Used by AdaptiveLoading (LoadingIndicator)
+  flutter_spinkit: ^5.1.0
+
+  # Used by AppMediaImage
+  cached_network_image: ^3.3.0
+  flutter_svg: ^2.0.9
+
+  # Used by generic_video_webview + youtube_player_widget
+  flutter_inappwebview: ^6.0.0
+
+  # Used by UiHelper.showToast
+  toastification: ^3.0.3
+
+  # Used by AnimatedSvgWidget
+  path_drawing: ^1.0.1
+  xml: ^6.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0

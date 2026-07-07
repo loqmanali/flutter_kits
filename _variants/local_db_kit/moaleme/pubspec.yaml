@@ -1,0 +1,59 @@
+name: local_db_kit
+description: >-
+  A pluggable, project-agnostic local relational-database kit for Flutter. Gives
+  you the Drift/sqlite3 plumbing — path resolution, background open, foreign-key
+  enforcement, a migration runner, optional at-rest encryption, Riverpod DI, and
+  testing helpers — while each project defines its own @DriftDatabase + tables.
+  No domain assumptions, works offline by design.
+version: 1.2.0
+publish_to: "none"
+
+environment:
+  sdk: ">=3.8.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Relational core. sqlite3 v3 bundles its own native library, so the old
+  # sqlite3_flutter_libs build helper is no longer needed for plain databases.
+  drift: ^2.33.0
+  sqlite3: ^3.3.0
+
+  # On-disk databases: resolve the app documents dir + join the db path.
+  path_provider: ^2.1.0
+  path: ^1.9.0
+
+  # State management / DI (optional surface — see LocalDbKitProviders).
+  flutter_riverpod: ^3.3.0
+
+  # Connectivity for the offline-first sync layer: detects when the network
+  # returns so queued writes flush automatically.
+  connectivity_plus: ^7.1.0
+
+  # Optional at-rest encryption: a safe place to keep the key (Keychain on iOS,
+  # Keystore on Android). The encrypted-build native library itself is selected
+  # by the `hooks:` block below (SQLite3MultipleCiphers), NOT a package dep —
+  # sqlite3 v3 dropped the old runtime `open.overrideFor` mechanism in favour of
+  # build hooks, and `sqlcipher_flutter_libs` is obsolete with sqlite3 v3.
+  flutter_secure_storage: ^10.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  build_runner: ^2.15.0
+  drift_dev: ^2.33.0
+
+# Bundle the SQLite3MultipleCiphers build of sqlite3 so databases CAN be
+# encrypted at rest. This is a drop-in for upstream sqlite3: databases opened
+# without a key pragma stay plain/unencrypted, so encryption remains opt-in per
+# database (see LocalDbOptions.encryption). Apps that never encrypt can delete
+# this block to ship the smaller upstream build.
+hooks:
+  user_defines:
+    sqlite3:
+      source: sqlite3mc
+
+flutter:

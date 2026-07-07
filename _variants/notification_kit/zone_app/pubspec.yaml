@@ -1,0 +1,69 @@
+name: notification_kit
+description: A self-contained, plug-and-play notification module for Flutter — FCM, local notifications, scheduled notifications, admin panel, deep links, Riverpod state, and a settings UI. Production-ready and project-agnostic.
+version: 1.0.0
+publish_to: "none"
+repository: https://example.com/notification_kit
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Firebase / Push
+  firebase_core: ^3.15.2
+  firebase_messaging: ^15.1.6
+  flutter_local_notifications: ^18.0.0
+
+  # State management
+  flutter_riverpod: ^2.6.1
+
+  # Functional / data
+  dartz: ^0.10.1
+  equatable: ^2.0.5
+
+  # Time / scheduling
+  timezone: ^0.9.4
+  intl: any
+
+  # Permissions / badge
+  permission_handler: ^12.0.1
+  app_badge_plus: ^1.2.10
+
+  # FCM admin (HTTP v1 + service-account JWT)
+  http: ^1.6.0
+  dio: ^5.3.3
+  pointycastle: ^3.8.0
+  asn1lib: ^1.6.5
+
+  # Audio (custom notification sounds)
+  audioplayers: ^6.5.1
+
+  # In-app toast UI
+  toastification: ^3.0.3
+
+  # Default storage backend used when the host app doesn't supply one
+  shared_preferences: ^2.5.2
+
+  # Routing helper (used by the deep-link service when a GoRouter is available)
+  go_router: ^8.0.0
+
+  # Filesystem (used by FCM admin service for token caching)
+  path_provider: ^2.1.1
+
+  # Responsive sizing (used by some widgets — host app should also init ScreenUtil)
+  flutter_screenutil: ^5.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  assets:
+    - assets/sounds/
+
+  # Custom notification sounds can be added by the host app and exposed via
+  # NotificationKitConfig.customSoundChannels.

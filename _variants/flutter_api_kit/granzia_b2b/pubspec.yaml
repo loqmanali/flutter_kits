@@ -1,0 +1,21 @@
+name: flutter_api_kit
+description: A reusable, framework-agnostic HTTP/API toolkit for Flutter built on top of Dio. Provides a pluggable client with auth, language, version, force-update, and pretty-logging interceptors that can be wired into any project regardless of its state-management or storage choices.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+  flutter: ">=3.19.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio: ^5.4.0
+  equatable: ^2.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:

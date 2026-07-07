@@ -1,0 +1,19 @@
+name: deep_link_kit
+description: A project-agnostic deep-link toolkit for Flutter — parses custom-scheme and universal links into structured data and exposes a stream of incoming links, without baking in any specific scheme, host, or link taxonomy.
+version: 1.0.0
+publish_to: "none"
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  app_links: ^6.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0

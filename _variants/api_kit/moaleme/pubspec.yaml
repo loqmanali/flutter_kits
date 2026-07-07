@@ -1,0 +1,21 @@
+name: api_kit
+description: A pluggable, project-agnostic API networking layer for Flutter — Dio-powered HTTP client with auth-token refresh, language header injection, typed exceptions/failures, error mapping, and configurable interceptor stacks. Drop into any project.
+version: 1.0.0
+publish_to: "none"
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  dio: ^5.3.3
+  equatable: ^2.0.5
+  meta: ^1.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0

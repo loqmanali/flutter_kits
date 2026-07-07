@@ -1,0 +1,125 @@
+import 'dart:io';
+
+import 'package:drift/drift.dart';
+import 'package:drift/native.dart';
+import 'package:local_db_kit/src/encryption/encryption_resolver.dart';
+import 'package:local_db_kit/src/local_db_options.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
+import 'package:sqlite3/sqlite3.dart';
+
+/// Entry point for the kit's plumbing.
+///
+/// You bring a `@DriftDatabase` and its tables; this class builds the
+/// [QueryExecutor] underneath it. Nothing here knows about your schema.
+///
+/// ```dart
+/// @DriftDatabase(tables: [Users, Orders])
+/// class MyDb extends $MyDb {
+///   MyDb(super.e);
+///   @override
+///   int get schemaVersion => 1;
+/// }
+///
+/// final db = MyDb(LocalDbKit.openExecutor(const LocalDbOptions(name: 'my.sqlite')));
+/// ```
+///
+/// On sqlite3 v3 the native library is bundled via build hooks (see the
+/// `hooks:` block in this package's pubspec). Encryption uses the
+/// SQLite3MultipleCiphers build — there is no runtime library override to
+/// register, and `sqlcipher_flutter_libs` is not used.
+abstract final class LocalDbKit {
+  /// Builds a lazily-opened on-disk [QueryExecutor] for [options].
+  ///
+  /// The (async) path resolution, native setup, and optional key resolution all
+  /// run on first query via [LazyDatabase] — not in your database constructor.
+  /// The native sqlite work runs on a background isolate so it stays off the UI
+  /// thread.
+  static QueryExecutor openExecutor(LocalDbOptions options) {
+    return LazyDatabase(() async {
+      final file = await _resolveFile(options);
+
+      if (Platform.isAndroid) {
+        // The default sqlite temp location isn't always writable by the native
+        // library on Android. Harmless elsewhere.
+        sqlite3.tempDirectory = (await getTemporaryDirectory()).path;
+      }
+
+      final passphrase = await EncryptionResolver().resolve(options.encryption);
+
+      return NativeDatabase.createInBackground(
+        file,
+        logStatements: options.logStatements,
+        setup: (db) => _configureConnection(db, options, passphrase),
+      );
+    });
+  }
+
+  /// An in-memory executor for tests and ephemeral use. Never touches disk and
+  /// is never encrypted (there is no file to protect).
+  static QueryExecutor inMemory({bool foreignKeys = true}) {
+    return NativeDatabase.memory(
+      setup: (db) {
+        if (foreignKeys) db.execute('PRAGMA foreign_keys = ON;');
+      },
+    );
+  }
+
+  /// Deletes the on-disk file for [options], if it exists. Useful for "log out
+  /// and wipe local data" flows. The database must be closed first.
+  static Future<void> deleteDatabase(LocalDbOptions options) async {
+    final file = await _resolveFile(options);
+    if (file.existsSync()) await file.delete();
+  }
+
+  /// Runs the per-connection setup: applies the encryption key (when present)
+  /// before any other access, then enforces foreign keys.
+  ///
+  /// Runs on the background isolate opened by [NativeDatabase.createInBackground].
+  static void _configureConnection(
+    Database db,
+    LocalDbOptions options,
+    String? passphrase,
+  ) {
+    if (passphrase != null) {
+      // Guard against silently writing plaintext: if the bundled sqlite build
+      // is plain upstream (no `source: sqlite3mc` hook), the key pragmas are
+      // accepted as no-ops and the data would NOT be encrypted. `cipher_version`
+      // is only non-empty on a multiple-ciphers / SQLCipher build.
+      if (db.select('PRAGMA cipher_version;').isEmpty) {
+        throw StateError(
+          'local_db_kit: encryption was requested but the bundled sqlite3 has '
+          'no cipher support. Add the `hooks: { user_defines: { sqlite3: '
+          '{ source: sqlite3mc } } }` block to your app pubspec.yaml.',
+        );
+      }
+      // SQLite3MultipleCiphers, configured for SQLCipher-compatible encryption.
+      // These must run before any read/write on the connection.
+      final escaped = passphrase.replaceAll("'", "''");
+      db
+        ..execute("PRAGMA cipher = 'sqlcipher';")
+        ..execute('PRAGMA legacy = 4;')
+        ..execute("PRAGMA key = '$escaped';");
+    }
+
+    if (options.foreignKeys) {
+      db.execute('PRAGMA foreign_keys = ON;');
+    }
+  }
+
+  static Future<File> _resolveFile(LocalDbOptions options) async {
+    final dir = await _baseDirectory(options.directory);
+    return File(p.join(dir.path, options.name));
+  }
+
+  static Future<Directory> _baseDirectory(DbDirectory which) {
+    switch (which) {
+      case DbDirectory.documents:
+        return getApplicationDocumentsDirectory();
+      case DbDirectory.support:
+        return getApplicationSupportDirectory();
+      case DbDirectory.temporary:
+        return getTemporaryDirectory();
+    }
+  }
+}

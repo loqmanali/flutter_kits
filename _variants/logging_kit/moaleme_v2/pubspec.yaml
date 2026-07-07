@@ -1,0 +1,26 @@
+name: logging_kit
+description: >-
+  Tiny standalone logger for the chat stack. One shared AppLogger (static) with
+  level filtering, a pluggable log handler, and ANSI-coloured console output via
+  dart:developer. Depends ONLY on flutter (foundation) — none of widget_kit's
+  heavy deps. Extracted from widget_kit's internal logger. See plan.md §16
+  decision 7 + Principle P6 (one shared logger, no print()).
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.8.0
+  flutter: ">=3.10.0"
+
+resolution: workspace
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
