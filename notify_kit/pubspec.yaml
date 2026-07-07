@@ -2,7 +2,6 @@ name: notify_kit
 description: FCM + local notifications behind one init() call, with unified tap routing across foreground/background/terminated states.
 version: 0.1.0
 publish_to: none
-resolution: workspace
 
 environment:
   sdk: ^3.5.0
