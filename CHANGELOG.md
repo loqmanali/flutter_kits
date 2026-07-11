@@ -6,6 +6,18 @@ release notes.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.2] — 2026-07-11
+
+### Added
+
+- **widget_kit**: New `picker_sheet` module — a generic, reusable
+  "pick one item from a list" bottom-sheet toolkit. Ships composable
+  building blocks (`PickerSheetScaffold`, `PickerSheetSearchField`,
+  `PickerSheetTitleBar`, `PickerSheetSectionLabel`, `PickerSheetList`,
+  `PickerSheetOptionTile`) plus a ready-made `TypeaheadPickerSheet<T>`
+  for server-side debounced search-and-pick flows. All public APIs are
+  exported from the package barrel.
+
 ## [1.1.1] — 2026-07-07
 
 ### Changed

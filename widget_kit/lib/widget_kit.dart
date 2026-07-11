@@ -118,3 +118,8 @@ export 'src/context_menu_kit/src/overlay/menu_overlay_controller.dart';
 export 'src/context_menu_kit/src/positioning/menu_position_calculator.dart';
 export 'src/context_menu_kit/src/widgets/menu_content.dart';
 export 'src/context_menu_kit/src/widgets/menu_submenu.dart';
+
+// Picker sheet — reusable "pick one item from a list" bottom-sheet toolkit
+// with a draggable scaffold, search field, title bar, option tiles, and a
+// generic server-typeahead picker.
+export 'src/picker_sheet/picker_sheet.dart';
