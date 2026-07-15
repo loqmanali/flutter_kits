@@ -185,6 +185,11 @@ class _CarouselState extends ConsumerState<Carousel> {
     return GestureDetector(
       onPanDown: (_) => _controller.onDragStart(),
       onPanEnd: (_) => _controller.onDragEnd(),
+      // When the inner PageView wins the horizontal drag, this recognizer is
+      // rejected and fires onPanCancel (not onPanEnd). Without clearing the
+      // drag state here, `isDragging` stays true and auto-scroll freezes after
+      // the first swipe/tap.
+      onPanCancel: () => _controller.onDragEnd(),
       child: Container(
         height: visual.height,
         decoration: BoxDecoration(
@@ -397,6 +402,11 @@ class _ControlledCarouselState extends State<ControlledCarousel> {
     return GestureDetector(
       onPanDown: (_) => _controller.onDragStart(),
       onPanEnd: (_) => _controller.onDragEnd(),
+      // When the inner PageView wins the horizontal drag, this recognizer is
+      // rejected and fires onPanCancel (not onPanEnd). Without clearing the
+      // drag state here, `isDragging` stays true and auto-scroll freezes after
+      // the first swipe/tap.
+      onPanCancel: () => _controller.onDragEnd(),
       child: Container(
         height: visual.height,
         decoration: BoxDecoration(
