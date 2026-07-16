@@ -46,6 +46,11 @@ class CarouselController extends ChangeNotifier {
   PageController? _pageController;
   Timer? _autoScrollTimer;
 
+  /// Guards async callbacks that outlive [dispose]: an in-flight
+  /// [animateToPage] future and [pauseTemporarily]'s delay cannot be
+  /// cancelled, so they must check this before touching state.
+  bool _disposed = false;
+
   /// Callback when page changes.
   final ValueChanged<int>? onPageChanged;
 
@@ -209,6 +214,7 @@ class CarouselController extends ChangeNotifier {
       curve: _visualConfig.animationCurve,
     )
         .then((_) {
+      if (_disposed) return;
       _state = _state.copyWith(
         currentIndex: index,
         isAnimating: false,
@@ -254,6 +260,7 @@ class CarouselController extends ChangeNotifier {
 
     pause();
     Future.delayed(_autoScrollConfig.pauseDuration, () {
+      if (_disposed) return;
       if (_state.isPaused) {
         resume();
       }
@@ -277,6 +284,7 @@ class CarouselController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _disposed = true;
     _stopAutoScroll();
     _pageController?.dispose();
     super.dispose();

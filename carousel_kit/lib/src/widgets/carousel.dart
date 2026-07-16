@@ -80,6 +80,7 @@ class _CarouselState extends ConsumerState<Carousel> {
   }
 
   void _handlePageChanged(int index) {
+    if (!mounted) return;
     setState(() {
       _currentIndex = index;
     });
@@ -288,6 +289,7 @@ class _ControlledCarouselState extends State<ControlledCarousel> {
   }
 
   void _handlePageChanged(int index) {
+    if (!mounted) return;
     setState(() {
       _currentIndex = index;
     });
