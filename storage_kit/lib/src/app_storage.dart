@@ -176,11 +176,18 @@ class AppStorage {
   // ==================== Authentication ====================
 
   /// Saves authentication tokens (with optional refresh token for future use).
+  ///
+  /// The adapters never throw — a failed write just returns `false` with
+  /// nothing persisted — so the in-memory cache must be updated from the
+  /// write's actual result, not assumed optimistically. On failure the
+  /// cache is rolled back to the previous value rather than cleared: the
+  /// adapters only ever fail the write itself (no partial writes), so
+  /// whatever was cached before is still exactly what's on disk.
   Future<bool> saveAuthTokens({
     required String accessToken,
     String? refreshToken,
   }) async {
-    _cachedAccessToken = accessToken;
+    final previousAccessToken = _cachedAccessToken;
     final ops = <Future<bool>>[
       setString(StorageKeys.accessToken, accessToken),
       setBool(StorageKeys.isLoggedIn, true),
@@ -189,16 +196,23 @@ class AppStorage {
       ops.add(setString(StorageKeys.refreshToken, refreshToken));
     }
     final results = await Future.wait(ops);
+    // results[0] is always the accessToken write — tie the cache to that
+    // write specifically, independent of the other keys.
+    _cachedAccessToken = results[0] ? accessToken : previousAccessToken;
     return results.every((result) => result);
   }
 
   /// Saves only the access token (Laravel Sanctum — no separate refresh token).
+  ///
+  /// See [saveAuthTokens] for why the cache follows the write's result
+  /// instead of being set unconditionally.
   Future<bool> saveAccessToken(String accessToken) async {
-    _cachedAccessToken = accessToken;
+    final previousAccessToken = _cachedAccessToken;
     final results = await Future.wait([
       setString(StorageKeys.accessToken, accessToken),
       setBool(StorageKeys.isLoggedIn, true),
     ]);
+    _cachedAccessToken = results[0] ? accessToken : previousAccessToken;
     return results.every((result) => result);
   }
 
@@ -435,6 +449,12 @@ class AppStorage {
       clear(allowList: StorageKeys.criticalKeys);
 
   /// Performs a full logout (clears specific keys).
+  ///
+  /// Unlike [saveAuthTokens]/[saveAccessToken], the cache is cleared
+  /// unconditionally and upfront here — that's the safe direction for a
+  /// logout: if the persisted remove then fails, we still want the app to
+  /// behave as logged-out rather than keep sending requests with a token
+  /// the user asked to drop.
   Future<bool> performLogout() async {
     _cachedAccessToken = null;
     final keysToRemove = StorageKeys.clearableOnLogout;

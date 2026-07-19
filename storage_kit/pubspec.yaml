@@ -1,6 +1,6 @@
 name: storage_kit
 description: A pluggable, project-agnostic key-value storage facade for Flutter — switch between SharedPreferences and Hive (with optional encryption) through a single API, with no domain-specific assumptions.
-version: 1.0.0
+version: 1.0.1
 publish_to: "none"
 
 environment:

@@ -1,3 +1,18 @@
+## 1.0.1
+
+### Fixed
+
+* `saveAuthTokens` / `saveAccessToken` used to set the in-memory
+  `_cachedAccessToken` unconditionally, before the write was even attempted,
+  and never rolled it back on failure. Since the adapters swallow every
+  write exception and just return `false`, a failed write was invisible:
+  `getAccessTokenSync()` would keep reporting a token that was never
+  actually persisted, so a restart would silently sign the user out with no
+  trace. The cache now follows the accessToken write's own result — on
+  failure it rolls back to the previous (still-persisted) value instead of
+  the unwritten one, since the adapters never partially write, so whatever
+  was cached before is still exactly what's on disk.
+
 ## 1.0.0
 
 * Initial release as a standalone, project-agnostic package extracted from
