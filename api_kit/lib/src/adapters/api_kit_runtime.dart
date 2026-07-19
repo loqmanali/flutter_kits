@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart' show visibleForTesting;
+
 import '../interceptors/force_update_interceptor.dart' show ForceUpdateCallback;
 import 'auth_callbacks.dart';
 import 'auth_token_storage_adapter.dart';
@@ -113,4 +115,38 @@ class ApiKitRuntime {
   static ForceUpdateCallback? get onForceUpdate => _onForceUpdate;
   static bool get enablePrettyLogger => _enablePrettyLogger;
   static void Function(Object object)? get logPrint => _logPrint;
+
+  /// Restores every field to its declared default.
+  ///
+  /// Test-only. [use] only ever overwrites non-null fields, so a value set
+  /// by one test otherwise leaks into every test that runs after it in the
+  /// same process — call this in `tearDown`/`setUp` between tests that call
+  /// [use]. Does not change [use]'s merge semantics.
+  @visibleForTesting
+  static void resetForTesting() {
+    _baseUrl = '';
+    _timeout = const Duration(seconds: 30);
+    _defaultHeaders = const {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+    _tokenStorage = InMemoryAuthTokenStorage();
+    _onRefreshToken = null;
+    _onLogout = null;
+    _languageCodeProvider = null;
+    _appVersion = null;
+    _onForceUpdate = null;
+    _enablePrettyLogger = true;
+    _logPrint = null;
+    _staticBearerToken = null;
+    _skipUserAuthEndpoints = const [];
+    _skipRefreshEndpoints = const [
+      '/auth/login',
+      '/auth/register',
+      '/auth/registration',
+      '/auth/verify-otp',
+      '/auth/refresh-token',
+      '/auth/logout',
+    ];
+  }
 }

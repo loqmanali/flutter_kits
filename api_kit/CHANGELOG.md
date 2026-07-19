@@ -1,3 +1,15 @@
+## 1.0.1
+
+### Added
+
+* `ApiKitRuntime.resetForTesting()` — restores every static field to its
+  declared default (`@visibleForTesting`). `use()` only ever overwrites
+  non-null fields and there was previously no way to clean up between
+  tests, so any test touching the runtime contaminated every later test in
+  the same process. Does not change `use()`'s merge semantics.
+* First `test/` suite for the package (previously had none) covering
+  `ApiKitRuntime.use()` + `resetForTesting()`.
+
 ## 1.0.0
 
 * Initial release as a standalone, project-agnostic package extracted from
