@@ -4,6 +4,12 @@ import 'package:notify_kit/src/fcm_service.dart';
 import 'package:notify_kit/src/local_service.dart';
 
 class _FakeLocal implements LocalService {
+  _FakeLocal({this.failInitCalls = 0});
+
+  /// The first [failInitCalls] calls to [init] throw instead of succeeding —
+  /// simulates a platform-channel failure so retry behaviour can be tested.
+  int failInitCalls;
+
   int initCalls = 0;
   int showCalls = 0;
   int scheduleDailyCalls = 0;
@@ -19,6 +25,9 @@ class _FakeLocal implements LocalService {
     NotifyErrorHandler? onError,
   }) async {
     initCalls++;
+    if (initCalls <= failInitCalls) {
+      throw StateError('simulated platform-channel failure');
+    }
     lastChannel = channel;
   }
 
@@ -174,6 +183,43 @@ void main() {
     expect(local.initCalls, 1);
     expect(fcm.initCalls, 1);
   });
+
+  test(
+    'a service failure does not latch _initialized — retry actually runs',
+    () async {
+      final flakyLocal = _FakeLocal(failInitCalls: 1);
+      NotifyKit.resetForTest(local: flakyLocal, fcm: fcm);
+
+      await expectLater(
+        NotifyKit.init(config, firebaseReady: () => true),
+        throwsStateError,
+      );
+      expect(flakyLocal.initCalls, 1);
+      expect(fcm.initCalls, 0);
+
+      // Retry: the flag must not have latched on the failed attempt.
+      await NotifyKit.init(config, firebaseReady: () => true);
+      expect(flakyLocal.initCalls, 2);
+      expect(fcm.initCalls, 1);
+
+      // Kit is now genuinely initialized: a gated method no longer throws.
+      await expectLater(NotifyKit.showLocal(title: 't'), completes);
+      expect(flakyLocal.showCalls, 1);
+    },
+  );
+
+  test(
+    'concurrent init calls share one in-flight attempt (no duplicate subscriptions)',
+    () async {
+      final first = NotifyKit.init(config, firebaseReady: () => true);
+      final second = NotifyKit.init(config, firebaseReady: () => true);
+
+      await Future.wait([first, second]);
+
+      expect(local.initCalls, 1);
+      expect(fcm.initCalls, 1);
+    },
+  );
 
   test('second init is a no-op (duplicate-listener fix)', () async {
     await NotifyKit.init(config, firebaseReady: () => true);

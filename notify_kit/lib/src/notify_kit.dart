@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -20,25 +22,63 @@ class NotifyKit {
   static LocalService _local = LocalService();
   static FcmService _fcm = FcmService();
 
+  // In-flight init future. A second call made while one is already running
+  // awaits the same attempt instead of starting a concurrent second one —
+  // that would double-run `_local.init`/`_fcm.init` and create duplicate
+  // subscriptions, defeating the "impossible by construction" guarantee.
+  static Future<void>? _initializing;
+
   /// Idempotent. Throws [StateError] if Firebase is not initialized.
   ///
   /// [firebaseReady] is a test seam; production callers never pass it.
+  ///
+  /// A failed attempt (Firebase not ready, or either service throwing) does
+  /// NOT latch [_initialized] — call [init] again (e.g. after login) to
+  /// retry. Only a genuinely successful init makes further calls a no-op.
   static Future<void> init(
     NotifyConfig config, {
     bool Function()? firebaseReady,
-  }) async {
+  }) {
     if (_initialized) {
       debugPrint('notify_kit: init() already called — ignoring');
-      return;
+      return Future.value();
     }
+    final inFlight = _initializing;
+    if (inFlight != null) return inFlight;
+
+    // Assign the guard *before* `_doInit` runs. `_doInit` is `async`, so a
+    // throw before its first `await` never propagates synchronously here —
+    // it comes back as an already-failed Future — but `.then`'s callbacks
+    // are always scheduled for later regardless, so clearing `_initializing`
+    // inside them can never run before this assignment does.
+    final completer = Completer<void>();
+    _initializing = completer.future;
+    unawaited(
+      _doInit(config, firebaseReady).then(
+        (_) {
+          _initialized = true;
+          _initializing = null;
+          completer.complete();
+        },
+        onError: (Object error, StackTrace stackTrace) {
+          _initializing = null;
+          completer.completeError(error, stackTrace);
+        },
+      ),
+    );
+    return completer.future;
+  }
+
+  static Future<void> _doInit(
+    NotifyConfig config,
+    bool Function()? firebaseReady,
+  ) async {
     final ready = firebaseReady ?? () => Firebase.apps.isNotEmpty;
     if (!ready()) {
       throw StateError(
         'notify_kit: call Firebase.initializeApp() before NotifyKit.init()',
       );
     }
-    _initialized = true;
-    _config = config;
     // Breadcrumbs so a hang inside init is attributable to an exact phase
     // from the console alone.
     debugPrint('notify_kit: init: local notifications…');
@@ -58,6 +98,7 @@ class NotifyKit {
     debugPrint('notify_kit: init: FCM…');
     await _fcm.init(config);
     debugPrint('notify_kit: init: done');
+    _config = config;
   }
 
   /// Current FCM token, or null on failure (never throws). On iOS this
@@ -228,6 +269,7 @@ class NotifyKit {
   @visibleForTesting
   static void resetForTest({LocalService? local, FcmService? fcm}) {
     _initialized = false;
+    _initializing = null;
     _config = null;
     _local = local ?? LocalService();
     _fcm = fcm ?? FcmService();
