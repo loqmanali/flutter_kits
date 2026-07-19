@@ -9,7 +9,7 @@ class ShimmerShape extends StatelessWidget {
   final double borderRadius;
   final EdgeInsets margin;
   final EdgeInsets padding;
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final ShimmerShapeType type;
   final double? circleRadius;
 
@@ -20,7 +20,7 @@ class ShimmerShape extends StatelessWidget {
     this.borderRadius = 8.0,
     this.margin = EdgeInsets.zero,
     this.padding = EdgeInsets.zero,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
     this.type = ShimmerShapeType.rectangle,
     this.circleRadius,
   });
@@ -33,7 +33,7 @@ class ShimmerShape extends StatelessWidget {
     this.borderRadius = 8.0,
     this.margin = EdgeInsets.zero,
     this.padding = EdgeInsets.zero,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
   })  : type = ShimmerShapeType.rectangle,
         circleRadius = null;
 
@@ -42,7 +42,7 @@ class ShimmerShape extends StatelessWidget {
     required double radius,
     this.margin = EdgeInsets.zero,
     this.padding = EdgeInsets.zero,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
   })  : width = radius * 2,
         height = radius * 2,
         borderRadius = radius,
@@ -56,7 +56,7 @@ class ShimmerShape extends StatelessWidget {
     this.borderRadius = 4.0,
     this.margin = EdgeInsets.zero,
     this.padding = EdgeInsets.zero,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
   })  : type = ShimmerShapeType.text,
         circleRadius = null;
 
@@ -67,7 +67,7 @@ class ShimmerShape extends StatelessWidget {
     this.borderRadius = 8.0,
     this.margin = EdgeInsets.zero,
     this.padding = EdgeInsets.zero,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
   })  : type = ShimmerShapeType.button,
         circleRadius = null;
 
@@ -79,7 +79,9 @@ class ShimmerShape extends StatelessWidget {
       margin: margin,
       padding: padding,
       decoration: BoxDecoration(
-        color: backgroundColor,
+        // Theme-derived so skeletons read correctly in light and dark.
+        color: backgroundColor ??
+            Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: type == ShimmerShapeType.circle
             ? null
             : BorderRadius.circular(borderRadius),

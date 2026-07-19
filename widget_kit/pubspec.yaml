@@ -1,6 +1,6 @@
 name: widget_kit
 description: A project-agnostic collection of reusable Flutter widgets — buttons, inputs, dialogs, feedback states, media, shimmer, and effects. Drop-in for any project, fully customizable via theme extension or per-widget overrides.
-version: 1.0.0
+version: 1.0.1
 publish_to: "none"
 
 environment:

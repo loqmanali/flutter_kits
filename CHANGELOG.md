@@ -6,6 +6,54 @@ release notes.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.6] — 2026-07-19
+
+Upstreams a set of `widget_kit` fixes and features that had been made
+downstream in a consuming app and were never folded back in.
+
+### Fixed
+
+- **widget_kit**: `ShimmerShape` hardcoded `Colors.white` as its background,
+  so every skeleton rendered as a bright white block in dark mode.
+  `backgroundColor` is now nullable and falls back to
+  `Theme.of(context).colorScheme.surfaceContainerHighest`. Callers that pass
+  an explicit colour are unaffected.
+- **widget_kit**: `ShimmerLayouts.card` applied its `height` as a fixed
+  `Container` height, so content taller than that value overflowed the inner
+  `Column`. `height` is now a floor (`BoxConstraints(minHeight:)`) with
+  `MainAxisSize.min`, letting the card grow instead of clip.
+
+- **widget_kit**: `Accordion` clipped its children at the panel corners
+  because the rounded `Container` had no `clipBehavior`, and the content
+  `SizeTransition` used `Alignment.topCenter`, which does not flip under
+  RTL. Panels now use `Clip.antiAlias` and `AlignmentDirectional(0, -1)`.
+- **widget_kit**: `Accordion` headers were bare `GestureDetector`s, so taps
+  produced no ink response. They are now `Material` + `InkWell`.
+
+### Added
+
+- **widget_kit**: `ShimmerLayouts.cardList({count, cardHeight, padding})` —
+  a non-scrolling column of card skeletons, as a drop-in replacement for a
+  centered `CircularProgressIndicator` on list screens during first load.
+- **widget_kit**: `Accordion` gained per-instance and per-item styling
+  overrides — `headerBackgroundColor`, `contentBackgroundColor`,
+  `headerForegroundColor`, `headerPadding`, `contentPadding`, `panelMargin`,
+  and `trailingIcon`, with `AccordionItemData.headerBackgroundColor`,
+  `headerForegroundColor`, and `trailing` taking precedence per item.
+  Foreground colour is applied via `IconTheme`/`DefaultTextStyle` so
+  consumers don't thread it through every descendant. All defaults match the
+  previously hardcoded values, so existing call sites are unaffected.
+- **widget_kit**: `RefreshTriggerTheme` gained `pullText`, `releaseText`,
+  `refreshingText`, and `completedText`. `AppPillRefreshIndicator` hardcoded
+  Arabic copy, which a project-agnostic package should not do; the strings
+  are now overridable per app and the Arabic values remain as fallbacks.
+
+### Changed
+
+- **widget_kit**: `AppButton.enableHapticFeedback` now defaults to `true`
+  (was `false`). Tactile confirmation on tap is the expected default; pass
+  `enableHapticFeedback: false` to opt out.
+
 ## [1.1.5] — 2026-07-19
 
 ### Fixed

@@ -76,6 +76,60 @@ void main() {
       final decoration = container.decoration! as BoxDecoration;
       expect(decoration.color, const Color(0xFF123456));
     });
+
+    for (final brightness in Brightness.values) {
+      testWidgets(
+          'falls back to the theme surface colour in ${brightness.name} mode, '
+          'not hardcoded white', (tester) async {
+        final scheme = ColorScheme.fromSeed(
+          seedColor: const Color(0xFF6750A4),
+          brightness: brightness,
+        );
+        await tester.pumpWidget(
+          MaterialApp(
+            theme: ThemeData(colorScheme: scheme),
+            home: const Scaffold(
+              body: Center(
+                child: ShimmerShape.rectangle(width: 10, height: 10),
+              ),
+            ),
+          ),
+        );
+        final container = tester.widget<Container>(find.byType(Container));
+        final decoration = container.decoration! as BoxDecoration;
+        expect(decoration.color, scheme.surfaceContainerHighest);
+      });
+    }
+  });
+
+  group('ShimmerLayouts.card', () {
+    testWidgets('grows past the given height instead of clipping content',
+        (tester) async {
+      // height is a floor (minHeight), not a ceiling: a caller passing a value
+      // smaller than the intrinsic content must not overflow.
+      await tester.pumpWidget(
+        _wrap(SizedBox(width: 300, child: ShimmerLayouts.card(height: 10))),
+      );
+      expect(tester.takeException(), isNull);
+      final container = tester.widget<Container>(
+        find.descendant(
+          of: find.byType(FlexibleShimmerLoading),
+          matching: find.byType(Container),
+        ).first,
+      );
+      expect(container.constraints, const BoxConstraints(minHeight: 10));
+    });
+  });
+
+  group('ShimmerLayouts.cardList', () {
+    testWidgets('renders `count` card skeletons and does not scroll',
+        (tester) async {
+      await tester.pumpWidget(_wrap(ShimmerLayouts.cardList(count: 3)));
+      expect(tester.takeException(), isNull);
+      final list = tester.widget<ListView>(find.byType(ListView));
+      expect(list.physics, isA<NeverScrollableScrollPhysics>());
+      expect(list.semanticChildCount, 3);
+    });
   });
 
   group('AppSpacing', () {

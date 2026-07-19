@@ -22,12 +22,24 @@ class RefreshTriggerTheme {
   final Curve? curve;
   final Duration? completeDuration;
 
+  /// Copy shown by [AppPillRefreshIndicator] at each stage. Left null, the
+  /// indicator falls back to its built-in Arabic strings — override these to
+  /// localize without replacing [indicatorBuilder] wholesale.
+  final String? pullText;
+  final String? releaseText;
+  final String? refreshingText;
+  final String? completedText;
+
   const RefreshTriggerTheme({
     this.minExtent,
     this.maxExtent,
     this.indicatorBuilder,
     this.curve,
     this.completeDuration,
+    this.pullText,
+    this.releaseText,
+    this.refreshingText,
+    this.completedText,
   });
 
   RefreshTriggerTheme copyWith({
@@ -36,6 +48,10 @@ class RefreshTriggerTheme {
     ValueGetter<RefreshIndicatorBuilder?>? indicatorBuilder,
     ValueGetter<Curve?>? curve,
     ValueGetter<Duration?>? completeDuration,
+    ValueGetter<String?>? pullText,
+    ValueGetter<String?>? releaseText,
+    ValueGetter<String?>? refreshingText,
+    ValueGetter<String?>? completedText,
   }) {
     return RefreshTriggerTheme(
       minExtent: minExtent == null ? this.minExtent : minExtent(),
@@ -45,6 +61,12 @@ class RefreshTriggerTheme {
       curve: curve == null ? this.curve : curve(),
       completeDuration:
           completeDuration == null ? this.completeDuration : completeDuration(),
+      pullText: pullText == null ? this.pullText : pullText(),
+      releaseText: releaseText == null ? this.releaseText : releaseText(),
+      refreshingText:
+          refreshingText == null ? this.refreshingText : refreshingText(),
+      completedText:
+          completedText == null ? this.completedText : completedText(),
     );
   }
 
@@ -56,7 +78,11 @@ class RefreshTriggerTheme {
         other.maxExtent == maxExtent &&
         other.indicatorBuilder == indicatorBuilder &&
         other.curve == curve &&
-        other.completeDuration == completeDuration;
+        other.completeDuration == completeDuration &&
+        other.pullText == pullText &&
+        other.releaseText == releaseText &&
+        other.refreshingText == refreshingText &&
+        other.completedText == completedText;
   }
 
   @override
@@ -66,6 +92,10 @@ class RefreshTriggerTheme {
         indicatorBuilder,
         curve,
         completeDuration,
+        pullText,
+        releaseText,
+        refreshingText,
+        completedText,
       );
 
   @override
@@ -75,7 +105,11 @@ class RefreshTriggerTheme {
         'maxExtent: $maxExtent, '
         'indicatorBuilder: $indicatorBuilder, '
         'curve: $curve, '
-        'completeDuration: $completeDuration)';
+        'completeDuration: $completeDuration, '
+        'pullText: $pullText, '
+        'releaseText: $releaseText, '
+        'refreshingText: $refreshingText, '
+        'completedText: $completedText)';
   }
 }
 
@@ -320,14 +354,22 @@ class AppPillRefreshIndicator {
     final onSurface = scheme.onSurface;
     final muted = onSurface.withValues(alpha: 0.6);
 
+    // Theme copy wins when supplied; the Arabic strings are only fallbacks so
+    // an app that never configures the theme keeps working unchanged.
+    final theme = RefreshTriggerThemeProvider.of(context);
+    final pullText = theme?.pullText ?? 'اسحب للأسفل للتحديث';
+    final releaseText = theme?.releaseText ?? 'اترك للتحديث';
+    final refreshingText = theme?.refreshingText ?? 'جاري التحديث…';
+    final completedText = theme?.completedText ?? 'تم التحديث';
+
     String label;
     Widget? trailing;
     switch (stage.stage) {
       case TriggerStage.idle:
-        label = 'اسحب للأسفل للتحديث';
+        label = pullText;
         break;
       case TriggerStage.pulling:
-        label = stage.extentValue >= 1 ? 'اترك للتحديث' : 'اسحب للأسفل للتحديث';
+        label = stage.extentValue >= 1 ? releaseText : pullText;
         trailing = AnimatedBuilder(
           animation: stage.extent,
           builder: (_, __) => Transform.rotate(
@@ -337,7 +379,7 @@ class AppPillRefreshIndicator {
         );
         break;
       case TriggerStage.refreshing:
-        label = 'جاري التحديث…';
+        label = refreshingText;
         trailing = SizedBox(
           width: 14,
           height: 14,
@@ -345,7 +387,7 @@ class AppPillRefreshIndicator {
         );
         break;
       case TriggerStage.completed:
-        label = 'تم التحديث';
+        label = completedText;
         trailing = Icon(Icons.check, size: 16, color: primary);
         break;
     }

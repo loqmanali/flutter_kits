@@ -35,9 +35,7 @@ class ShimmerLayouts {
   // Card Shimmer Layout
   static Widget card({
     double? width,
-    // Tall enough for the default content (avatar row + title + subtitle +
-    // padding); a smaller value overflows the inner Column.
-    double height = 148,
+    double height = 120,
     bool showAvatar = true,
     bool showTitle = true,
     bool showSubtitle = true,
@@ -46,9 +44,12 @@ class ShimmerLayouts {
     return FlexibleShimmerLoading(
       child: Container(
         width: width,
-        height: height,
+        // minHeight, not height — the column's intrinsic content can exceed a
+        // caller's height and clip. Floor, not ceiling.
+        constraints: BoxConstraints(minHeight: height),
         padding: padding,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             if (showAvatar) ...[
@@ -116,6 +117,23 @@ class ShimmerLayouts {
           ],
         ),
       ),
+    );
+  }
+
+  // Full-body loading state: a non-interactive column of card skeletons.
+  // Drop-in replacement for a centered CircularProgressIndicator on list
+  // screens while the first page loads.
+  static Widget cardList({
+    int count = 5,
+    double cardHeight = 140,
+    EdgeInsets padding = const EdgeInsets.all(16),
+  }) {
+    return ListView.separated(
+      padding: padding,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: count,
+      separatorBuilder: (_, __) => const SizedBox(height: 16),
+      itemBuilder: (_, __) => card(height: cardHeight),
     );
   }
 
