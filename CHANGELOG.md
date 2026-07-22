@@ -6,6 +6,29 @@ release notes.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.10] — 2026-07-22
+
+### Fixed
+
+- **notify_kit** (`0.1.2` → `0.1.3`): `init()` could never complete, leaving
+  any app that awaited it before `runApp` frozen on its splash screen with
+  `notify_kit: init: checking initial message…` as the last log line.
+
+  `FirebaseMessaging.getInitialMessage()` was awaited unbounded. On iOS it
+  does not answer when no APNS token arrives — the normal case on a Simulator
+  — so init stalled forever. It is now bounded by
+  `FcmService.initialMessageTimeout` (5s) and a timeout is treated as "no
+  initial message": routing a cold-start tap is a nice-to-have, stalling
+  startup is not.
+
+  `initialMessageOrNull()` and a `fetchInitialMessage` seam are exposed
+  `@visibleForTesting` so the regression is covered against the real
+  `FcmService` rather than a re-implementation of it. Confirmed the guard
+  bites: removing the `.timeout(...)` makes the new test fail.
+
+  Callers should still not await `init()` on the startup path — nothing it
+  does is required to render a screen.
+
 ## [1.1.9] — 2026-07-22
 
 Widens over-tight constraints so kits drop into more projects, and adds a

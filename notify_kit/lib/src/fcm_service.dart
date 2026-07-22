@@ -19,6 +19,36 @@ class FcmService {
   FcmService({NotifyBackendClient? backendClient})
       : _backendClient = backendClient ?? const NotifyBackendClient();
 
+  /// Ceiling on [FirebaseMessaging.getInitialMessage].
+  ///
+  /// That call can never complete on iOS when no APNS token arrives — the
+  /// normal case on a Simulator — which stalls `init()` forever and, for any
+  /// caller awaiting it before `runApp`, freezes the app on its splash screen.
+  /// Routing a cold-start tap is a nice-to-have; blocking startup is not, so
+  /// the wait is bounded and a timeout is treated as "no initial message".
+  static const Duration initialMessageTimeout = Duration(seconds: 5);
+
+  /// Seam for the call above. Production always uses the default; tests
+  /// substitute a future that never completes to prove init still finishes.
+  @visibleForTesting
+  Future<RemoteMessage?> Function() fetchInitialMessage =
+      () => FirebaseMessaging.instance.getInitialMessage();
+
+  /// The cold-start tap, or null if none arrived within
+  /// [initialMessageTimeout]. Never throws and never outlives the window.
+  @visibleForTesting
+  Future<RemoteMessage?> initialMessageOrNull() => fetchInitialMessage()
+          .timeout(
+        initialMessageTimeout,
+        onTimeout: () {
+          debugPrint(
+            'notify_kit: getInitialMessage timed out after '
+            '${initialMessageTimeout.inSeconds}s — continuing without it',
+          );
+          return null;
+        },
+      );
+
   final List<StreamSubscription<dynamic>> _subscriptions = [];
   final NotifyBackendClient _backendClient;
 
@@ -87,7 +117,7 @@ class FcmService {
       // The fix for the classic discarded-getInitialMessage bug: a tap that
       // cold-started the app is awaited and routed like any other tap.
       debugPrint('notify_kit: init: checking initial message…');
-      final initial = await messaging.getInitialMessage();
+      final initial = await initialMessageOrNull();
       if (initial != null) {
         _handleRemoteTap(config, initial, NotifyTapSource.terminated);
       }

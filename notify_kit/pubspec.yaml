@@ -1,6 +1,6 @@
 name: notify_kit
 description: FCM + local notifications behind one init() call, with unified tap routing across foreground/background/terminated states.
-version: 0.1.2
+version: 0.1.3
 publish_to: none
 
 environment:
@@ -19,3 +19,4 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  fake_async: ^1.3.1
