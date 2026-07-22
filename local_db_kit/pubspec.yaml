@@ -5,7 +5,7 @@ description: >-
   enforcement, a migration runner, optional at-rest encryption, Riverpod DI, and
   testing helpers — while each project defines its own @DriftDatabase + tables.
   No domain assumptions, works offline by design.
-version: 1.2.0
+version: 1.2.1
 publish_to: "none"
 
 environment:
@@ -37,7 +37,7 @@ dependencies:
   # by the `hooks:` block below (SQLite3MultipleCiphers), NOT a package dep —
   # sqlite3 v3 dropped the old runtime `open.overrideFor` mechanism in favour of
   # build hooks, and `sqlcipher_flutter_libs` is obsolete with sqlite3 v3.
-  flutter_secure_storage: ^10.0.0
+  flutter_secure_storage: '>=9.0.0 <11.0.0'
 
 dev_dependencies:
   flutter_test:

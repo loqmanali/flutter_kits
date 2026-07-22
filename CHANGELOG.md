@@ -6,6 +6,45 @@ release notes.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.9] — 2026-07-22
+
+Widens over-tight constraints so kits drop into more projects, and adds a
+check that stops incompatible ranges from being merged in the first place.
+
+### Added
+
+- **tool/**: `dart run tool/bin/check_constraints.dart` fails when two kits
+  declare version ranges for the same dependency that cannot both be
+  satisfied. Independent pubspecs make such a pair invisible in either file on
+  its own — it only surfaces as an unresolvable app, usually downstream. Only
+  `dependencies` are treated as errors; `dev_dependencies` are not installed by
+  consumers, so mismatches there are reported as harmless drift.
+
+### Changed
+
+- **notify_kit** (`0.1.1` → `0.1.2`): `timezone` `^0.9.2` →
+  `>=0.9.2 <0.12.0`. With a `0.x` version the caret stops at `<0.10.0`, so the
+  old range pinned every consuming app to `timezone` 0.9.x while 0.11 was
+  current. Verified: analyze clean and 49 tests pass on both 0.9.2 and 0.11.1.
+- **local_db_kit** (`1.2.0` → `1.2.1`): `flutter_secure_storage` `^10.0.0` →
+  `>=9.0.0 <11.0.0`. The kit only uses `read`/`write`/`delete`, which are
+  unchanged across 9.x and 10.x; requiring 10+ locked out any app still on 9.
+  Verified: analyze clean and 83 tests pass on both 9.2.4 and 10.3.1.
+- **animation_kit** (`0.1.0` → `0.1.1`): `flutter_lints` `^4.0.0` → `^6.0.0`,
+  aligning with the rest of the repo, plus the `overridden_fields` and
+  `use_super_parameters` fixes it surfaced in `CustomPageTransition` — the
+  duration fields shadowed `PageRouteBuilder`'s own and were redundant.
+- **force_update_gate**: `flutter_lints` `^4.0.0` → `^6.0.0`. Dev-only; no
+  version bump because consumers are unaffected.
+
+### Known issues
+
+- **commerce_kit** is excluded from the constraint check (see `_excluded` in
+  the script, which prints the reason on every run). It declares
+  `flutter_riverpod ^2.4.9` against the repo's 3.x, and its sources sit outside
+  `lib/` so it cannot be consumed as a package at all. Fixing it is a real
+  migration, not a constraint bump.
+
 ## [1.1.8] — 2026-07-22
 
 ### Fixed
