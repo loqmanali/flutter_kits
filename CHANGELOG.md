@@ -6,6 +6,25 @@ release notes.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.8] — 2026-07-22
+
+### Fixed
+
+- **widget_kit**: Widened `flutter_hooks` from `^0.20.5` to `^0.21.0`
+  (`1.0.1` → `1.0.2`). The old constraint excluded `0.21.x`, which made
+  widget_kit unresolvable alongside any package depending on
+  `hooks_riverpod ^3.3.2` — including this repo's own `otp_kit`, and
+  inconsistent with `dropdown_menu_kit`, which was already on `^0.21.0`.
+  widget_kit only uses core hooks (`HookWidget`, `useState`, `useEffect`,
+  `useMemoized`, `useRef`, `useAnimationController`), all unchanged in 0.21;
+  its 202 tests pass against the new constraint.
+
+### Known issues
+
+- **commerce_kit** still declares `flutter_riverpod ^2.4.9` while the rest of
+  the repo is on 3.x. Its sources also sit outside `lib/`, so it is not
+  consumable as a package — left untouched here; migrating it is its own task.
+
 ## [1.1.7] — 2026-07-22
 
 ### Changed
