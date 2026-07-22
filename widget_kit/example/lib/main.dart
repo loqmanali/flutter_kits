@@ -6,7 +6,6 @@
 //              the category registry (single source of truth for home + routing)
 //   pages/     one page per widget category, each composed of DemoSections.
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 // ToastificationWrapper + WidgetKitTheme + every widget come from the barrel,
 // which re-exports toastification.
@@ -18,7 +17,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // The slot picker formats dates via intl; initialise locale data up-front.
   await initializeDateFormatting();
-  runApp(const ProviderScope(child: GalleryApp()));
+  runApp(const GalleryApp());
 }
 
 class GalleryApp extends StatelessWidget {
@@ -26,8 +25,8 @@ class GalleryApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ToastificationWrapper hosts UIHelper.showToast; ProviderScope (above)
-    // powers the carousel. WidgetKitTheme registers the kit's design tokens.
+    // ToastificationWrapper hosts UIHelper.showToast. WidgetKitTheme registers
+    // the kit's design tokens.
     return ToastificationWrapper(
       child: MaterialApp(
         title: 'widget_kit gallery',

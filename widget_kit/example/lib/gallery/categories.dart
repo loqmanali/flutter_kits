@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../pages/buttons_page.dart';
-import '../pages/carousel_page.dart';
 import '../pages/context_menu_page.dart';
 import '../pages/dialogs_page.dart';
 import '../pages/dropdown_page.dart';
@@ -43,7 +42,6 @@ Widget _dialogs() => const DialogsPage();
 Widget _layout() => const LayoutPage();
 Widget _effects() => const EffectsPage();
 Widget _dropdown() => const DropdownPage();
-Widget _carousel() => const CarouselPage();
 Widget _contextMenu() => const ContextMenuPage();
 Widget _slotPicker() => const SlotPickerPage();
 Widget _theme() => const ThemePage();
@@ -98,13 +96,6 @@ const List<GalleryCategory> galleryCategories = [
     icon: Icons.arrow_drop_down_circle_outlined,
     color: Color(0xFF00897B),
     build: _dropdown,
-  ),
-  GalleryCategory(
-    title: 'Carousel',
-    subtitle: 'Presets, indicators, auto-scroll, controller',
-    icon: Icons.view_carousel_outlined,
-    color: Color(0xFF5C6BC0),
-    build: _carousel,
   ),
   GalleryCategory(
     title: 'Context Menu',

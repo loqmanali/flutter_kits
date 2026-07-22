@@ -27,7 +27,7 @@ dependency_overrides:
 | Kit | What it is |
 |---|---|
 | `api_kit` | Dio-based API client: auth interceptor with concurrency-safe token refresh, error→failure mapping, force-update handling, response readers |
-| `widget_kit` | UI toolkit: buttons, inputs, dialogs/toasts (UIHelper), carousel, dropdowns, slot/time picker, shimmer, animated SVG, and more |
+| `widget_kit` | UI toolkit: buttons, inputs, dialogs/toasts (UIHelper), dropdowns, slot/time picker, shimmer, animated SVG, and more |
 | `notify_kit` | Lightweight FCM + local notifications facade with offline scheduling and campaign open-tracking hooks |
 | `storage_kit` | Pluggable key-value storage facade (SharedPreferences/Hive adapters) with usage inspector |
 | `local_db_kit` | Drift/SQLite local database with optional SQLCipher encryption and sync bookkeeping |

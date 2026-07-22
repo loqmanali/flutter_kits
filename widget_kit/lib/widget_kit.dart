@@ -94,20 +94,6 @@ export 'src/slot_time_picker/src/widgets/inline_slot_time_picker.dart'
 export 'src/slot_time_picker/src/widgets/slot_time_bottom_sheet_selector.dart'
     show SlotTimeBottomSheetSelector;
 
-// Carousel — image/widget carousel with auto-scroll, indicators, overlays, and
-// Riverpod-powered state (merged in from the former standalone carousel_kit).
-export 'src/carousel_kit/src/config/auto_scroll_config.dart';
-export 'src/carousel_kit/src/config/carousel_config.dart';
-export 'src/carousel_kit/src/config/indicator_config.dart';
-export 'src/carousel_kit/src/config/layout_config.dart';
-export 'src/carousel_kit/src/config/visual_config.dart';
-export 'src/carousel_kit/src/models/carousel_item.dart';
-export 'src/carousel_kit/src/models/carousel_overlay.dart';
-export 'src/carousel_kit/src/models/carousel_state.dart';
-export 'src/carousel_kit/src/providers/carousel_controller_provider.dart';
-export 'src/carousel_kit/src/providers/carousel_state_provider.dart';
-export 'src/carousel_kit/src/widgets/carousel.dart';
-export 'src/carousel_kit/src/widgets/carousel_indicator.dart';
 
 // Context menu — tap/long-press popup menu with screen-aware positioning and
 // nested submenus (merged in from the former standalone context_menu_kit).

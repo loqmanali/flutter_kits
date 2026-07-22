@@ -34,12 +34,6 @@ dependencies:
   path_drawing: ^1.0.1
   xml: ^6.5.0
 
-  # Used by the carousel (Riverpod-powered state + controller). `riverpod` is
-  # declared explicitly because carousel_controller_provider.dart imports it
-  # directly (depend_on_referenced_packages).
-  flutter_riverpod: ^3.1.0
-  riverpod: ^3.1.0
-
 dev_dependencies:
   flutter_test:
     sdk: flutter

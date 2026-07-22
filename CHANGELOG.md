@@ -6,6 +6,14 @@ release notes.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.7] — 2026-07-22
+
+### Changed
+
+- **widget_kit**: Removed the embedded carousel implementation, its public
+  exports, gallery demo, tests, and Riverpod dependencies. Use the standalone
+  `carousel_kit` package for carousel functionality.
+
 ## [1.1.6] — 2026-07-19
 
 Upstreams a set of `widget_kit` fixes and features that had been made
