@@ -2,6 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
+import '../config/widget_kit_config.dart';
+import '../theme/widget_kit_theme.dart';
+
 /// {@template loading_indicator}
 /// A highly customizable, platform-aware loading indicator that supports multiple animation styles.
 ///
@@ -55,6 +58,10 @@ class LoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // "interface": an app can swap the whole loading widget app-wide.
+    final loadingBuilder = WidgetKitScope.of(context).builders.loadingBuilder;
+    if (loadingBuilder != null) return loadingBuilder(context);
+
     return Center(
       child: LoadingIndicatorBuilder(
         type: type,
@@ -196,7 +203,9 @@ class LoadingIndicatorBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final defaultColor = color ?? theme.colorScheme.primary;
+    // Resolution: instance color > WidgetKitTheme.loadingColor > colorScheme.primary.
+    final defaultColor =
+        color ?? WidgetKitTheme.of(context).loadingColor ?? theme.colorScheme.primary;
     final defaultSize = size ?? 30.0;
 
     return _buildIndicator(
