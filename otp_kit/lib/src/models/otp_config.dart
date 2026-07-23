@@ -38,6 +38,11 @@ class OTPConfig {
   /// Error state border color
   final Color? errorColor;
 
+  /// Border color when every cell is filled without an error (the
+  /// "valid" state). When null, completed cells keep using
+  /// [activeColor]/[inactiveColor].
+  final Color? successColor;
+
   /// Background color for input fields
   final Color? backgroundColor;
 
@@ -114,6 +119,7 @@ class OTPConfig {
     this.activeColor,
     this.inactiveColor,
     this.errorColor,
+    this.successColor,
     this.backgroundColor,
     this.textColor,
     this.textStyle,
@@ -146,6 +152,7 @@ class OTPConfig {
     Color? activeColor,
     Color? inactiveColor,
     Color? errorColor,
+    Color? successColor,
     Color? backgroundColor,
     Color? textColor,
     TextStyle? textStyle,
@@ -176,6 +183,7 @@ class OTPConfig {
       activeColor: activeColor ?? this.activeColor,
       inactiveColor: inactiveColor ?? this.inactiveColor,
       errorColor: errorColor ?? this.errorColor,
+      successColor: successColor ?? this.successColor,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       textColor: textColor ?? this.textColor,
       textStyle: textStyle ?? this.textStyle,
@@ -212,6 +220,7 @@ class OTPConfig {
         other.activeColor == activeColor &&
         other.inactiveColor == inactiveColor &&
         other.errorColor == errorColor &&
+        other.successColor == successColor &&
         other.backgroundColor == backgroundColor &&
         other.textColor == textColor &&
         other.textStyle == textStyle &&
@@ -245,6 +254,7 @@ class OTPConfig {
       activeColor,
       inactiveColor,
       errorColor,
+      successColor,
       backgroundColor,
       textColor,
       textStyle,

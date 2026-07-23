@@ -340,6 +340,9 @@ class _OTPTextFieldState extends ConsumerState<OTPTextField>
                               size: fieldSize,
                               isActive: isActive,
                               hasError: state.hasError,
+                              isSuccess:
+                                  state.value.length == _config.length &&
+                                  !state.hasError,
                               caret: isActive ? _caretController : null,
                             ),
                           ),
@@ -402,6 +405,7 @@ class _OtpCell extends StatelessWidget {
     required this.size,
     required this.isActive,
     required this.hasError,
+    this.isSuccess = false,
     this.caret,
   });
 
@@ -410,6 +414,7 @@ class _OtpCell extends StatelessWidget {
   final double size;
   final bool isActive;
   final bool hasError;
+  final bool isSuccess;
   final Animation<double>? caret;
 
   @override
@@ -420,6 +425,8 @@ class _OtpCell extends StatelessWidget {
     final Color borderColor;
     if (hasError) {
       borderColor = config.errorColor ?? scheme.error;
+    } else if (isSuccess && config.successColor != null) {
+      borderColor = config.successColor!;
     } else if (isActive) {
       borderColor = config.activeColor ?? scheme.primary;
     } else {
