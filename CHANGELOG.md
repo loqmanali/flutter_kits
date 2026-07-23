@@ -6,6 +6,24 @@ release notes.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.13] — 2026-07-24
+
+### Added
+
+- **widget_kit** (`1.0.2` → `1.1.0`): consumer-driven extensibility. A new
+  `WidgetKitScope` (`InheritedWidget`) carries app-level `WidgetKitBehavior`
+  (bottom-sheet / dialog defaults), `WidgetKitBuilders` (whole-widget
+  injection for the loading / empty / error states — the "interface"), and
+  `WidgetKitStrings`. The feedback trio and `UIHelper` sheet/dialog now
+  resolve `constructor arg` → `app config` → `built-in default`; `DialogPicker`
+  and `ShimmerShape` read their `WidgetKitTheme` fields. Every hook is additive
+  and nullable — with nothing configured, rendering is unchanged. Consumer
+  guide in `widget_kit/EXTENDING.md`.
+
+- **navigation_kit** (`1.0.0` → `1.1.0`): `NavigationKitBar` gains an optional
+  `shadowColor` to match a branded background; unset keeps the prior
+  translucent-black drop shadow.
+
 ## [1.1.10] — 2026-07-22
 
 ### Fixed
