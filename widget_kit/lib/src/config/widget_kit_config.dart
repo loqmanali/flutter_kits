@@ -39,7 +39,6 @@ class WidgetKitBehavior {
     this.bottomSheetIsDismissible,
     this.useRootNavigator,
     this.dialogBarrierDismissible,
-    this.toastDuration,
   });
 
   /// Default for `UIHelper.showBottomSheet(useSafeArea:)`. Built-in: `false`.
@@ -53,9 +52,6 @@ class WidgetKitBehavior {
 
   /// Default for dialog `barrierDismissible`. Built-in: `true`.
   final bool? dialogBarrierDismissible;
-
-  /// Default toast display duration. Built-in: 2s (per call-site).
-  final Duration? toastDuration;
 }
 
 /// Data passed to a consumer-supplied [WidgetKitBuilders.emptyStateBuilder].
