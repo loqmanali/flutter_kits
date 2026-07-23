@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../theme/widget_kit_theme.dart';
+
 class DialogPicker extends StatelessWidget {
   const DialogPicker({
     super.key,
@@ -13,12 +15,13 @@ class DialogPicker extends StatelessWidget {
   final Color? backgroundColor;
   @override
   Widget build(BuildContext context) {
+    final kit = WidgetKitTheme.of(context);
     return Dialog(
       clipBehavior: Clip.hardEdge,
       insetPadding: insetPadding,
-      backgroundColor: backgroundColor,
+      backgroundColor: backgroundColor ?? kit.dialogBackgroundColor,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(kit.dialogBorderRadius ?? 16),
       ),
       child: SingleChildScrollView(
         child: child,
