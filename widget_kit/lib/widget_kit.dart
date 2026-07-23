@@ -24,6 +24,10 @@ library;
 export 'src/theme/widget_kit_theme.dart';
 export 'src/theme/widget_kit_tokens.dart';
 
+// Config — app-level behavior, whole-widget injection ("interface"), strings.
+// Styling stays in WidgetKitTheme; everything else is carried by WidgetKitScope.
+export 'src/config/widget_kit_config.dart';
+
 // Utils
 export 'src/utils/widget_kit_localization.dart';
 

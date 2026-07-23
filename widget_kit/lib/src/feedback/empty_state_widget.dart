@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../buttons/adaptive_button/adaptive_button.dart';
+import '../config/widget_kit_config.dart';
+import '../theme/widget_kit_theme.dart';
 
 /// A premium empty state widget following Shadcn UI aesthetics.
 ///
@@ -50,9 +52,25 @@ class EmptyStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final spacing = context.spacing;
-    // final colors = context.colors;
-    // final textStyles = context.textStyles;
+    // "interface": an app can swap the whole empty state widget app-wide.
+    final emptyBuilder = WidgetKitScope.of(context).builders.emptyStateBuilder;
+    if (emptyBuilder != null) {
+      return emptyBuilder(
+        context,
+        EmptyStateData(
+          title: title,
+          subtitle: subtitle,
+          icon: icon,
+          actionLabel: actionLabel,
+          onAction: onAction,
+          height: height,
+        ),
+      );
+    }
+
+    // Icon color: WidgetKitTheme.emptyStateIconColor, else the built-in grey.
+    final iconColor = WidgetKitTheme.of(context).emptyStateIconColor ??
+        Colors.grey.withValues(alpha: 0.3);
 
     return SizedBox(
       height: height,
@@ -72,7 +90,7 @@ class EmptyStateWidget extends StatelessWidget {
                 Icon(
                   icon ?? Icons.inbox_outlined,
                   size: 56,
-                  color: Colors.grey.withValues(alpha: 0.3),
+                  color: iconColor,
                 ),
                 const SizedBox(height: 16),
                 // Bold primary title

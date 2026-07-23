@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../buttons/adaptive_button/adaptive_button.dart';
+import '../config/widget_kit_config.dart';
+import '../theme/widget_kit_theme.dart';
 
 /// A reusable, branded error state widget.
 ///
@@ -39,10 +41,22 @@ class ErrorStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final spacing = context.spacing;
-    // final radius = context.radius;
-    // final colors = context.colors;
-    // final textStyles = context.textStyles;
+    // "interface": an app can swap the whole error state widget app-wide.
+    final errorBuilder = WidgetKitScope.of(context).builders.errorStateBuilder;
+    if (errorBuilder != null) {
+      return errorBuilder(
+        context,
+        ErrorStateData(
+          message: message,
+          onRetry: onRetry,
+          title: title,
+          retryLabel: retryLabel,
+        ),
+      );
+    }
+
+    // Accent: WidgetKitTheme.errorStateIconColor, else the built-in red.
+    final accent = WidgetKitTheme.of(context).errorStateIconColor ?? Colors.red;
 
     return Center(
       child: Padding(
@@ -51,10 +65,10 @@ class ErrorStateWidget extends StatelessWidget {
           constraints: const BoxConstraints(maxWidth: 360),
           child: DecoratedBox(
             decoration: BoxDecoration(
-              color: Colors.red.withValues(alpha: 0.08),
+              color: accent.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: Colors.red.withValues(alpha: 0.16),
+                color: accent.withValues(alpha: 0.16),
               ),
             ),
             child: Padding(
@@ -70,12 +84,12 @@ class ErrorStateWidget extends StatelessWidget {
                     width: 56,
                     height: 56,
                     decoration: BoxDecoration(
-                      color: Colors.red.withValues(alpha: 0.08),
+                      color: accent.withValues(alpha: 0.08),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.error_outline,
-                      color: Colors.red,
+                      color: accent,
                       size: 30,
                     ),
                   ),
@@ -84,9 +98,9 @@ class ErrorStateWidget extends StatelessWidget {
                   Text(
                     title ?? 'Something went wrong',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontWeight: FontWeight.w700,
-                      color: Colors.red,
+                      color: accent,
                     ),
                   ),
                   if (message.trim().isNotEmpty) ...[
@@ -95,7 +109,7 @@ class ErrorStateWidget extends StatelessWidget {
                       message,
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Colors.red.withValues(alpha: 0.7),
+                        color: accent.withValues(alpha: 0.7),
                       ),
                     ),
                   ],
