@@ -3,7 +3,7 @@ description: >-
   A comprehensive, high-performance OTP input solution for Flutter — hand-written
   Riverpod state management, validation, theming, animations, RTL support, paste
   handling, and a resend-cooldown timer. No code generation.
-version: 3.1.0
+version: 3.2.0
 publish_to: "none"
 
 environment:

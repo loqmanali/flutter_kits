@@ -2,6 +2,14 @@
 
 All notable changes to the OTP Module will be documented in this file.
 
+## [3.2.0] - 2026-07-23
+
+### Added
+
+- `OTPConfig.expand` — when true, cells fill the available width as
+  rectangles (width = available / length, height = `size`) instead of
+  fixed squares. Enables full-width OTP inputs. Defaults to false.
+
 ## [3.1.0] - 2026-07-23
 
 ### Added

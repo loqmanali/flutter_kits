@@ -110,6 +110,11 @@ class OTPConfig {
   /// digit alone signals progress.
   final bool showCursor;
 
+  /// When true, each cell expands to fill the available width
+  /// (rectangular: width = available / length, height = [size]).
+  /// When false (default) cells stay square at [size].
+  final bool expand;
+
   const OTPConfig({
     this.length = 4,
     this.spacing = 8.0,
@@ -140,6 +145,7 @@ class OTPConfig {
     this.shadowElevation = 2.0,
     this.dedupeCompletion = false,
     this.showCursor = true,
+    this.expand = false,
   });
 
   /// Create a copy of this config with specified fields replaced
@@ -173,6 +179,7 @@ class OTPConfig {
     double? shadowElevation,
     bool? dedupeCompletion,
     bool? showCursor,
+    bool? expand,
   }) {
     return OTPConfig(
       length: length ?? this.length,
@@ -204,6 +211,7 @@ class OTPConfig {
       shadowElevation: shadowElevation ?? this.shadowElevation,
       dedupeCompletion: dedupeCompletion ?? this.dedupeCompletion,
       showCursor: showCursor ?? this.showCursor,
+      expand: expand ?? this.expand,
     );
   }
 
@@ -240,7 +248,8 @@ class OTPConfig {
         other.enableShadow == enableShadow &&
         other.shadowElevation == shadowElevation &&
         other.dedupeCompletion == dedupeCompletion &&
-        other.showCursor == showCursor;
+        other.showCursor == showCursor &&
+        other.expand == expand;
   }
 
   @override
@@ -275,6 +284,7 @@ class OTPConfig {
       shadowElevation,
       dedupeCompletion,
       showCursor,
+      expand,
     ]);
   }
 
