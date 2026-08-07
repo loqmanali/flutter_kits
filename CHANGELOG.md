@@ -6,6 +6,63 @@ release notes.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.14] — 2026-08-07
+
+### Added
+
+- **widget_kit** (`1.1.0` → `1.2.0`): `RefreshTrigger` grows a load-more side
+  and programmatic control. `onLoadMore` / `enableLoadMore` add a footer that
+  fires when the user pulls past the end of the list, and
+  `RefreshTriggerController` fires either side by hand
+  (`requestRefresh` / `requestLoadMore`), ends one early
+  (`finishRefresh` / `finishLoadMore(noMoreData: true)`) and reports stage
+  changes to listeners. New `TriggerStage.failed` is entered when a callback
+  throws. `RefreshTriggerDisplayMode.inset` gives the indicator real layout
+  space instead of overlaying the content, and `refreshOnStart`, `physics` and
+  `enableSafeArea` cover the common wiring. Ships five ready-made indicators —
+  `ClassicHeader`, `MaterialHeader`, `BezierHeader`, `WaterDropHeader`,
+  `ClassicFooter` — alongside the existing `AppPillRefreshIndicator`.
+
+  Additive: `indicatorBuilder` still works as an alias for `headerBuilder`,
+  `RefreshTriggerStage` keeps its four positional arguments, and every new
+  default (`overlay` display, no safe area, no physics override) preserves the
+  previous rendering.
+
+### Fixed
+
+- **widget_kit**: `RefreshTrigger` could hang on the `refreshing` stage forever
+  when `onRefresh` was a non-`async` function that threw — the exception
+  escaped before the completion handler was attached. Callbacks now run through
+  `Future.sync`.
+- **widget_kit**: a `maxExtent` equal to (or below) `minExtent` produced `NaN`
+  pull geometry, which propagated into `SizedBox` heights and `Offset`s and
+  broke layout. The resistance curve and the normalised extent are now guarded.
+- **widget_kit**: a programmatic `jumpTo`/`animateTo` that landed on either
+  edge of the list, or a fling settling there, would start a pull and trigger a
+  refresh or load. A pull now only starts while the user's finger is down.
+- **widget_kit**: screen readers announced "Pull to refresh" from anywhere in
+  the list — the indicator sits in the tree at all times, translated off-screen
+  rather than removed. It is excluded from the semantics tree at rest and
+  announced as a live region while running.
+
+### Changed
+
+- **widget_kit**: `AppPillRefreshIndicator` uses the `labelMedium` type role
+  instead of a hardcoded `fontSize: 12` so its label scales with the system
+  text size, and the `onSurfaceVariant` colour token instead of `onSurface` at
+  60% opacity so it clears the contrast floor in both schemes. Same token for
+  `ClassicFooter`'s "No more data" copy. Both are small visible changes.
+- **widget_kit**: indicator slide-back, the tick-drawing animation and the
+  stage cross-fade respect `MediaQuery.disableAnimations`. Tracking the finger
+  is direct manipulation and still follows the drag.
+- **widget_kit**: `refresh_trigger.dart` is split into
+  `refresh_trigger/src/{models,theme,controller,physics,painters,widgets}`
+  following the `slot_time_picker` layout, with one file per indicator. The
+  import path is unchanged — the old path is now the barrel. Placement,
+  resistance and animation moved into a `RefreshTriggerLayout` presentation
+  widget, and `RefreshTriggerController` reads through to the widget state
+  instead of mirroring its own copy of the stage.
+
 ## [1.1.13] — 2026-07-24
 
 ### Added
