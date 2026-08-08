@@ -6,6 +6,62 @@ release notes.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.0.0] — 2026-08-08
+
+No kit's public API changed in this release. The major bump marks the arrival of
+the tooling and documentation layer, which changes how the kits are meant to be
+consumed.
+
+### Added
+
+- **`flutter_kits_cli`** — a new package providing the `fkit` command:
+  - `fkit ls` / `add` / `remove` — manage kit dependencies in a project's
+    `pubspec.yaml`, pinned to the correct monorepo tag. Edits are made through a
+    YAML editor, so comments and formatting survive.
+  - `fkit theme --primary <hex>` — generates `lib/theme/kits_theme.dart` with
+    both `WidgetKitTheme` and `AppButtonThemeExtension`.
+  - `fkit style create <widget>` — generates one widget's styling boilerplate
+    with every value spelled out. Ships `app-button`, `input`, `surface`,
+    `feedback`.
+  - `fkit snippet create <name>` — copies ready-made files into a project.
+    Ships `app-shell`, `async-button`, `confirm-dialog`, `otp-screen`.
+  - `fkit doctor` — reports the setup mistakes that produce misleading errors:
+    a `ref:` pinned to a package version rather than a release tag, a missing
+    `ref:`, a kit declared as a pub.dev constraint, a committed local `path:`
+    dependency, and `widget_kit` used without an `AppButtonThemeExtension`.
+  - Snippet and style templates are kept as real Dart under
+    `docs/lib/{snippets,styles}/` and compiled against the kits on every
+    analysis run, then baked into the CLI by `tool/sync_templates.dart`. The
+    kit catalogue and release tag come from `tool/sync_catalog.dart`.
+- **`flutter_kits_cli/guide`** — a static HTML/CSS/JS guide covering the CLI and
+  the widgets, with a live preview and copyable code per example. Opens by
+  double-clicking `index.html`; no build step or server.
+- **`docs`** — the Flutter Web catalog gained deep-linkable URLs, Dart syntax
+  highlighting, a working search palette, and a `widget_kit` section.
+
+### Fixed
+
+- The documented install snippets pinned `ref:` to package versions
+  (`v3.2.0`, `v1.2.0`). No such tags exist, so copying them produced a git
+  resolution failure. They now pin to the monorepo release tag.
+
+### Documentation
+
+Three long-standing behaviours are now written down, all verified against the
+source rather than inferred:
+
+- `AppButton` reads `AppButtonThemeExtension` only. `WidgetKitTheme`'s
+  `primaryButtonColor` / `buttonBorderRadius` have no effect on it, and its
+  corner radius is a fixed `8.0`. Its built-in colours are brand red and
+  orange rather than the `ColorScheme`, so an app that registers no extension
+  ships red buttons.
+- `UIHelper.showToast` — and `showSnackBar`, which forwards to it — swallows
+  its failure, so with no `ToastificationWrapper` mounted nothing appears and
+  nothing is logged. `showSnackBar`'s snackbar-only arguments (`action`,
+  `elevation`, `margin`, `padding`, `behavior`) are accepted but unused.
+- `SheetHeader` hardcodes `Colors.black` for its title and close icon, so it is
+  invisible on a dark sheet.
+
 ## [1.1.14] — 2026-08-07
 
 ### Added

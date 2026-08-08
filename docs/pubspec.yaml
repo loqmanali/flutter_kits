@@ -1,0 +1,32 @@
+name: docs
+description: >-
+  Documentation & showcase app for the flutter_kits monorepo. A forui.dev-style
+  Flutter Web catalog: live preview + copyable code for every kit, starting with
+  otp_kit.
+publish_to: "none"
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Documented kits. Path deps so the docs always track local source.
+  otp_kit:
+    path: ../otp_kit
+  widget_kit:
+    path: ../widget_kit
+
+  # otp_kit is built on hooks_riverpod; we host ProviderScope here and read
+  # controllers/selectors in the demos, so declare it directly.
+  hooks_riverpod: ^3.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
