@@ -6,7 +6,9 @@ glyph is real, selectable, copyable text, laid out from pre-computed JSON databa
 A Flutter port of [`quran-madina-html`](https://github.com/tarekeldeeb/quran-madina-html). It
 consumes that project's JSON databases **byte-for-byte**; only the runtime half is reimplemented.
 
-## Install
+## Quick start
+
+**1. Depend on it.** The kit lives in the `flutter_kits` monorepo, so pin a ref:
 
 ```yaml
 dependencies:
@@ -14,26 +16,110 @@ dependencies:
     git:
       url: https://github.com/loqmanali/flutter_kits.git
       path: quran_madina_kit
-      ref: v0.1.0
+      ref: v0.1.0        # a tag or commit SHA — bump deliberately, per app
 ```
 
-## Use
+Developing the kit alongside your app? Override locally and leave the committed
+pubspec pointing at git:
 
-Put a `MadinaScope` near the app root, then drop views anywhere below it.
+```yaml
+# pubspec_overrides.yaml   (git-ignored)
+dependency_overrides:
+  quran_madina_kit:
+    path: ../flutter_kits/quran_madina_kit
+```
+
+**2. Wrap your app once.** `MadinaScope` carries the font, size and data source
+for every view under it:
 
 ```dart
+import 'package:flutter/material.dart';
+import 'package:quran_madina_kit/quran_madina_kit.dart';
+
+void main() => runApp(
+      MadinaScope(
+        config: const MadinaConfig(font: 'Hafs', fontSize: 16),
+        child: MaterialApp(home: MushafPage()),
+      ),
+    );
+```
+
+**3. Drop views wherever you need them.** No controller, no manual loading, no
+state to wire — each view boots the DB itself and shares it with the others:
+
+```dart
+class MushafPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        body: PageView.builder(
+          reverse: true,                       // Mushaf pages turn right-to-left
+          itemCount: 604,
+          itemBuilder: (_, i) => Center(
+            child: SingleChildScrollView(
+              child: QuranMadinaView(page: i + 1, headless: true),
+            ),
+          ),
+        ),
+      );
+}
+```
+
+That is the whole integration. Nothing else is required: the fonts and all ten
+databases ship inside the kit, so it works offline on first launch.
+
+### Platform notes
+
+- **Rendering works on every platform** Flutter targets — nothing in the layout
+  is platform-specific.
+- The **in-app browser** behind the translate action needs `webview_flutter`
+  (Android and iOS). Elsewhere it falls back to a copy-link page, or you can
+  hand translation to your own browser with `onTranslate`.
+- Nothing is needed in `AndroidManifest.xml` or `Info.plist` for rendering.
+- The kit adds ~19 MB of assets to your app bundle. If you only ship one font,
+  fork the `assets:` list in the kit's `pubspec.yaml`.
+
+### Recipes
+
+```dart
+// A verse inside your own card
+QuranMadinaView(sura: 2, aya: '255', headless: true)
+
+// A quiz prompt: show 14 words, mark the wrong one
+QuranMadinaView(sura: 1, aya: '7', words: '1-14', error: '9', notitle: true)
+
+// A memorisation aid: the whole page with the current aya highlighted
+QuranMadinaView(page: 106, highlight: '12-18')
+
+// Let the reader pick the font and size at runtime
 MadinaScope(
-  config: const MadinaConfig(font: 'Hafs', fontSize: 16),
-  child: MaterialApp(home: ...),
+  config: MadinaConfig(font: userFont, fontSize: userSize),
+  child: ...,
 )
 ```
 
+`MadinaScope` can be nested — a view under an inner scope uses that scope's
+config, so a settings preview can show a different font from the rest of the app.
+
+### Links stay inside your app
+
+Tapping the translate icon opens quran.com on a full-screen page **inside** the
+app; the reader closes it and is back on the same line of the Mushaf. Nothing is
+handed off to an external browser.
+
+If your app already has its own in-app browser, router or bottom sheet, point the
+kit at it and the built-in page is never used:
+
 ```dart
-QuranMadinaView(page: 106, headless: true)                     // a full page
-QuranMadinaView(sura: 2, aya: '8-10')                          // a verse range
-QuranMadinaView(sura: 1, aya: '7', words: '1-14')              // a word range
-QuranMadinaView(sura: 1, aya: '1', highlight: '2-3', error: '5')
+MadinaConfig(
+  onTranslate: (context, url) => context.push('/browser?url=$url'),
+)
 ```
+
+The built-in page uses `webview_flutter` (Android and iOS). On any other
+platform — macOS, Windows, Linux, or a widget test — it degrades to showing the
+link with a copy button rather than failing, so the verse stays reachable.
+
+## Reference
 
 ### Parameters
 

@@ -4,6 +4,15 @@ import 'package:flutter/widgets.dart';
 
 import 'source.dart';
 
+/// How the kit should show a quran.com link.
+///
+/// Receives the tapped element's context and the URL. Return when the link has
+/// been handled — the kit does nothing else.
+typedef MadinaTranslateHandler = Future<void> Function(
+  BuildContext context,
+  Uri url,
+);
+
 /// How a justified line's scaleX is obtained.
 enum MadinaStretchMode {
   /// Replay the DB's stored factor times the size correction — byte-for-byte
@@ -126,6 +135,7 @@ class MadinaConfig {
     this.fontSize = 16,
     this.source,
     this.stretchMode = MadinaStretchMode.measured,
+    this.onTranslate,
   });
 
   final String name;
@@ -138,6 +148,19 @@ class MadinaConfig {
 
   final MadinaStretchMode stretchMode;
 
+  /// What the translate action does. Defaults to [openMadinaWebPage], which
+  /// shows quran.com on a full-screen page **inside** the app.
+  ///
+  /// Point it at your own in-app browser, router or sheet to keep the link in
+  /// your app's own navigation:
+  ///
+  /// ```dart
+  /// MadinaConfig(
+  ///   onTranslate: (context, url) => context.push('/browser?url=$url'),
+  /// )
+  /// ```
+  final MadinaTranslateHandler? onTranslate;
+
   @override
   bool operator ==(Object other) =>
       other is MadinaConfig &&
@@ -145,10 +168,12 @@ class MadinaConfig {
       other.font == font &&
       other.fontSize == fontSize &&
       other.source == source &&
-      other.stretchMode == stretchMode;
+      other.stretchMode == stretchMode &&
+      other.onTranslate == onTranslate;
 
   @override
-  int get hashCode => Object.hash(name, font, fontSize, source, stretchMode);
+  int get hashCode =>
+      Object.hash(name, font, fontSize, source, stretchMode, onTranslate);
 }
 
 /// Supplies config and theme to every `QuranMadinaView` below it.

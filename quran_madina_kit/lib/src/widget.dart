@@ -652,9 +652,13 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
             suraName: header.name,
             theme: theme,
             onCopy: () => _copyAll(lines, header.name),
-            onTranslate: () => openTranslate(header.aya != null
-                ? translateUri(sura: header.sura, aya: header.aya)
-                : translateUri(page: page)),
+            onTranslate: () => openTranslate(
+              context,
+              header.aya != null
+                  ? translateUri(sura: header.sura, aya: header.aya)
+                  : translateUri(page: page),
+              title: header.name,
+            ),
           ),
         ...lines,
       ],

@@ -9,6 +9,9 @@
 - Bundles all five fonts at both anchor sizes (Hafs, Uthman, Amiri Quran, Amiri Quran Colored,
   me_quran) — ~19 MB of JSON, fully offline. Amiri Quran Colored's COLRv0 tajweed colouring is
   verified to render, not assumed.
+- Links never leave the app: the translate action opens quran.com on a full-screen page inside the
+  app (`webview_flutter`), and `MadinaConfig.onTranslate` hands it to the host app's own browser or
+  router instead.
 - Sharded lazy DB loading (manifest + 30 juz' shards) with request coalescing, content-hash cache
   invalidation and a monolithic fallback. Asset and network sources are swappable.
 - Justification verified per font across all ~8800 justified lines of the Mushaf. `stored` mode

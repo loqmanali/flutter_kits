@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import 'line.dart';
+import 'webview.dart';
 import 'theme.dart';
 
 /// The copy body: only spans that are actually visible, whitespace collapsed.
@@ -38,8 +37,15 @@ Future<void> copyAndNotify(BuildContext context, String text) async {
   );
 }
 
-Future<void> openTranslate(Uri uri) =>
-    launchUrl(uri, mode: LaunchMode.externalApplication);
+/// Runs the configured translate handler, defaulting to the kit's in-app page.
+///
+/// Nothing here ever leaves the app: handing a reader off to a browser loses
+/// their place in the Mushaf.
+Future<void> openTranslate(BuildContext context, Uri uri, {String? title}) {
+  final handler = MadinaScope.of(context).config.onTranslate;
+  if (handler != null) return handler(context, uri);
+  return openMadinaWebPage(context, uri, title: title);
+}
 
 /// Opening and closing quote marks for an inline (single-line) render — its
 /// only visual cue that the text is a quoted excerpt, since it has no header.
@@ -224,7 +230,8 @@ void showAyaPopup(
               closeAyaPopup();
             },
             onTranslate: () {
-              openTranslate(translateUri(sura: sura, aya: aya));
+              openTranslate(context, translateUri(sura: sura, aya: aya),
+                  title: suraName);
               closeAyaPopup();
             },
           ),

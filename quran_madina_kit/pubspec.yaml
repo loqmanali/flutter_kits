@@ -18,8 +18,10 @@ dependencies:
   # MadinaNetworkSource: fetches manifest/juz shards from a CDN.
   http: ^1.2.0
 
-  # The translate action deep-links to quran.com.
-  url_launcher: ^6.2.0
+  # The translate action opens quran.com inside the app rather than handing the
+  # user off to a browser. Official package: Android + iOS. Every other platform
+  # gets the copy-link fallback in MadinaWebPage.
+  webview_flutter: ^4.4.0
 
 dev_dependencies:
   flutter_test:

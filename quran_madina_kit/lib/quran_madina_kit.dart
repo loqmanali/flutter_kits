@@ -5,6 +5,7 @@
 /// JSON databases byte-for-byte.
 library;
 
+export 'src/chrome.dart' show MadinaHeader, translateUri;
 export 'src/line.dart' show MadinaLine;
 export 'src/source.dart'
     show MadinaAssetSource, MadinaNetworkSource, MadinaSource;
@@ -14,5 +15,7 @@ export 'src/theme.dart'
         MadinaInline,
         MadinaScope,
         MadinaStretchMode,
-        MadinaTheme;
+        MadinaTheme,
+        MadinaTranslateHandler;
+export 'src/webview.dart' show MadinaWebPage, openMadinaWebPage;
 export 'src/widget.dart' show QuranMadinaView;
