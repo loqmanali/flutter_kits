@@ -14,7 +14,7 @@
 
 - Package root: `quran_madina_kit/` at the `flutter_kits` monorepo root. `publish_to: "none"`.
 - `environment: sdk: ">=3.0.0 <4.0.0"`, `flutter: ">=3.10.0"` — matches sibling kits.
-- **Do not use `Color.withValues()`** (Flutter 3.27+). Use `color.withAlpha((255 * fraction).round())` — the `color-mix(... N%, transparent)` equivalent that works at the declared floor.
+- **Colour API:** use `color.withValues(alpha: f)` and the double channel getters `.r/.g/.b`. The declared floor says `>=3.10.0` (copied from the 19 sibling kits) but `commerce_kit` and others already call `withValues`, so the repo's real floor is 3.27+ and the dev toolchain is 3.44.8. Following the sibling convention beats being the one kit with a different colour API; correcting all 19 declared floors is out of scope for this work.
 - Dependencies are exactly: `flutter_svg`, `http`, `url_launcher`. **No `path_provider`** — `MadinaNetworkSource` takes an optional `Directory cacheDir` from the host app.
 - `dart analyze` must be clean and `dart format` applied before every commit.
 - Pure-logic files (`models.dart`, `source.dart`, `repository.dart`, `ranges.dart`, `layout.dart`) must not import `package:flutter/widgets.dart` or `material.dart`. `dart:ui` is allowed only in `line.dart` and above.
