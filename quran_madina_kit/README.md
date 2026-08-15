@@ -118,18 +118,20 @@ visible as a ragged left edge.
 ### Choosing a stretch mode
 
 ```dart
-MadinaConfig(stretchMode: MadinaStretchMode.stored)    // default
-MadinaConfig(stretchMode: MadinaStretchMode.measured)
+MadinaConfig(stretchMode: MadinaStretchMode.measured)  // default
+MadinaConfig(stretchMode: MadinaStretchMode.stored)
 ```
 
+- **`measured`** (default) derives `scaleX = lineWidth / measuredWidth` per line, so **every
+  justified line fills the frame exactly** — verified at 0.0000% max drift for all five fonts. It
+  also makes the font-size interpolation correction unnecessary.
 - **`stored`** replays the DB's factors verbatim — byte-for-byte the web runtime's geometry,
-  including its drift. Default, because it is what "port the web runtime" means.
-- **`measured`** ignores the stored factor and derives `scaleX = lineWidth / measuredWidth` per
-  line, so **every justified line fills the frame exactly** (verified: max drift 0.0000% for all
-  five fonts). It also makes the font-size interpolation correction unnecessary.
+  including the drift in the table above. Use it when matching the web output exactly matters more
+  than flush edges.
 
-**Use `measured` if flush edges matter to you — and especially with Uthman.** It costs one extra
-`TextPainter.layout()` per line, cached per line widget.
+`measured` costs one `TextPainter.layout()` per line — **78µs**, so ~1.2ms for a 15-line page on an
+M-series Mac. Results are memoised by text + style in a bounded module-level cache, so every rebuild
+after the first (scroll, theme change, any `setState` above the view) is free.
 
 ## Data sources
 

@@ -11,8 +11,11 @@
   verified to render, not assumed.
 - Sharded lazy DB loading (manifest + 30 juz' shards) with request coalescing, content-hash cache
   invalidation and a monolithic fallback. Asset and network sources are swappable.
-- Fidelity verified across all 8788 justified lines of the Mushaf: median drift from the DB's
-  Chrome-measured geometry is 0.63%, p95 0.77%.
+- Justification verified per font across all ~8800 justified lines of the Mushaf. `stored` mode
+  replays the DB's Chrome-measured factors and keeps half of all lines within 1%, but its tail is
+  font-dependent (Hafs p95 0.77%, Uthman p95 3.09% / max 8.62%). `MadinaStretchMode.measured` is
+  therefore the default: it fills every justified line exactly (0.0000% max drift, all five fonts),
+  memoised so only the first layout of a line costs anything.
 
 # Changelog
 

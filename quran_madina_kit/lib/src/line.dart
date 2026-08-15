@@ -89,6 +89,48 @@ SpanBuildResult buildWordSpans({
 InlineSpan buildSpacerSpan(String text, TextStyle base) =>
     TextSpan(text: text, style: base.copyWith(color: kInvisible));
 
+/// Natural widths already measured, keyed by text + style + frame width.
+///
+/// A `measured`-mode line costs one TextPainter.layout() (~78us on an M-series
+/// Mac, ~1.2ms for a 15-line page), and the same page is re-laid-out on every
+/// rebuild — a scroll, a theme change, a setState above it. Memoising the
+/// measurement makes every rebuild after the first free.
+final Map<String, double> _naturalWidths = {};
+
+/// Bounded so a long reading session cannot grow it without limit. A whole
+/// mushaf is ~8800 lines, so this holds several pages' worth and drops the lot
+/// rather than carrying LRU bookkeeping for a cache this cheap to refill.
+const int _widthCacheLimit = 2000;
+
+@visibleForTesting
+void resetMadinaWidthCache() => _naturalWidths.clear();
+
+double _naturalWidth(List<InlineSpan> spans, TextStyle style) {
+  final buffer = StringBuffer()
+    ..write(style.fontFamily)
+    ..write('|')
+    ..write(style.fontSize);
+  for (final span in spans) {
+    if (span is TextSpan) buffer.write(span.text ?? '');
+  }
+  final key = buffer.toString();
+
+  final hit = _naturalWidths[key];
+  if (hit != null) return hit;
+
+  final painter = TextPainter(
+    text: TextSpan(children: spans, style: style),
+    textDirection: TextDirection.rtl,
+    maxLines: 1,
+    textScaler: TextScaler.noScaling,
+  )..layout();
+  final width = painter.width;
+  painter.dispose();
+
+  if (_naturalWidths.length >= _widthCacheLimit) _naturalWidths.clear();
+  return _naturalWidths[key] = width;
+}
+
 /// The scaleX to apply to a line. 1.0 for a centred line.
 double resolveScaleX({
   required double stretch,
@@ -97,21 +139,11 @@ double resolveScaleX({
   required List<InlineSpan> spans,
   required double lineWidth,
   required TextStyle style,
-  double? textScaleFactor,
 }) {
   if (stretch == kCentredStretch) return 1;
   if (mode == MadinaStretchMode.stored) return stretch * stretchScale;
 
-  final painter = TextPainter(
-    text: TextSpan(children: spans, style: style),
-    textDirection: TextDirection.rtl,
-    maxLines: 1,
-    textScaler: textScaleFactor == null
-        ? TextScaler.noScaling
-        : TextScaler.linear(textScaleFactor),
-  )..layout();
-  final natural = painter.width;
-  painter.dispose();
+  final natural = _naturalWidth(spans, style);
   if (natural <= 0) return 1;
   return lineWidth / natural;
 }

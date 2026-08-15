@@ -32,6 +32,8 @@ List<TextSpan> visible(SpanBuildResult r) => r.spans
     .toList();
 
 void main() {
+  _cacheTests();
+
   group('buildWordSpans', () {
     test('emits one span per token and preserves the whitespace between them',
         () {
@@ -268,6 +270,65 @@ void main() {
       ));
       final text = tester.widget<Text>(find.byType(Text));
       expect(text.textScaler, TextScaler.noScaling);
+    });
+  });
+}
+
+/// The measured-mode width cache: a real second call must not re-layout.
+void _cacheTests() {
+  group('measured-mode width cache', () {
+    setUp(resetMadinaWidthCache);
+
+    test('a repeat measurement is served from the cache', () {
+      List<InlineSpan> spans() => [
+            const TextSpan(
+                text: 'ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَـٰلَمِينَ', style: base)
+          ];
+
+      double time(void Function() body) {
+        final sw = Stopwatch()..start();
+        for (var i = 0; i < 200; i++) {
+          body();
+        }
+        return sw.elapsedMicroseconds / 200;
+      }
+
+      double measure() => resolveScaleX(
+            stretch: 1.1,
+            stretchScale: 1,
+            mode: MadinaStretchMode.measured,
+            spans: spans(),
+            lineWidth: 270,
+            style: base,
+          );
+
+      final first = measure();
+      final warm = time(measure);
+      expect(measure(), first, reason: 'the cached value must be identical');
+      expect(warm, lessThan(20),
+          reason: 'a cache hit must be far cheaper than the ~78us layout, '
+              'was ${warm.toStringAsFixed(1)}us');
+    });
+
+    test('a different font size is measured separately', () {
+      const other = TextStyle(fontSize: 24, color: Color(0xFF000000));
+      final a = resolveScaleX(
+        stretch: 1,
+        stretchScale: 1,
+        mode: MadinaStretchMode.measured,
+        spans: const [TextSpan(text: 'نص', style: base)],
+        lineWidth: 270,
+        style: base,
+      );
+      final b = resolveScaleX(
+        stretch: 1,
+        stretchScale: 1,
+        mode: MadinaStretchMode.measured,
+        spans: const [TextSpan(text: 'نص', style: other)],
+        lineWidth: 270,
+        style: other,
+      );
+      expect(a, isNot(b), reason: 'the key must include the style');
     });
   });
 }

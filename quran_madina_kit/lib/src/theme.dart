@@ -6,12 +6,19 @@ import 'source.dart';
 
 /// How a justified line's scaleX is obtained.
 enum MadinaStretchMode {
-  /// Use the DB's stored factor times the size correction — byte-for-byte the
-  /// web runtime's behaviour.
+  /// Replay the DB's stored factor times the size correction — byte-for-byte
+  /// the web runtime's geometry, including its drift.
+  ///
+  /// Those factors were measured in headless Chrome. Flutter's shaping differs
+  /// slightly, so a line may not land exactly on the frame: half of all lines
+  /// stay within 1% for every font, but Uthman drifts over 2% on 12% of its
+  /// lines (up to 8.6%, ≈23px), which reads as a ragged edge.
   stored,
 
-  /// Measure the line and derive `lineWidth / measuredWidth`. Self-correcting,
-  /// and needs no font-size interpolation.
+  /// Measure the line and derive `lineWidth / measuredWidth`, so every
+  /// justified line fills the frame exactly (verified: 0.0000% max drift for
+  /// all five fonts). Self-correcting, and makes the font-size interpolation
+  /// correction unnecessary. The default.
   measured,
 }
 
@@ -118,7 +125,7 @@ class MadinaConfig {
     this.font = 'Hafs',
     this.fontSize = 16,
     this.source,
-    this.stretchMode = MadinaStretchMode.stored,
+    this.stretchMode = MadinaStretchMode.measured,
   });
 
   final String name;

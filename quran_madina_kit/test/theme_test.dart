@@ -79,7 +79,9 @@ void main() {
       expect(seen.config.name, 'Madina05');
       expect(seen.config.font, 'Hafs');
       expect(seen.config.fontSize, 16);
-      expect(seen.config.stretchMode, MadinaStretchMode.stored);
+      expect(seen.config.stretchMode, MadinaStretchMode.measured,
+          reason: 'measured fills every justified line exactly; stored replays '
+              "the DB's Chrome-measured drift");
     });
   });
 
