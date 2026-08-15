@@ -122,10 +122,24 @@ a changed `content_hash` purges stale cached shards.
 
 ### Bundled assets
 
-The kit ships **Hafs at 16px** (≈1.9 MB of JSON) plus all five converted `.ttf` fonts, so it works
-offline out of the box. The other nine font/size databases (≈19 MB total) are **not** bundled — copy
-the folders you need from the upstream repo into your own app's assets and point
-`MadinaAssetSource(package: ...)` at it, or serve them.
+Everything ships in the kit — **all five fonts at both anchor sizes**, ≈19 MB of JSON plus ≈650 KB of
+converted `.ttf`. Nothing to download, nothing to configure: it works offline out of the box and any
+font/size combination below is available immediately.
+
+| `font` | 16px frame | 24px frame | Notes |
+|---|---|---|---|
+| `Hafs` (default) | 270 | 410 | |
+| `Uthman` | 270 | 400 | |
+| `Amiri Quran` | 270 | 410 | carries U+FDFD itself |
+| `Amiri Quran Colored` | 270 | 410 | COLRv0 tajweed colouring, verified rendering |
+| `me_quran` | 300 | 450 | doubled line box |
+
+The frame widths are hand-tuned per font and size, **not** proportional — which is exactly why an
+in-between size is fitted rather than scaled.
+
+> Release builds tree-shake nothing from `assets/`, so all 19 MB lands in every app that depends on
+> this kit. If that matters for a given app, fork the pubspec's `assets:` list down to the fonts it
+> actually offers.
 
 `tool/convert_fonts.py` regenerates the `.ttf` files from the upstream `.woff2` (fontTools + brotli).
 woff2 is only a compressed sfnt container, so the conversion is lossless and the glyph advances the
@@ -137,8 +151,9 @@ DB was measured against are preserved exactly.
   back across every installed system font; Flutter only consults families you name, so the kit loads
   Amiri Quran as a dedicated fallback for that one glyph. Its shape differs slightly from whatever
   font a given browser picks.
-- **Amiri Quran Colored** is a COLRv0 colour font. Skia supports COLRv0, but this has not been
-  verified on every target platform yet.
+- **Amiri Quran Colored** renders its COLRv0 tajweed colouring correctly (verified by
+  `test/colour_font_probe_test.dart`, which rasterises a page and counts distinct chromatic pixels).
+  Verified on macOS with Flutter 3.44.8; other engines should behave the same but are untested.
 - **Arbitrary font sizes** (anything other than 16/24) render the nearest anchor's data with the
   interpolated `line_width` and a global stretch correction — same approach as the web.
 - `inline: MadinaInline.yes` is accepted but not implemented, matching upstream.

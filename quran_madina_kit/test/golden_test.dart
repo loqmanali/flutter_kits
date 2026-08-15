@@ -4,8 +4,9 @@ import 'package:quran_madina_kit/quran_madina_kit.dart';
 
 import 'support/pump.dart';
 
-/// A fixed-size, opaque frame so the goldens are stable and readable.
-Widget goldenFrame(Widget child, {double width = 320, double height = 380}) =>
+/// An opaque frame that hugs its content, so a golden never has to guess a
+/// height that fits (fonts differ wildly: me_quran uses a doubled line box).
+Widget goldenFrame(Widget child, {double width = 320, double? height}) =>
     Center(
       child: RepaintBoundary(
         child: Container(
@@ -38,7 +39,6 @@ void main() {
       tester,
       madinaHost(goldenFrame(
         const QuranMadinaView(page: 106, headless: true),
-        height: 660,
       )),
     );
     await expectLater(
@@ -52,7 +52,6 @@ void main() {
       tester,
       madinaHost(goldenFrame(
         const QuranMadinaView(sura: 2, aya: '8-10'),
-        height: 200,
       )),
     );
     await expectLater(
@@ -66,7 +65,6 @@ void main() {
       tester,
       madinaHost(goldenFrame(
         const QuranMadinaView(sura: 1, aya: '7', words: '1-14'),
-        height: 250,
       )),
     );
     await expectLater(
@@ -75,12 +73,40 @@ void main() {
     );
   });
 
+  testWidgets('Amiri Quran Colored — tajweed colouring', (tester) async {
+    await pumpMadina(
+      tester,
+      madinaHost(
+        goldenFrame(const QuranMadinaView(page: 3, headless: true), width: 340),
+        config: const MadinaConfig(font: 'Amiri Quran Colored', fontSize: 16),
+      ),
+    );
+    await expectLater(
+      find.byType(RepaintBoundary).first,
+      matchesGoldenFile('goldens/page-003-amiri-colored-16.png'),
+    );
+  });
+
+  testWidgets('me_quran — its own frame width and doubled line box',
+      (tester) async {
+    await pumpMadina(
+      tester,
+      madinaHost(
+        goldenFrame(const QuranMadinaView(page: 3, headless: true), width: 380),
+        config: const MadinaConfig(font: 'me_quran', fontSize: 16),
+      ),
+    );
+    await expectLater(
+      find.byType(RepaintBoundary).first,
+      matchesGoldenFile('goldens/page-003-me_quran-16.png'),
+    );
+  });
+
   testWidgets('highlight and error marks', (tester) async {
     await pumpMadina(
       tester,
       madinaHost(goldenFrame(
         const QuranMadinaView(sura: 1, aya: '1', highlight: '2-3', error: '4'),
-        height: 140,
       )),
     );
     await expectLater(

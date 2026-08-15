@@ -6,6 +6,9 @@
   `highlight`/`error` word marking in every mode, `headless`, `quotes`, `inline`, `notitle`,
   copy-to-clipboard, quran.com translate links, the per-aya popup, the decorative sura frame, and
   arbitrary font sizes 6–100 via anchor interpolation.
+- Bundles all five fonts at both anchor sizes (Hafs, Uthman, Amiri Quran, Amiri Quran Colored,
+  me_quran) — ~19 MB of JSON, fully offline. Amiri Quran Colored's COLRv0 tajweed colouring is
+  verified to render, not assumed.
 - Sharded lazy DB loading (manifest + 30 juz' shards) with request coalescing, content-hash cache
   invalidation and a monolithic fallback. Asset and network sources are swappable.
 - Fidelity verified across all 8788 justified lines of the Mushaf: median drift from the DB's

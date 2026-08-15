@@ -30,4 +30,13 @@ flutter:
   assets:
     - assets/img/
     - assets/fonts/
+    - assets/db/Madina05-Amiri_Quran-16px/
+    - assets/db/Madina05-Amiri_Quran-24px/
+    - assets/db/Madina05-Amiri_Quran_Colored-16px/
+    - assets/db/Madina05-Amiri_Quran_Colored-24px/
     - assets/db/Madina05-Hafs-16px/
+    - assets/db/Madina05-Hafs-24px/
+    - assets/db/Madina05-Uthman-16px/
+    - assets/db/Madina05-Uthman-24px/
+    - assets/db/Madina05-me_quran-16px/
+    - assets/db/Madina05-me_quran-24px/
