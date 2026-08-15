@@ -34,11 +34,13 @@ class _ExampleAppState extends State<ExampleApp> {
     Demo.page => QuranMadinaView(page: _page, headless: true),
     Demo.verse => const QuranMadinaView(sura: 2, aya: '8-10'),
     Demo.words => const QuranMadinaView(sura: 1, aya: '7', words: '1-14'),
+    // Al-Fatiha aya 1 has exactly 4 words, so both ranges stay in bounds; an
+    // out-of-bounds mark would be dropped with a warning, not rendered.
     Demo.marks => const QuranMadinaView(
       sura: 1,
       aya: '1',
       highlight: '2-3',
-      error: '5',
+      error: '4',
     ),
   };
 
