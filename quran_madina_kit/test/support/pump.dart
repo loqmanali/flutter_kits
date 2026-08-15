@@ -32,7 +32,10 @@ Widget madinaHost(
         child: Scaffold(
           body: DefaultTextStyle(
             style: TextStyle(color: textColour ?? const Color(0xFF000000)),
-            child: Center(child: child),
+            // Scrollable: a long words= selection is taller than the test
+            // viewport, and a real app would scroll it too — an overflow error
+            // there would be the host's layout problem, not the kit's.
+            child: SingleChildScrollView(child: Center(child: child)),
           ),
         ),
       ),

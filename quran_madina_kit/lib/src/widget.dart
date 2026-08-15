@@ -3,6 +3,7 @@ import 'package:flutter/services.dart' show FontLoader;
 import 'package:flutter/widgets.dart';
 
 import 'interpolation.dart';
+import 'layout.dart';
 import 'line.dart';
 import 'ranges.dart';
 import 'render_plan.dart';
@@ -250,6 +251,30 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
       height: manifest.fontFamily == 'me_quran' ? 2.0 : null,
     );
 
+    var highlightRange = parseWordsRange(widget.highlight);
+    if (widget.highlight != null && highlightRange == null) {
+      _log('Bad highlight parameter: ${widget.highlight}');
+    }
+    var errorRange = parseWordsRange(widget.error);
+    if (widget.error != null && errorRange == null) {
+      _log('Bad error parameter: ${widget.error}');
+    }
+
+    // words= has its own renderer: it is not bound to a single page or sura, so
+    // the selection can run past the anchor aya across page and sura
+    // boundaries. A malformed range falls through to the normal verse render.
+    if (widget.words != null) {
+      final wordsView = _buildWordsView(
+        db,
+        style: style,
+        theme: theme,
+        stretchMode: scope.config.stretchMode,
+        highlightRange: highlightRange,
+        errorRange: errorRange,
+      );
+      if (wordsView != null) return wordsView;
+    }
+
     final plan = planVerseOrPage(
       db,
       page: widget.page,
@@ -259,15 +284,6 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
       log: _log,
     );
     if (plan == null) return const SizedBox.shrink();
-
-    var highlightRange = parseWordsRange(widget.highlight);
-    if (widget.highlight != null && highlightRange == null) {
-      _log('Bad highlight parameter: ${widget.highlight}');
-    }
-    var errorRange = parseWordsRange(widget.error);
-    if (widget.error != null && errorRange == null) {
-      _log('Bad error parameter: ${widget.error}');
-    }
     // Validated against the full verse/page: word 1 is the first word of the
     // first aya (a page never starts mid-aya, so this is always well-defined).
     highlightRange =
@@ -341,11 +357,171 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
       ));
     }
 
-    if (!plan.multiline) {
+    return _frame(lines, multiline: plan.multiline, width: manifest.lineWidth);
+  }
+
+  /// The `words=` render path.
+  ///
+  /// Returns null when the parameter cannot be honoured (used with `page`, or
+  /// malformed), so the caller falls back to the normal verse render — the web
+  /// runtime's behaviour.
+  Widget? _buildWordsView(
+    MadinaDb db, {
+    required TextStyle style,
+    required MadinaTheme theme,
+    required MadinaStretchMode stretchMode,
+    required WordRange? highlightRange,
+    required WordRange? errorRange,
+  }) {
+    final verseMode = widget.sura != null && widget.aya != null;
+    if (!verseMode) {
+      _log('Ignoring words parameter with page!');
+      return null;
+    }
+    final parsed = parseWordsRange(widget.words);
+    if (parsed == null) {
+      _log('Bad words parameter: ${widget.words}');
+      return null;
+    }
+    final sura0 = parseSura(widget.sura.toString());
+    final ayaRange = parseAyaRange(widget.aya!);
+    if (sura0 == null || ayaRange == null) {
+      _log('Bad arguments: Not rendering!');
+      return null;
+    }
+    if (ayaRange.to != ayaRange.from) {
+      _log('Ignoring aya range end with words parameter!');
+    }
+    final range = parsed.capped;
+    if (range.end != parsed.end) {
+      _log('words selection capped at $kMaxWordsSelection words');
+    }
+    // Marks are validated against the selection, not the whole verse.
+    final highlight = clampedOrNull(
+        'highlight', highlightRange, range.start, range.end, _log);
+    final error =
+        clampedOrNull('error', errorRange, range.start, range.end, _log);
+
+    final collected = collectWordParts(
+      db,
+      suraStart: sura0,
+      ayaStart: ayaRange.from,
+      range: range,
+    );
+    if (collected.lines.isEmpty) return const SizedBox.shrink();
+
+    final manifest = db.manifest;
+    var counter = collected.counterStart;
+    final widgets = <Widget>[];
+
+    for (var i = 0; i < collected.lines.length; i++) {
+      final group = collected.lines[i];
+      final spans = <InlineSpan>[];
+      final first = group.parts.first;
+
+      // Only the leading line can begin mid-line; every later group enters a
+      // line at its right start. Rebuilding the preceding page text invisibly
+      // lets the line's own centring/stretch place the first visible word
+      // exactly where it sits on the full page.
+      if (i == 0 &&
+          !isLineStartPart(db, first.sura, first.ayaIndex, first.part.line)) {
+        for (final part in lineContext(
+          db,
+          sura0: first.sura,
+          page: group.page,
+          line: group.line,
+          ayaIndex: first.ayaIndex,
+          direction: -1,
+        )) {
+          spans.add(buildSpacerSpan(part.text, style));
+        }
+      }
+
+      for (final item in group.parts) {
+        if (!item.countable) {
+          // A sura title, shown for context but never counted or markable.
+          // notitle keeps its line and frame but blanks the name text.
+          spans.add(widget.notitle
+              ? buildSpacerSpan(item.part.text, style)
+              : TextSpan(text: item.part.text, style: style));
+          continue;
+        }
+        final basmalaWords = isBasmalaSlot(item.sura, item.ayaIndex)
+            ? countPartWords(item.part)
+            : 0;
+        final mode = basmalaWords > 0
+            ? basmalaRenderMode(
+                counter: counter,
+                basmalaWords: basmalaWords,
+                displayRange: range,
+                highlightRange: highlight,
+                errorRange: error,
+              )
+            : const BasmalaMode(ligature: false);
+
+        if (mode.ligature) {
+          spans.add(TextSpan(
+            text: kBasmalaLigature,
+            style:
+                style.copyWith(backgroundColor: _markColour(mode.mark, theme)),
+          ));
+          counter += basmalaWords;
+        } else {
+          final built = buildWordSpans(
+            text: item.part.text,
+            counter: counter,
+            base: style,
+            theme: theme,
+            displayRange: range,
+            highlightRange: highlight,
+            errorRange: error,
+          );
+          spans.addAll(built.spans);
+          counter = built.counter;
+        }
+      }
+
+      if (i == collected.lines.length - 1) {
+        // The selection ends mid-line: rebuild the following text invisibly so
+        // the last line stays laid out (and centred) exactly as on the page.
+        final last = group.parts.last;
+        for (final part in lineContext(
+          db,
+          sura0: last.sura,
+          page: group.page,
+          line: group.line,
+          ayaIndex: last.ayaIndex,
+          direction: 1,
+        )) {
+          spans.add(buildSpacerSpan(part.text, style));
+        }
+      }
+
+      widgets.add(MadinaLine(
+        spans: spans,
+        stretch: group.stretch,
+        stretchScale: manifest.stretchScale,
+        lineWidth: manifest.lineWidth,
+        mode: stretchMode,
+        style: style,
+      ));
+    }
+
+    final multiline =
+        applyInlineOverride(widget.inline, widgets.length > 1, _log);
+    return _frame(widgets, multiline: multiline, width: manifest.lineWidth);
+  }
+
+  Widget _frame(
+    List<Widget> lines, {
+    required bool multiline,
+    required double width,
+  }) {
+    if (!multiline) {
       return lines.isEmpty ? const SizedBox.shrink() : lines.single;
     }
     return SizedBox(
-      width: manifest.lineWidth + 10,
+      width: width + 10,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -354,3 +530,9 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
     );
   }
 }
+
+Color? _markColour(BasmalaMark mark, MadinaTheme theme) => switch (mark) {
+      BasmalaMark.error => theme.error,
+      BasmalaMark.highlight => theme.highlight,
+      BasmalaMark.none => null,
+    };
