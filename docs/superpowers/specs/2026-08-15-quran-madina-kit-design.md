@@ -43,8 +43,10 @@ quran_madina_kit/
       models.dart              Manifest, SuraSkeleton, Aya, RenderPart, JuzShard
       source.dart              MadinaSource + MadinaAssetSource + MadinaNetworkSource
       repository.dart          MadinaDb: boot, ensureJuz, merge, page/juz lookup
+      interpolation.dart       anchor sizes, clampFontSize, SizeOverrides
       ranges.dart              range parsing, word counting, basmala slot rules
-      layout.dart              line grouping, lineContext, collectWordParts
+      layout.dart              line geometry, lineContext, collectWordParts
+      render_plan.dart         page/verse planner + display word counts
       theme.dart               MadinaTheme + MadinaScope + MadinaConfig
       widget.dart              QuranMadinaView
       line.dart                MadinaLine — one visual line
@@ -59,9 +61,9 @@ quran_madina_kit/
   example/
 ```
 
-**Boundary rule:** `models`, `source`, `repository`, `ranges`, `layout` import **no Flutter widget
-code** (`dart:ui` only where unavoidable). They are testable with plain `dart test`. `theme`,
-`widget`, `line`, `chrome` are the rendering layer.
+**Boundary rule:** `models`, `source`, `repository`, `interpolation`, `ranges`, `layout`,
+`render_plan` import **no Flutter widget code** (`dart:ui` only where unavoidable). They are
+testable without pumping a widget. `theme`, `widget`, `line`, `chrome` are the rendering layer.
 
 ### Dependencies
 
