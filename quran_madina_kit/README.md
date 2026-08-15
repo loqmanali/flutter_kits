@@ -87,21 +87,49 @@ Mark colours auto-swap to a dark-background pair when the host's ambient text co
 (WCAG relative luminance > 0.5), so `highlight`/`error` stay legible however the host implements
 dark mode.
 
-## Fidelity
+## Justification and fidelity
 
-The stretch factors in the DB were measured in headless Chrome. `test/fidelity_test.dart` re-measures
-every justified line of the whole Mushaf with Flutter's own text engine:
+### Not every line is stretched — that is the Mushaf, not a bug
 
+A line whose stored `s` is `-1` is **centred, not justified**: the sura title, the basmala, and a
+surah's final line when it is naturally short. The printed Madina Mushaf does exactly this, and so
+does the web runtime. On page 106 that is 2–3 of the 15 lines depending on the font, which is why
+those lines legitimately start and end short of the frame.
+
+### How exactly the justified lines fill the frame
+
+The stored stretch factors were measured in headless Chrome. `test/fidelity_test.dart` re-measures
+every justified line of the whole Mushaf, per font, with Flutter's own text engine:
+
+| Font | median | p95 | max | lines over 2% |
+|---|---|---|---|---|
+| Hafs | 0.63% | 0.77% | 2.67% | 1 / 8788 |
+| Amiri Quran | 0.67% | 1.04% | 2.46% | 17 / 8779 |
+| Amiri Quran Colored | 0.67% | 1.04% | 2.46% | 17 / 8779 |
+| me_quran | 0.71% | 1.18% | 7.99% | 31 / 8781 |
+| **Uthman** | 0.71% | **3.09%** | **8.62%** | **1055 / 8788** |
+
+*(Flutter 3.44.8 / macOS, 16px.)*
+
+Half of all lines land within 1% for every font — under 3 physical pixels on a 270px frame. The
+**tail** is what differs: Uthman drifts over 2% on 12% of its lines, up to 8.6% (≈23px), which is
+visible as a ragged left edge.
+
+### Choosing a stretch mode
+
+```dart
+MadinaConfig(stretchMode: MadinaStretchMode.stored)    // default
+MadinaConfig(stretchMode: MadinaStretchMode.measured)
 ```
-8788 justified lines, Hafs 16px, Flutter 3.44.8 / macOS
-median drift 0.63%   p95 0.77%   max 2.67%   lines over 2%: 1
-```
 
-0.63% of a 270px line is under 2 physical pixels. **`MadinaStretchMode.stored` is verified faithful
-and is the default.** `MadinaStretchMode.measured` is available as an alternative: it ignores the
-stored factor and derives `scaleX = lineWidth / measuredWidth` per line, which self-corrects and
-needs no font-size interpolation. The fidelity test guards these bounds — if it ever fails, that is
-a signal to switch the default, not to loosen the numbers.
+- **`stored`** replays the DB's factors verbatim — byte-for-byte the web runtime's geometry,
+  including its drift. Default, because it is what "port the web runtime" means.
+- **`measured`** ignores the stored factor and derives `scaleX = lineWidth / measuredWidth` per
+  line, so **every justified line fills the frame exactly** (verified: max drift 0.0000% for all
+  five fonts). It also makes the font-size interpolation correction unnecessary.
+
+**Use `measured` if flush edges matter to you — and especially with Uthman.** It costs one extra
+`TextPainter.layout()` per line, cached per line widget.
 
 ## Data sources
 
