@@ -118,6 +118,53 @@ WordRange? parseWordsRange(String? raw) {
   return WordRange(start, end);
 }
 
+/// Which mark class a rendered basmala ligature carries.
+enum BasmalaMark { none, highlight, error }
+
+/// How a basmala slot renders: the single ligature glyph, or its individual
+/// word tokens so a partial selection/mark stays visible.
+class BasmalaMode {
+  const BasmalaMode({required this.ligature, this.mark = BasmalaMark.none});
+
+  final bool ligature;
+  final BasmalaMark mark;
+}
+
+/// Decides between the `﷽` ligature and the 4 individual tokens.
+///
+/// [counter] is the running 1-based word index *before* the basmala, so its
+/// words occupy `counter+1 .. counter+basmalaWords`. Either way the caller
+/// advances the counter by [basmalaWords].
+BasmalaMode basmalaRenderMode({
+  required int counter,
+  required int basmalaWords,
+  WordRange? displayRange,
+  WordRange? highlightRange,
+  WordRange? errorRange,
+}) {
+  bool fullyIn(WordRange? r) =>
+      r == null || (counter + 1 >= r.start && counter + basmalaWords <= r.end);
+  bool partiallyIn(WordRange? r) =>
+      r != null &&
+      !fullyIn(r) &&
+      counter + basmalaWords >= r.start &&
+      counter + 1 <= r.end;
+
+  if (!fullyIn(displayRange)) return const BasmalaMode(ligature: false);
+  // A mark cutting into only some of the 4 words forces the tokens so the
+  // partial mark is actually visible.
+  if (partiallyIn(highlightRange) || partiallyIn(errorRange)) {
+    return const BasmalaMode(ligature: false);
+  }
+  if (errorRange != null && fullyIn(errorRange)) {
+    return const BasmalaMode(ligature: true, mark: BasmalaMark.error);
+  }
+  if (highlightRange != null && fullyIn(highlightRange)) {
+    return const BasmalaMode(ligature: true, mark: BasmalaMark.highlight);
+  }
+  return const BasmalaMode(ligature: true);
+}
+
 /// Validates a `highlight=`/`error=` range against the words actually being
 /// displayed.
 ///
