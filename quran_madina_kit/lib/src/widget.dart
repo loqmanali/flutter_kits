@@ -27,11 +27,36 @@ final Map<String, Future<_Booted?>> _bootCache = {};
 /// cached shards exactly once — the sessionStorage bookkeeping the web does.
 final Map<String, String> _seenHashes = {};
 
+/// Family the basmala ligature falls back to.
+///
+/// Only the Amiri fonts carry U+FDFD; Hafs, Uthman and me_quran do not, so the
+/// glyph would render blank. A browser papers over this by falling back across
+/// every installed system font — Flutter only consults the families you name,
+/// so the kit loads one itself. The printed Mushaf shows an ornamental ligature
+/// there, which is exactly what Amiri's glyph is.
+const String kBasmalaFallbackFamily = 'QmhBasmalaLigature';
+const String _basmalaFallbackAsset = 'assets/fonts/AmiriQuran.woff2';
+Future<void>? _basmalaFallback;
+
 @visibleForTesting
 void resetMadinaBootCache() {
   _bootCache.clear();
   _seenHashes.clear();
+  _basmalaFallback = null;
 }
+
+Future<void> _loadBasmalaFallback(MadinaSource source) =>
+    _basmalaFallback ??= () async {
+      final bytes = await source.loadFont(_basmalaFallbackAsset);
+      if (bytes == null) {
+        _log('basmala ligature fallback font unavailable; '
+            '﷽ may render blank in fonts that lack U+FDFD');
+        return;
+      }
+      await (FontLoader(kBasmalaFallbackFamily)
+            ..addFont(Future.value(ByteData.sublistView(bytes))))
+          .load();
+    }();
 
 Future<_Booted?> _boot(MadinaConfig config) {
   final key = '${config.name}|${config.font}|${config.fontSize}|'
@@ -80,6 +105,7 @@ Future<_Booted?> _boot(MadinaConfig config) {
       _log('font ${db.manifest.fontUrl} unavailable; '
           'falling back to the platform default');
     }
+    await _loadBasmalaFallback(source);
     return _Booted(db);
   });
 }
@@ -314,13 +340,7 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
         if (mode.ligature) {
           spans.add(TextSpan(
             text: kBasmalaLigature,
-            style: style.copyWith(
-              backgroundColor: switch (mode.mark) {
-                BasmalaMark.error => theme.error,
-                BasmalaMark.highlight => theme.highlight,
-                BasmalaMark.none => null,
-              },
-            ),
+            style: _basmalaStyle(style, _markColour(mode.mark, theme)),
           ));
           counter += basmalaWords;
         } else if (!marking || !part.countable) {
@@ -462,8 +482,7 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
         if (mode.ligature) {
           spans.add(TextSpan(
             text: kBasmalaLigature,
-            style:
-                style.copyWith(backgroundColor: _markColour(mode.mark, theme)),
+            style: _basmalaStyle(style, _markColour(mode.mark, theme)),
           ));
           counter += basmalaWords;
         } else {
@@ -530,6 +549,13 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
     );
   }
 }
+
+/// The ligature keeps the Mushaf font first, so Amiri (which has U+FDFD) uses
+/// its own glyph and the others fall through to the loaded fallback family.
+TextStyle _basmalaStyle(TextStyle base, Color? background) => base.copyWith(
+      backgroundColor: background,
+      fontFamilyFallback: const [kBasmalaFallbackFamily],
+    );
 
 Color? _markColour(BasmalaMark mark, MadinaTheme theme) => switch (mark) {
       BasmalaMark.error => theme.error,
