@@ -1,0 +1,33 @@
+name: quran_madina_kit
+description: Renders Quran pages visually identical to the printed Madina Mushaf without images, driven by pre-computed JSON databases. A Flutter port of the quran-madina-html web runtime.
+version: 0.1.0
+publish_to: "none"
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Decorative sura-title frame (assets/img/sura_border_sym4.svg), recoloured to
+  # the ambient text colour — the web's mask-image + currentColor trick.
+  flutter_svg: ^2.0.9
+
+  # MadinaNetworkSource: fetches manifest/juz shards from a CDN.
+  http: ^1.2.0
+
+  # The translate action deep-links to quran.com.
+  url_launcher: ^6.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  assets:
+    - assets/img/
+    - assets/fonts/
+    - assets/db/Madina05-Hafs-16px/
