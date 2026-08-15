@@ -1,3 +1,16 @@
+## quran_madina_kit 0.1.0
+
+- New kit: renders Quran pages visually identical to the printed Madina Mushaf without images,
+  driven byte-for-byte by the `quran-madina-html` JSON databases.
+- Full behavioural parity with the web runtime: `page` / `sura`+`aya` / `words` render modes,
+  `highlight`/`error` word marking in every mode, `headless`, `quotes`, `inline`, `notitle`,
+  copy-to-clipboard, quran.com translate links, the per-aya popup, the decorative sura frame, and
+  arbitrary font sizes 6–100 via anchor interpolation.
+- Sharded lazy DB loading (manifest + 30 juz' shards) with request coalescing, content-hash cache
+  invalidation and a monolithic fallback. Asset and network sources are swappable.
+- Fidelity verified across all 8788 justified lines of the Mushaf: median drift from the DB's
+  Chrome-measured geometry is 0.63%, p95 0.77%.
+
 # Changelog
 
 All notable changes to the `flutter_kits` monorepo are documented in this file.

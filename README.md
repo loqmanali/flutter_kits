@@ -38,6 +38,7 @@ dependency_overrides:
 | `deep_link_kit` | Deep-link parsing/dispatch |
 | `map_kit` | Map widgets + OSRM/Nominatim helpers (bring your own server) |
 | `carousel_kit` | Standalone image/content carousel |
+| `quran_madina_kit` | Renders Quran pages identical to the printed Madina Mushaf without images, from pre-computed JSON databases (Flutter port of `quran-madina-html`) |
 | `firebase_kit` | Firebase auth/data-source wrappers |
 | `selection_kit`, `dropdown_menu_kit`, `context_menu_kit`, `system_ui_kit`, `animation_kit`, `commerce_kit`, `force_update_gate` | Smaller focused kits |
 
