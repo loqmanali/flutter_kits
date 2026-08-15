@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show FontLoader;
 import 'package:flutter/widgets.dart';
 
+import 'chrome.dart';
 import 'interpolation.dart';
 import 'layout.dart';
 import 'line.dart';
@@ -321,10 +322,21 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
     final lines = <Widget>[];
     for (final planned in plan.lines) {
       final spans = <InlineSpan>[];
+      final ayas = <AyaSpanRange>[];
+      var offset = 0;
       for (final part in planned.leadingContext) {
         spans.add(buildSpacerSpan(part.text, style));
+        offset += part.text.length;
       }
       for (final part in planned.parts) {
+        final partStart = offset;
+        offset += part.part.text.length;
+        ayas.add(AyaSpanRange(
+          sura: part.sura + 1,
+          aya: part.ayaIndex - 1,
+          start: partStart,
+          end: offset,
+        ));
         final basmalaWords = isBasmalaSlot(part.sura, part.ayaIndex)
             ? countPartWords(part.part)
             : 0;
@@ -367,17 +379,39 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
         spans.add(buildSpacerSpan(part.text, style));
       }
 
-      lines.add(MadinaLine(
-        spans: spans,
-        stretch: planned.stretch,
-        stretchScale: manifest.stretchScale,
-        lineWidth: manifest.lineWidth,
-        mode: scope.config.stretchMode,
-        style: style,
+      lines.add(_decorate(
+        MadinaLine(
+          spans: plan.multiline || !widget.quotes
+              ? spans
+              : withQuoteMarks(spans, style),
+          stretch: planned.stretch,
+          stretchScale: manifest.stretchScale,
+          lineWidth: manifest.lineWidth,
+          mode: scope.config.stretchMode,
+          style: style,
+        ),
+        ayas: ayas,
+        hasTitle: planned.hasTitle,
+        suraName: plan.suraName,
+        theme: theme,
+        ambient: ambient,
       ));
     }
 
-    return _frame(lines, multiline: plan.multiline, width: manifest.lineWidth);
+    return _frame(
+      lines,
+      multiline: plan.multiline,
+      width: manifest.lineWidth,
+      page: plan.page,
+      theme: theme,
+      header: widget.headless
+          ? null
+          : (
+              name: plan.suraName,
+              sura: plan.suraNumber,
+              aya: plan.firstAyaNumber
+            ),
+    );
   }
 
   /// The `words=` render path.
@@ -432,11 +466,15 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
 
     final manifest = db.manifest;
     var counter = collected.counterStart;
-    final widgets = <Widget>[];
+    final widgets = <MadinaLine>[];
+    final lineAyas = <List<AyaSpanRange>>[];
+    final groupsOut = <CollectedLine>[];
 
     for (var i = 0; i < collected.lines.length; i++) {
       final group = collected.lines[i];
       final spans = <InlineSpan>[];
+      final ayas = <AyaSpanRange>[];
+      var offset = 0;
       final first = group.parts.first;
 
       // Only the leading line can begin mid-line; every later group enters a
@@ -454,10 +492,19 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
           direction: -1,
         )) {
           spans.add(buildSpacerSpan(part.text, style));
+          offset += part.text.length;
         }
       }
 
       for (final item in group.parts) {
+        final partStart = offset;
+        offset += item.part.text.length;
+        ayas.add(AyaSpanRange(
+          sura: item.sura + 1,
+          aya: item.ayaIndex - 1,
+          start: partStart,
+          end: offset,
+        ));
         if (!item.countable) {
           // A sura title, shown for context but never counted or markable.
           // notitle keeps its line and frame but blanks the name text.
@@ -516,6 +563,8 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
         }
       }
 
+      lineAyas.add(ayas);
+      groupsOut.add(group);
       widgets.add(MadinaLine(
         spans: spans,
         stretch: group.stretch,
@@ -528,26 +577,109 @@ class _QuranMadinaViewState extends State<QuranMadinaView> {
 
     final multiline =
         applyInlineOverride(widget.inline, widgets.length > 1, _log);
-    return _frame(widgets, multiline: multiline, width: manifest.lineWidth);
+    final suraName = db.suras[collected.lines.first.parts.first.sura].name;
+    final decorated = [
+      for (var i = 0; i < widgets.length; i++)
+        _decorate(
+          multiline || !widget.quotes
+              ? widgets[i]
+              : _withQuotes(widgets[i], style),
+          ayas: lineAyas[i],
+          hasTitle: groupsOut[i]
+              .parts
+              .any((p) => p.ayaIndex == 0 || (p.sura == 0 && p.ayaIndex == 1)),
+          suraName: suraName,
+          theme: theme,
+          ambient: style.color ?? const Color(0xFF000000),
+        ),
+    ];
+    return _frame(
+      decorated,
+      multiline: multiline,
+      width: manifest.lineWidth,
+      page: collected.lines.first.page,
+      theme: theme,
+      header: widget.headless
+          ? null
+          : (
+              name: suraName,
+              sura: collected.lines.first.parts.first.sura + 1,
+              aya: null
+            ),
+    );
   }
 
+  /// Wraps one line in the chrome it needs: the decorative frame behind a sura
+  /// title, and per-aya tap handling for the copy/translate popup.
+  Widget _decorate(
+    MadinaLine line, {
+    required List<AyaSpanRange> ayas,
+    required bool hasTitle,
+    required String suraName,
+    required MadinaTheme theme,
+    required Color ambient,
+  }) {
+    final interactive = InteractiveMadinaLine(
+      line: line,
+      ayas: ayas,
+      suraName: suraName,
+      theme: theme,
+    );
+    return hasTitle
+        ? SuraFrame(colour: ambient, child: interactive)
+        : interactive;
+  }
+
+  /// The block-level chrome: header, page-parity gutter, and the frame width.
+  /// An inline (single-line) render gets none of it.
   Widget _frame(
     List<Widget> lines, {
     required bool multiline,
     required double width,
+    required int page,
+    required MadinaTheme theme,
+    ({String name, int sura, int? aya})? header,
   }) {
     if (!multiline) {
       return lines.isEmpty ? const SizedBox.shrink() : lines.single;
     }
-    return SizedBox(
-      width: width + 10,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: lines,
-      ),
+    final column = Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (header != null)
+          MadinaHeader(
+            suraName: header.name,
+            theme: theme,
+            onCopy: () => _copyAll(lines, header.name),
+            onTranslate: () => openTranslate(header.aya != null
+                ? translateUri(sura: header.sura, aya: header.aya)
+                : translateUri(page: page)),
+          ),
+        ...lines,
+      ],
     );
+    final sized = SizedBox(width: width + 10, child: column);
+    return header == null ? sized : PageGutter(page: page, child: sized);
   }
+
+  void _copyAll(List<Widget> lines, String suraName) {
+    final body = lines
+        .map(_lineOf)
+        .whereType<MadinaLine>()
+        .map((l) => visibleTextOf(l.spans))
+        .where((t) => t.isNotEmpty)
+        .join(' ');
+    copyAndNotify(context, copyText(body: body, suraName: suraName));
+  }
+
+  /// Unwraps whatever chrome [_decorate] put around a line.
+  MadinaLine? _lineOf(Widget w) => switch (w) {
+        MadinaLine line => line,
+        InteractiveMadinaLine i => i.line,
+        SuraFrame f => _lineOf(f.child),
+        _ => null,
+      };
 }
 
 /// The ligature keeps the Mushaf font first, so Amiri (which has U+FDFD) uses
@@ -562,3 +694,13 @@ Color? _markColour(BasmalaMark mark, MadinaTheme theme) => switch (mark) {
       BasmalaMark.highlight => theme.highlight,
       BasmalaMark.none => null,
     };
+
+/// Re-wraps a line's spans with the inline quote marks.
+MadinaLine _withQuotes(MadinaLine line, TextStyle style) => MadinaLine(
+      spans: withQuoteMarks(line.spans, style),
+      stretch: line.stretch,
+      stretchScale: line.stretchScale,
+      lineWidth: line.lineWidth,
+      mode: line.mode,
+      style: line.style,
+    );

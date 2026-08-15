@@ -5,7 +5,7 @@ import 'package:quran_madina_kit/quran_madina_kit.dart';
 import 'support/pump.dart';
 
 /// A fixed-size, opaque frame so the goldens are stable and readable.
-Widget goldenFrame(Widget child, {double width = 320, double height = 340}) =>
+Widget goldenFrame(Widget child, {double width = 320, double height = 380}) =>
     Center(
       child: RepaintBoundary(
         child: Container(
@@ -38,7 +38,7 @@ void main() {
       tester,
       madinaHost(goldenFrame(
         const QuranMadinaView(page: 106, headless: true),
-        height: 620,
+        height: 660,
       )),
     );
     await expectLater(
@@ -52,7 +52,7 @@ void main() {
       tester,
       madinaHost(goldenFrame(
         const QuranMadinaView(sura: 2, aya: '8-10'),
-        height: 160,
+        height: 200,
       )),
     );
     await expectLater(
@@ -66,7 +66,7 @@ void main() {
       tester,
       madinaHost(goldenFrame(
         const QuranMadinaView(sura: 1, aya: '7', words: '1-14'),
-        height: 200,
+        height: 250,
       )),
     );
     await expectLater(
@@ -80,7 +80,7 @@ void main() {
       tester,
       madinaHost(goldenFrame(
         const QuranMadinaView(sura: 1, aya: '1', highlight: '2-3', error: '4'),
-        height: 100,
+        height: 140,
       )),
     );
     await expectLater(

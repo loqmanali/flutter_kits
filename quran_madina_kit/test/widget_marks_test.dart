@@ -59,10 +59,19 @@ void main() {
 
   testWidgets('an unmarked verse keeps its single plain span per part',
       (tester) async {
-    await pumpMadina(
-        tester, madinaHost(const QuranMadinaView(sura: 1, aya: '1')));
+    await pumpMadina(tester,
+        madinaHost(const QuranMadinaView(sura: 1, aya: '1', quotes: false)));
     expect(spansOf(tester).length, 1,
         reason: 'no marks: the whole part stays one blob, as on the web');
+  });
+
+  testWidgets('an inline render is wrapped in quote marks unless opted out',
+      (tester) async {
+    await pumpMadina(
+        tester, madinaHost(const QuranMadinaView(sura: 1, aya: '1')));
+    final texts = spansOf(tester).map((s) => s.text).toList();
+    expect(texts.first, '”');
+    expect(texts.last, '“');
   });
 
   testWidgets('light ambient text picks the dark mark pair', (tester) async {
