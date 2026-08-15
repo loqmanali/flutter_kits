@@ -220,9 +220,15 @@ void main() {
         mode: MadinaStretchMode.stored,
         style: base,
       )));
-      final text = tester.widget<Text>(find.byType(Text));
-      expect(text.textAlign, TextAlign.center);
-      expect(find.byType(Transform), findsNothing);
+      // Centring is geometric now, not a textAlign property: an RTL paragraph
+      // asked to align itself inside a narrower box is unreliable, so the line
+      // is laid out at its natural width and positioned by the OverflowBox.
+      expect(find.byType(Transform), findsNothing,
+          reason: 'a centred line is never scaled');
+      final box = tester.widget<OverflowBox>(find.byType(OverflowBox));
+      expect(box.alignment, Alignment.topCenter);
+      expect(box.maxWidth, double.infinity,
+          reason: 'the paragraph must keep its natural width');
     });
 
     testWidgets('never wraps and never clips the line', (tester) async {

@@ -89,13 +89,13 @@ SpanBuildResult buildWordSpans({
 InlineSpan buildSpacerSpan(String text, TextStyle base) =>
     TextSpan(text: text, style: base.copyWith(color: kInvisible));
 
-/// Natural widths already measured, keyed by text + style + frame width.
+/// Natural size of a line, already measured, keyed by text + style.
 ///
 /// A `measured`-mode line costs one TextPainter.layout() (~78us on an M-series
 /// Mac, ~1.2ms for a 15-line page), and the same page is re-laid-out on every
 /// rebuild — a scroll, a theme change, a setState above it. Memoising the
 /// measurement makes every rebuild after the first free.
-final Map<String, double> _naturalWidths = {};
+final Map<String, ({double width, double height})> _naturalSizes = {};
 
 /// Bounded so a long reading session cannot grow it without limit. A whole
 /// mushaf is ~8800 lines, so this holds several pages' worth and drops the lot
@@ -103,19 +103,24 @@ final Map<String, double> _naturalWidths = {};
 const int _widthCacheLimit = 2000;
 
 @visibleForTesting
-void resetMadinaWidthCache() => _naturalWidths.clear();
+void resetMadinaWidthCache() => _naturalSizes.clear();
 
-double _naturalWidth(List<InlineSpan> spans, TextStyle style) {
+({double width, double height}) naturalLineSize(
+  List<InlineSpan> spans,
+  TextStyle style,
+) {
   final buffer = StringBuffer()
     ..write(style.fontFamily)
     ..write('|')
-    ..write(style.fontSize);
+    ..write(style.fontSize)
+    ..write('|')
+    ..write(style.height);
   for (final span in spans) {
     if (span is TextSpan) buffer.write(span.text ?? '');
   }
   final key = buffer.toString();
 
-  final hit = _naturalWidths[key];
+  final hit = _naturalSizes[key];
   if (hit != null) return hit;
 
   final painter = TextPainter(
@@ -124,11 +129,11 @@ double _naturalWidth(List<InlineSpan> spans, TextStyle style) {
     maxLines: 1,
     textScaler: TextScaler.noScaling,
   )..layout();
-  final width = painter.width;
+  final size = (width: painter.width, height: painter.height);
   painter.dispose();
 
-  if (_naturalWidths.length >= _widthCacheLimit) _naturalWidths.clear();
-  return _naturalWidths[key] = width;
+  if (_naturalSizes.length >= _widthCacheLimit) _naturalSizes.clear();
+  return _naturalSizes[key] = size;
 }
 
 /// The scaleX to apply to a line. 1.0 for a centred line.
@@ -143,7 +148,7 @@ double resolveScaleX({
   if (stretch == kCentredStretch) return 1;
   if (mode == MadinaStretchMode.stored) return stretch * stretchScale;
 
-  final natural = _naturalWidth(spans, style);
+  final natural = naturalLineSize(spans, style).width;
   if (natural <= 0) return 1;
   return lineWidth / natural;
 }
@@ -172,35 +177,65 @@ class MadinaLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Two rules make the geometry come out right, and both are easy to get
+    // subtly wrong:
+    //
+    // 1. The paragraph must be laid out at its NATURAL width. Asking an RTL
+    //    paragraph to align itself inside a narrower box is not consistent —
+    //    a line wider than the box lands flush right, a narrower one flush
+    //    left — so the box is never allowed to decide.
+    // 2. The widget that positions it must let it EXCEED the frame. Align and
+    //    Stack loosen constraints but still cap the child at the parent's
+    //    width, which re-clamps a compressed line and paints it from the wrong
+    //    origin: lines with stretch < 1 came out shifted right by up to 23px —
+    //    correct width, wrong position, ink outside the frame. OverflowBox
+    //    hands the child unbounded width and, unlike UnconstrainedBox, treats
+    //    the deliberate overflow as normal rather than a debug warning.
+    //
+    // The measured size supplies the bounded height OverflowBox needs, and is
+    // the same cached measurement `measured` mode already uses.
+    final natural = naturalLineSize(spans, style);
     final text = Text.rich(
       TextSpan(children: spans, style: style),
       textDirection: TextDirection.rtl,
-      textAlign: isCentred ? TextAlign.center : TextAlign.right,
       softWrap: false,
       maxLines: 1,
       overflow: TextOverflow.visible,
       textScaler: TextScaler.noScaling,
     );
 
-    if (isCentred) return SizedBox(width: lineWidth, child: text);
+    Widget framed(Alignment alignment) => SizedBox(
+          width: lineWidth,
+          height: natural.height,
+          child: OverflowBox(
+            alignment: alignment,
+            minWidth: 0,
+            maxWidth: double.infinity,
+            minHeight: 0,
+            maxHeight: natural.height,
+            child: text,
+          ),
+        );
 
-    final scaleX = resolveScaleX(
-      stretch: stretch,
-      stretchScale: stretchScale,
-      mode: mode,
-      spans: spans,
-      lineWidth: lineWidth,
-      style: style,
-    );
-    return SizedBox(
-      width: lineWidth,
-      child: Transform(
-        // The RTL line grows leftwards from its right edge, matching the web's
-        // `transform-origin: top right`.
-        alignment: Alignment.topRight,
-        transform: Matrix4.diagonal3Values(scaleX, 1, 1),
-        child: text,
+    if (isCentred) return framed(Alignment.topCenter);
+
+    return Transform(
+      // The RTL line grows leftwards from its right edge, matching the web's
+      // `transform-origin: top right`.
+      alignment: Alignment.topRight,
+      transform: Matrix4.diagonal3Values(
+        resolveScaleX(
+          stretch: stretch,
+          stretchScale: stretchScale,
+          mode: mode,
+          spans: spans,
+          lineWidth: lineWidth,
+          style: style,
+        ),
+        1,
+        1,
       ),
+      child: framed(Alignment.topRight),
     );
   }
 }
