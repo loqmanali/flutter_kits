@@ -26,7 +26,7 @@ class _ExampleAppState extends State<ExampleApp> {
   Demo _demo = Demo.page;
   String _font = 'Hafs';
   double _fontSize = 16;
-  MadinaStretchMode _stretch = MadinaStretchMode.stored;
+  MadinaStretchMode _stretch = MadinaStretchMode.measured;
   int _page = 106;
   bool _dark = false;
 
