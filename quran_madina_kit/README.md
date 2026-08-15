@@ -129,9 +129,25 @@ MadinaConfig(stretchMode: MadinaStretchMode.stored)
   including the drift in the table above. Use it when matching the web output exactly matters more
   than flush edges.
 
-`measured` costs one `TextPainter.layout()` per line — **78µs**, so ~1.2ms for a 15-line page on an
-M-series Mac. Results are memoised by text + style in a bounded module-level cache, so every rebuild
-after the first (scroll, theme change, any `setState` above the view) is free.
+Both modes measure each line once (**78µs**, ~1.2ms for a 15-line page on an M-series Mac): the
+measurement supplies the line's natural size, which the layout needs in either mode. Results are
+memoised by text + style in a bounded module-level cache, so every rebuild after the first (scroll,
+theme change, any `setState` above the view) is free.
+
+### How a line is positioned
+
+Each line is laid out at its **natural** width inside an `OverflowBox` that pins it to the frame
+edge, then scaled about that edge. It is deliberately *not* handed to a fixed-width box with
+`textAlign`, and *not* positioned with `Align` or `Stack`:
+
+- An RTL paragraph asked to right-align inside a narrower box is inconsistent — a line wider than
+  the box lands flush right, a narrower one flush **left**.
+- `Align` and `Stack` cap the child at the parent's width, which re-clamps a line that must overflow
+  before being scaled back.
+
+Together those produced lines of the correct width painted up to 23px off-position, spilling outside
+the frame. `test/edge_audit_test.dart` rasterises a page and measures the real inked left/right edge
+of every line against its own box, so the geometry cannot regress silently.
 
 ## Data sources
 
