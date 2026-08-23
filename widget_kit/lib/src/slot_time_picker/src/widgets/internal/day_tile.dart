@@ -48,8 +48,9 @@ class DayTile extends StatelessWidget {
     } else if (isSelected) {
       tileColor = theme.primaryColor;
       borderColor = theme.primaryColor;
-      nameColor = Colors.white;
-      numberColor = Colors.white;
+      final onPrimary = Theme.of(context).colorScheme.onPrimary;
+      nameColor = onPrimary;
+      numberColor = onPrimary;
       borderWidth = 1.5;
     } else {
       tileColor = theme.backgroundColor;
@@ -80,7 +81,10 @@ class DayTile extends StatelessWidget {
                   ? const []
                   : [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.06),
+                        color: Theme.of(context)
+                            .colorScheme
+                            .shadow
+                            .withValues(alpha: 0.06),
                         blurRadius: 8,
                         offset: const Offset(0, 3),
                       ),

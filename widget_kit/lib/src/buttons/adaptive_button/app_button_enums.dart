@@ -1,11 +1,11 @@
-part of '../adaptive_button.dart';
+part of 'adaptive_button.dart';
 
 /// ---------------------------------------------------------------------------
 /// Enums (Material 3 naming)
 /// ---------------------------------------------------------------------------
 
 /// Size variants for buttons
-enum AdaptiveButtonSize {
+enum AppButtonSize {
   /// Large size (56dp height)
   large,
 
@@ -35,7 +35,7 @@ enum AppIconAlignment {
 }
 
 /// Floating Action Button types
-enum FloatingActionButtonType {
+enum AppFabVariant {
   /// Regular FAB (56x56)
   regular,
 
@@ -50,13 +50,13 @@ enum FloatingActionButtonType {
 }
 
 /// ---------------------------------------------------------------------------
-/// AppButtonStyleType - Enum for Button Style Selection
+/// AppButtonVariant - Enum for Button Style Selection
 /// ---------------------------------------------------------------------------
 /// Provides type-safe selection of button styles.
 /// This enum is used to select the appropriate style from the theme extension.
 /// ---------------------------------------------------------------------------
 
-enum AppButtonStyleType {
+enum AppButtonVariant {
   filled,
   filledTonal,
   elevated,
@@ -68,3 +68,13 @@ enum AppButtonStyleType {
   iconOutlined,
   fab,
 }
+
+/// Renamed for consistency: everything in this module is `AppButton*`.
+@Deprecated('Use AppButtonSize instead. Will be removed in a future release.')
+typedef AdaptiveButtonSize = AppButtonSize;
+
+/// Renamed: Material calls these variants, and `...Type` said nothing that
+/// `AppButtonVariant` does not.
+@Deprecated(
+    'Use AppButtonVariant instead. Will be removed in a future release.')
+typedef AppButtonStyleType = AppButtonVariant;

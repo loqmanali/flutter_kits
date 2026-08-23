@@ -1,4 +1,4 @@
-part of '../adaptive_button.dart';
+part of 'adaptive_button.dart';
 
 /// ---------------------------------------------------------------------------
 /// AppButtonThemeExtension - Theme Extension for Button Styles
@@ -33,23 +33,64 @@ class AppButtonThemeExtension extends ThemeExtension<AppButtonThemeExtension> {
     required this.fab,
   });
 
-  /// Default button styles using const values
+  /// Every variant derived from a [ColorScheme].
   ///
-  /// This provides a fallback when no theme extension is registered.
-  /// The const values ensure optimal performance while the extension
-  /// enables hot reload support when overridden in the theme.
-  static const defaults = AppButtonThemeExtension(
-    filled: AppButtonStyle.filled,
-    filledTonal: AppButtonStyle.filledTonal,
-    elevated: AppButtonStyle.elevated,
-    outlined: AppButtonStyle.outlined,
-    text: AppButtonStyle.text,
-    icon: AppButtonStyle.icon,
-    iconFilled: AppButtonStyle.iconFilled,
-    iconFilledTonal: AppButtonStyle.iconFilledTonal,
-    iconOutlined: AppButtonStyle.iconOutlined,
-    fab: AppButtonStyle.fab,
-  );
+  /// This is the fallback when the host app registers no extension, which is
+  /// why the kit needs no palette of its own: `filled` is the app's primary,
+  /// `filledTonal` its secondary, `icon` its `onSurfaceVariant`, and so on.
+  /// Light and dark follow automatically because the scheme does.
+  factory AppButtonThemeExtension.fromScheme(ColorScheme scheme) {
+    return AppButtonThemeExtension(
+      filled: AppButtonStyle.pair(
+        background: scheme.primary,
+        foreground: scheme.onPrimary,
+      ),
+      filledTonal: AppButtonStyle.pair(
+        background: scheme.secondary,
+        foreground: scheme.onSecondary,
+      ),
+      elevated: AppButtonStyle.pair(
+        background: scheme.surface,
+        foreground: scheme.primary,
+        elevation: 1.0,
+      ),
+      outlined: AppButtonStyle.pair(
+        background: Colors.transparent,
+        foreground: scheme.primary,
+        borderColor: scheme.primary,
+      ),
+      text: AppButtonStyle.pair(
+        background: Colors.transparent,
+        foreground: scheme.primary,
+      ),
+      icon: AppButtonStyle.pair(
+        background: Colors.transparent,
+        foreground: scheme.onSurfaceVariant,
+        overlayOpacity: 0.12,
+      ),
+      iconFilled: AppButtonStyle.pair(
+        background: scheme.primary,
+        foreground: scheme.onPrimary,
+        overlayOpacity: 0.12,
+      ),
+      iconFilledTonal: AppButtonStyle.pair(
+        background: scheme.secondary,
+        foreground: scheme.onSecondary,
+        overlayOpacity: 0.12,
+      ),
+      iconOutlined: AppButtonStyle.pair(
+        background: Colors.transparent,
+        foreground: scheme.onSurfaceVariant,
+        overlayOpacity: 0.12,
+        borderColor: scheme.outlineVariant,
+      ),
+      fab: AppButtonStyle.pair(
+        background: scheme.secondary,
+        foreground: scheme.onSecondary,
+        elevation: 3.0,
+      ),
+    );
+  }
 
   @override
   ThemeExtension<AppButtonThemeExtension> copyWith({
@@ -119,40 +160,42 @@ class AppButtonThemeExtension extends ThemeExtension<AppButtonThemeExtension> {
     );
   }
 
-  /// Get the button theme extension from the current context
+  /// Get the button theme extension from the current context.
   ///
-  /// Returns the registered theme extension or falls back to defaults.
-  /// This ensures hot reload works even when no custom theme is set.
+  /// Returns the registered extension, or one derived from the ambient
+  /// [ColorScheme] — so an app that registers nothing still gets buttons in
+  /// its own colors, correct in light and dark.
   static AppButtonThemeExtension of(BuildContext context) {
-    return Theme.of(context).extension<AppButtonThemeExtension>() ??
-        AppButtonThemeExtension.defaults;
+    final theme = Theme.of(context);
+    return theme.extension<AppButtonThemeExtension>() ??
+        AppButtonThemeExtension.fromScheme(theme.colorScheme);
   }
 
   /// Get a specific button style by type
   ///
   /// This provides a convenient way to access button styles
   /// while maintaining the benefits of ThemeExtension.
-  AppButtonStyle getStyle(AppButtonStyleType type) {
+  AppButtonStyle getStyle(AppButtonVariant type) {
     switch (type) {
-      case AppButtonStyleType.filled:
+      case AppButtonVariant.filled:
         return filled;
-      case AppButtonStyleType.filledTonal:
+      case AppButtonVariant.filledTonal:
         return filledTonal;
-      case AppButtonStyleType.elevated:
+      case AppButtonVariant.elevated:
         return elevated;
-      case AppButtonStyleType.outlined:
+      case AppButtonVariant.outlined:
         return outlined;
-      case AppButtonStyleType.text:
+      case AppButtonVariant.text:
         return text;
-      case AppButtonStyleType.icon:
+      case AppButtonVariant.icon:
         return icon;
-      case AppButtonStyleType.iconFilled:
+      case AppButtonVariant.iconFilled:
         return iconFilled;
-      case AppButtonStyleType.iconFilledTonal:
+      case AppButtonVariant.iconFilledTonal:
         return iconFilledTonal;
-      case AppButtonStyleType.iconOutlined:
+      case AppButtonVariant.iconOutlined:
         return iconOutlined;
-      case AppButtonStyleType.fab:
+      case AppButtonVariant.fab:
         return fab;
     }
   }

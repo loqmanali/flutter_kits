@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:widget_kit/widget_kit.dart'
-    show AppButton, AppButtonStyleType, AppButtonWidthMode;
+    show AppButton, AppButtonVariant, AppButtonWidthMode;
 
 /// {@template picker_sheet_title_bar}
 /// A [PickerSheetScaffold] header showing a bold title and, optionally, a
@@ -47,7 +47,7 @@ class PickerSheetTitleBar extends StatelessWidget {
           if (clearLabel != null && onClear != null)
             AppButton(
               label: clearLabel,
-              style: AppButtonStyleType.text,
+              style: AppButtonVariant.text,
               widthMode: AppButtonWidthMode.hug,
               onPressed: onClear,
             ),

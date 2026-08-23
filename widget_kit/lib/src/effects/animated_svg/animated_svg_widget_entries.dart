@@ -152,6 +152,7 @@ class SvgVector {
       }
     }
 
+    // SVG's own default fill when the document declares none.
     return fallback ?? Colors.black;
   }
 

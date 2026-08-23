@@ -60,6 +60,10 @@ class WidgetKitTheme extends ThemeExtension<WidgetKitTheme> {
   final Color? shimmerBaseColor;
   final Color? shimmerHighlightColor;
 
+  // ---- Rating ----
+  final Color? ratingFilledColor;
+  final Color? ratingEmptyColor;
+
   // ---- Media placeholder ----
   final Color? mediaPlaceholderColor;
   final Color? mediaErrorIconColor;
@@ -90,6 +94,8 @@ class WidgetKitTheme extends ThemeExtension<WidgetKitTheme> {
     this.loadingColor,
     this.shimmerBaseColor,
     this.shimmerHighlightColor,
+    this.ratingFilledColor,
+    this.ratingEmptyColor,
     this.mediaPlaceholderColor,
     this.mediaErrorIconColor,
   });
@@ -106,6 +112,10 @@ class WidgetKitTheme extends ThemeExtension<WidgetKitTheme> {
     buttonHeight: WidgetKitTokens.buttonHeight,
     dialogBorderRadius: WidgetKitTokens.radiusLg,
     sheetBorderRadius: WidgetKitTokens.radiusLg,
+    // Semantic, not brand: a rating star is amber in every app, the way
+    // "success" is green. Overridable, but it needs a default the
+    // ColorScheme has no role for.
+    ratingFilledColor: Color(0xFFF4BD2F),
   );
 
   /// Look up the [WidgetKitTheme] for the current [BuildContext].
@@ -143,6 +153,8 @@ class WidgetKitTheme extends ThemeExtension<WidgetKitTheme> {
     Color? loadingColor,
     Color? shimmerBaseColor,
     Color? shimmerHighlightColor,
+    Color? ratingFilledColor,
+    Color? ratingEmptyColor,
     Color? mediaPlaceholderColor,
     Color? mediaErrorIconColor,
   }) {
@@ -178,6 +190,8 @@ class WidgetKitTheme extends ThemeExtension<WidgetKitTheme> {
       shimmerBaseColor: shimmerBaseColor ?? this.shimmerBaseColor,
       shimmerHighlightColor:
           shimmerHighlightColor ?? this.shimmerHighlightColor,
+      ratingFilledColor: ratingFilledColor ?? this.ratingFilledColor,
+      ratingEmptyColor: ratingEmptyColor ?? this.ratingEmptyColor,
       mediaPlaceholderColor:
           mediaPlaceholderColor ?? this.mediaPlaceholderColor,
       mediaErrorIconColor: mediaErrorIconColor ?? this.mediaErrorIconColor,
@@ -230,6 +244,9 @@ class WidgetKitTheme extends ThemeExtension<WidgetKitTheme> {
       shimmerBaseColor: Color.lerp(shimmerBaseColor, other.shimmerBaseColor, t),
       shimmerHighlightColor:
           Color.lerp(shimmerHighlightColor, other.shimmerHighlightColor, t),
+      ratingFilledColor:
+          Color.lerp(ratingFilledColor, other.ratingFilledColor, t),
+      ratingEmptyColor: Color.lerp(ratingEmptyColor, other.ratingEmptyColor, t),
       mediaPlaceholderColor:
           Color.lerp(mediaPlaceholderColor, other.mediaPlaceholderColor, t),
       mediaErrorIconColor:

@@ -130,102 +130,84 @@ class AppMediaImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final safeFallbackAsset = fallbackAsset;
     final effectiveImg = _effectiveImage;
 
     if (effectiveImg.isEmpty) {
-      return _buildAssetImage(safeFallbackAsset);
-    }
-
-    if (_isNetworkUrl) {
-      return _buildNetworkImage(context, effectiveImg, safeFallbackAsset);
-    }
-
-    if (_looksLikeBase64) {
-      return _buildBase64Image(context, safeFallbackAsset);
-    }
-
-    return _buildAssetImage(
-      effectiveImg.isNotEmpty ? effectiveImg : safeFallbackAsset,
-    );
-  }
-
-  Widget _buildNetworkImage(
-    BuildContext context,
-    String url,
-    String fallback,
-  ) {
-    return CachedNetworkImage(
-      imageUrl: url,
-      fit: fit,
-      width: width,
-      height: height,
-      errorWidget: (_, __, ___) => _buildAssetImage(fallback),
-      placeholder: (_, __) => _buildLoadingPlaceholder(context),
-    );
-  }
-
-  Widget _buildAssetImage(String assetPath) {
-    return Image.asset(
-      assetPath,
-      fit: fit,
-      width: width,
-      height: height,
-      semanticLabel: semanticLabel,
-      errorBuilder: (_, __, ___) => _buildAssetImage(fallbackAsset),
-    );
-  }
-
-  Widget _buildLoadingPlaceholder(BuildContext context) {
-    final kit = WidgetKitTheme.of(context);
-    final effectiveColor = placeholderColor ??
-        kit.mediaPlaceholderColor ??
-        Theme.of(context).colorScheme.surfaceContainerHighest;
-    return Container(
-      width: width,
-      height: height,
-      color: effectiveColor,
-      child: const Center(
-        child: CircularProgressIndicator(strokeWidth: 2),
-      ),
-    );
-  }
-
-  Widget _buildBase64Image(BuildContext outerContext, String fallback) {
-    return FutureBuilder<ImageDataResult>(
-      future: _processBase64Image(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return _buildLoadingPlaceholder(context);
-        }
-
-        final result = snapshot.data;
-        if (result?.success == true) {
-          return _buildImageFromResult(result!);
-        }
-
-        return _buildAssetImage(fallback);
-      },
-    );
-  }
-
-  Widget _buildImageFromResult(ImageDataResult result) {
-    if (result.isSvg) {
-      return SvgPicture.string(
-        result.svgContent!,
+      return _AssetImage(
+        assetPath: fallbackAsset,
+        fallbackAsset: fallbackAsset,
         fit: fit,
         width: width,
         height: height,
+        semanticLabel: semanticLabel,
       );
     }
 
-    return Image.memory(
-      result.bytes!,
+    if (_isNetworkUrl) {
+      return CachedNetworkImage(
+        imageUrl: effectiveImg,
+        fit: fit,
+        width: width,
+        height: height,
+        errorWidget: (_, __, ___) => _AssetImage(
+          assetPath: fallbackAsset,
+          fallbackAsset: fallbackAsset,
+          fit: fit,
+          width: width,
+          height: height,
+          semanticLabel: semanticLabel,
+        ),
+        placeholder: (_, __) => _MediaPlaceholder(
+          width: width,
+          height: height,
+          placeholderColor: placeholderColor,
+        ),
+      );
+    }
+
+    if (_looksLikeBase64) {
+      return FutureBuilder<ImageDataResult>(
+        future: _processBase64Image(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return _MediaPlaceholder(
+              width: width,
+              height: height,
+              placeholderColor: placeholderColor,
+            );
+          }
+
+          final result = snapshot.data;
+          if (result?.success == true) {
+            return _DecodedImage(
+              result: result!,
+              fallbackAsset: fallbackAsset,
+              fit: fit,
+              width: width,
+              height: height,
+              semanticLabel: semanticLabel,
+            );
+          }
+
+          return _AssetImage(
+            assetPath: fallbackAsset,
+            fallbackAsset: fallbackAsset,
+            fit: fit,
+            width: width,
+            height: height,
+            semanticLabel: semanticLabel,
+          );
+        },
+      );
+    }
+
+    return _AssetImage(
+      assetPath: effectiveImg,
+      fallbackAsset: fallbackAsset,
       fit: fit,
       width: width,
       height: height,
       semanticLabel: semanticLabel,
-      errorBuilder: (_, __, ___) => _buildAssetImage(fallbackAsset),
     );
   }
 
@@ -272,4 +254,120 @@ class ImageDataResult {
   final String? svgContent;
   final bool isSvg;
   final bool success;
+}
+
+/// A bundled asset, falling back to [fallbackAsset] when it fails to decode.
+class _AssetImage extends StatelessWidget {
+  const _AssetImage({
+    required this.assetPath,
+    required this.fallbackAsset,
+    required this.fit,
+    required this.width,
+    required this.height,
+    required this.semanticLabel,
+  });
+
+  final String assetPath;
+  final String fallbackAsset;
+  final BoxFit fit;
+  final double? width;
+  final double? height;
+  final String? semanticLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.asset(
+      assetPath,
+      fit: fit,
+      width: width,
+      height: height,
+      semanticLabel: semanticLabel,
+      // One hop only: if the fallback itself fails, show the broken-image
+      // glyph rather than recursing.
+      errorBuilder: (_, __, ___) => assetPath == fallbackAsset
+          ? const Icon(Icons.broken_image_outlined)
+          : _AssetImage(
+              assetPath: fallbackAsset,
+              fallbackAsset: fallbackAsset,
+              fit: fit,
+              width: width,
+              height: height,
+              semanticLabel: semanticLabel,
+            ),
+    );
+  }
+}
+
+/// Neutral box shown while a remote or base64 image resolves.
+class _MediaPlaceholder extends StatelessWidget {
+  const _MediaPlaceholder({
+    required this.width,
+    required this.height,
+    required this.placeholderColor,
+  });
+
+  final double? width;
+  final double? height;
+  final Color? placeholderColor;
+
+  @override
+  Widget build(BuildContext context) {
+    final kit = WidgetKitTheme.of(context);
+    final effectiveColor = placeholderColor ??
+        kit.mediaPlaceholderColor ??
+        Theme.of(context).colorScheme.surfaceContainerHighest;
+    return Container(
+      width: width,
+      height: height,
+      color: effectiveColor,
+      child: const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+    );
+  }
+}
+
+/// Renders a decoded base64 payload — SVG string or raw bytes.
+class _DecodedImage extends StatelessWidget {
+  const _DecodedImage({
+    required this.result,
+    required this.fallbackAsset,
+    required this.fit,
+    required this.width,
+    required this.height,
+    required this.semanticLabel,
+  });
+
+  final ImageDataResult result;
+  final String fallbackAsset;
+  final BoxFit fit;
+  final double? width;
+  final double? height;
+  final String? semanticLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    if (result.isSvg) {
+      return SvgPicture.string(
+        result.svgContent!,
+        fit: fit,
+        width: width,
+        height: height,
+      );
+    }
+
+    return Image.memory(
+      result.bytes!,
+      fit: fit,
+      width: width,
+      height: height,
+      semanticLabel: semanticLabel,
+      errorBuilder: (_, __, ___) => _AssetImage(
+        assetPath: fallbackAsset,
+        fallbackAsset: fallbackAsset,
+        fit: fit,
+        width: width,
+        height: height,
+        semanticLabel: semanticLabel,
+      ),
+    );
+  }
 }

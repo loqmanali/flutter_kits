@@ -12,6 +12,7 @@ class DobPickerSelectionOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return IgnorePointer(
       child: SizedBox.expand(
         child: Column(
@@ -19,12 +20,12 @@ class DobPickerSelectionOverlay extends StatelessWidget {
           children: [
             Container(
               height: 1,
-              color: Colors.black.withValues(alpha: 0.15),
+              color: scheme.onSurface.withValues(alpha: 0.15),
             ),
             AppSpacing.height(itemExtent - 2),
             Container(
               height: 1,
-              color: Colors.black.withValues(alpha: 0.15),
+              color: scheme.onSurface.withValues(alpha: 0.15),
             ),
           ],
         ),

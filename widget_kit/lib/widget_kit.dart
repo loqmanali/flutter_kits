@@ -38,7 +38,7 @@ export 'src/inputs/dob_picker/dob_picker.dart';
 export 'src/inputs/phone_field/countries.dart';
 export 'src/inputs/phone_field/country_flag_button.dart';
 export 'src/inputs/phone_field/country_picker_dialog.dart';
-export 'src/inputs/phone_field/flutter_intl_phone_field.dart';
+export 'src/inputs/phone_field/intl_phone_field.dart';
 export 'src/inputs/phone_field/phone_number.dart';
 
 // Feedback
@@ -111,13 +111,13 @@ export 'src/carousel_kit/src/widgets/carousel_indicator.dart';
 
 // Context menu — tap/long-press popup menu with screen-aware positioning and
 // nested submenus (merged in from the former standalone context_menu_kit).
-export 'src/context_menu_kit/src/context_menu.dart';
-export 'src/context_menu_kit/src/items/custom_menu_item.dart';
-export 'src/context_menu_kit/src/items/menu_item.dart';
-export 'src/context_menu_kit/src/overlay/menu_overlay_controller.dart';
-export 'src/context_menu_kit/src/positioning/menu_position_calculator.dart';
-export 'src/context_menu_kit/src/widgets/menu_content.dart';
-export 'src/context_menu_kit/src/widgets/menu_submenu.dart';
+export 'src/context_menu/src/context_menu.dart';
+export 'src/context_menu/src/items/custom_menu_item.dart';
+export 'src/context_menu/src/items/menu_item.dart';
+export 'src/context_menu/src/overlay/menu_overlay_controller.dart';
+export 'src/context_menu/src/positioning/menu_position_calculator.dart';
+export 'src/context_menu/src/widgets/menu_content.dart';
+export 'src/context_menu/src/widgets/menu_submenu.dart';
 
 // Picker sheet — reusable "pick one item from a list" bottom-sheet toolkit
 // with a draggable scaffold, search field, title bar, option tiles, and a

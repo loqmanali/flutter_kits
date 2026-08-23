@@ -12,6 +12,8 @@ class GenericVideoWebView extends StatelessWidget {
   const GenericVideoWebView({
     super.key,
     required this.videoUrl,
+    // Letterboxing behind video is black in every player, light theme or
+    // dark — this is the medium's convention, not the app's palette.
     this.backgroundColor = Colors.black,
   });
 

@@ -34,7 +34,7 @@ class SheetConfirmBar extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: t.primaryColor,
                 disabledBackgroundColor: t.primaryColor.withValues(alpha: 0.4),
-                foregroundColor: Colors.white,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

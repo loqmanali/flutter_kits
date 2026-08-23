@@ -65,7 +65,9 @@ class InlineSlotTimePicker extends StatefulWidget {
   // ── Customization ─────────────────────────────────────────────────────────
 
   /// Visual configuration. Defaults to [SlotPickerTheme] built-in values.
-  final SlotPickerTheme theme;
+  /// Null → built from the ambient [ColorScheme]
+  /// (see [SlotPickerTheme.fromScheme]).
+  final SlotPickerTheme? theme;
 
   /// String labels / translations.
   final SlotPickerLabels labels;
@@ -87,7 +89,7 @@ class InlineSlotTimePicker extends StatefulWidget {
     this.initialSlots = const [],
     this.mode = SlotPickerMode.dateAndTime,
     this.dateConfig = const SlotDateConfig(),
-    this.theme = const SlotPickerTheme(),
+    this.theme,
     this.labels = const SlotPickerLabels(),
     this.locale = 'en',
     this.timeFormatter,
@@ -250,7 +252,8 @@ class _InlineSlotTimePickerState extends State<InlineSlotTimePicker> {
 
   @override
   Widget build(BuildContext context) {
-    final t = widget.theme;
+    final t = widget.theme ??
+        SlotPickerTheme.fromScheme(Theme.of(context).colorScheme);
     final l = widget.labels;
     final showDatePicker = widget.mode != SlotPickerMode.timeOnly;
     final showTimeSlots = widget.mode != SlotPickerMode.dateOnly;
@@ -265,7 +268,7 @@ class _InlineSlotTimePickerState extends State<InlineSlotTimePicker> {
         border: Border.all(color: t.grey400.withValues(alpha: 0.18)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),

@@ -95,7 +95,8 @@ class MenuContent extends StatelessWidget {
           borderRadius: borderRadius,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
+              color:
+                  Theme.of(context).colorScheme.shadow.withValues(alpha: 0.05),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),
@@ -104,21 +105,11 @@ class MenuContent extends StatelessWidget {
         child: IntrinsicWidth(
           child: Padding(
             padding: menuPadding,
-            child: _buildBody(context),
+            child: _MenuBody(
+              children: _interleaveDividers(context, _buildChildren(context)),
+            ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildBody(BuildContext context) {
-    final children = _buildChildren(context);
-    final withDividers = _interleaveDividers(context, children);
-    return SingleChildScrollView(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: withDividers,
       ),
     );
   }
@@ -130,7 +121,20 @@ class MenuContent extends StatelessWidget {
     if (itemBuilder != null) {
       return items!.map((i) => itemBuilder!(context, i)).toList();
     }
-    return items!.map((i) => _buildDefaultRow(context, i)).toList();
+    return items!
+        .map(
+          (i) => _DefaultMenuRow(
+            item: i,
+            itemPadding: itemPadding,
+            backgroundColor: backgroundColor,
+            elevation: elevation,
+            borderRadius: borderRadius,
+            itemBuilder: itemBuilder,
+            borderColor: borderColor,
+            onDismiss: onDismiss,
+          ),
+        )
+        .toList();
   }
 
   List<Widget> _interleaveDividers(
@@ -153,8 +157,51 @@ class MenuContent extends StatelessWidget {
     }
     return result;
   }
+}
 
-  Widget _buildDefaultRow(BuildContext context, MenuItem item) {
+/// The scrolling column of menu rows.
+class _MenuBody extends StatelessWidget {
+  const _MenuBody({required this.children});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: children,
+      ),
+    );
+  }
+}
+
+/// One menu entry when the caller supplies no `itemBuilder`: a submenu when
+/// the item has children, a plain row otherwise.
+class _DefaultMenuRow extends StatelessWidget {
+  const _DefaultMenuRow({
+    required this.item,
+    required this.itemPadding,
+    required this.backgroundColor,
+    required this.elevation,
+    required this.borderRadius,
+    required this.itemBuilder,
+    required this.borderColor,
+    required this.onDismiss,
+  });
+
+  final MenuItem item;
+  final EdgeInsets itemPadding;
+  final Color? backgroundColor;
+  final double elevation;
+  final BorderRadius borderRadius;
+  final MenuItemBuilder? itemBuilder;
+  final Color? borderColor;
+  final VoidCallback onDismiss;
+
+  @override
+  Widget build(BuildContext context) {
     if (item.hasSubItems) {
       return MenuSubmenu(
         parentItem: item,

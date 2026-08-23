@@ -52,7 +52,8 @@ class Accordion extends HookWidget {
   /// Background color used for borders / panel chrome. In [AccordionBorderMode.shared]
   /// it also paints the panel surface unless [headerBackgroundColor] /
   /// [contentBackgroundColor] are provided.
-  final Color backgroundColor;
+  /// Null → `colorScheme.surface`.
+  final Color? backgroundColor;
 
   /// Optional dedicated background for the header strip. When supplied, the
   /// header is painted with this color while the rest of the panel keeps
@@ -68,7 +69,8 @@ class Accordion extends HookWidget {
   /// the ambient [IconThemeData].
   final Color? headerForegroundColor;
 
-  final Color borderColor;
+  /// Null → `colorScheme.outlineVariant`.
+  final Color? borderColor;
   final double borderWidth;
 
   final double innerGap;
@@ -100,11 +102,11 @@ class Accordion extends HookWidget {
     this.curve = Curves.easeIn,
     this.reverseCurve = Curves.easeOut,
     this.allowMultipleOpen = false,
-    this.backgroundColor = Colors.white,
+    this.backgroundColor,
     this.headerBackgroundColor,
     this.contentBackgroundColor,
     this.headerForegroundColor,
-    this.borderColor = const Color(0xFFBDBDBD),
+    this.borderColor,
     this.borderWidth = 1.0,
     this.innerGap = 0,
     this.borderRadius = 6,
@@ -121,6 +123,7 @@ class Accordion extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     final expanded = useState<Set<int>>({});
 
     return Column(
@@ -135,13 +138,13 @@ class Accordion extends HookWidget {
             duration: duration,
             curve: curve,
             reverseCurve: reverseCurve,
-            backgroundColor: backgroundColor,
+            backgroundColor: backgroundColor ?? scheme.surface,
             headerBackgroundColor:
                 items[i].headerBackgroundColor ?? headerBackgroundColor,
             contentBackgroundColor: contentBackgroundColor,
             headerForegroundColor:
                 items[i].headerForegroundColor ?? headerForegroundColor,
-            borderColor: borderColor,
+            borderColor: borderColor ?? scheme.outlineVariant,
             borderWidth: borderWidth,
             innerGap: innerGap,
             borderRadius: borderRadius,

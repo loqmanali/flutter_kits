@@ -22,17 +22,16 @@ class SheetHeader extends StatelessWidget {
         leading ?? const AppSpacing.width(24),
         Text(
           title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Colors.black,
-          ),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
         ),
         GestureDetector(
           onTap: onClose ?? () => Navigator.pop(context),
-          child: const Icon(
+          child: Icon(
             Icons.close,
-            color: Colors.black,
+            color: Theme.of(context).colorScheme.onSurface,
             size: 24,
           ),
         ),

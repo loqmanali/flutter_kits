@@ -101,17 +101,48 @@ class SlotPickerTheme {
   /// Override the loading indicator. Defaults to [CircularProgressIndicator].
   final WidgetBuilder? loadingBuilder;
 
+  /// Every color taken from the host app's [ColorScheme].
+  ///
+  /// The kit ships no palette, so the picker adopts whatever theme it is
+  /// dropped into and is correct in dark mode for free. The `grey*` fields
+  /// are **neutral roles**, not literal greys: in a dark scheme `grey900`
+  /// resolves to a light `onSurface`, which is what the tiles need.
+  factory SlotPickerTheme.fromScheme(
+    ColorScheme scheme, {
+    double selectorBorderRadius = 12,
+    double dayTileBorderRadius = 14,
+    double timeSlotBorderRadius = 10,
+    double bottomSheetBorderRadius = 22,
+  }) {
+    return SlotPickerTheme(
+      primaryColor: scheme.primary,
+      primaryLightColor: scheme.primaryContainer,
+      backgroundColor: scheme.surface,
+      emptyStateFillColor: scheme.surfaceContainerHighest,
+      grey50: scheme.surfaceContainerHighest,
+      grey400: scheme.outlineVariant,
+      grey500: scheme.outline,
+      grey600: scheme.onSurfaceVariant,
+      grey700: scheme.onSurfaceVariant,
+      grey900: scheme.onSurface,
+      selectorBorderRadius: selectorBorderRadius,
+      dayTileBorderRadius: dayTileBorderRadius,
+      timeSlotBorderRadius: timeSlotBorderRadius,
+      bottomSheetBorderRadius: bottomSheetBorderRadius,
+    );
+  }
+
   const SlotPickerTheme({
-    this.primaryColor = const Color(0xFF4CAF50),
-    this.primaryLightColor = const Color(0xFFE8F5E9),
-    this.backgroundColor = Colors.white,
-    this.emptyStateFillColor = const Color(0xFFF5F5F5),
-    this.grey50 = const Color(0xFFF5F5F5),
-    this.grey400 = const Color(0xFFBDBDBD),
-    this.grey500 = const Color(0xFF9E9E9E),
-    this.grey600 = const Color(0xFF757575),
-    this.grey700 = const Color(0xFF616161),
-    this.grey900 = const Color(0xFF212121),
+    required this.primaryColor,
+    required this.primaryLightColor,
+    required this.backgroundColor,
+    required this.emptyStateFillColor,
+    required this.grey50,
+    required this.grey400,
+    required this.grey500,
+    required this.grey600,
+    required this.grey700,
+    required this.grey900,
     this.selectorBorderRadius = 12,
     this.dayTileBorderRadius = 14,
     this.timeSlotBorderRadius = 10,

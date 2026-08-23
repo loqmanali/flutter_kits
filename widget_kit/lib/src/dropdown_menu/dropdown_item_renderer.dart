@@ -7,7 +7,7 @@ import 'dropdown_entries.dart';
 // ============================================================================
 
 class DropdownItemRenderer extends StatelessWidget {
-  final CustomDropdownEntry item;
+  final AppDropdownEntry item;
   final VoidCallback onClose;
   final String? selectedValue;
 
@@ -20,52 +20,73 @@ class DropdownItemRenderer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (item is CustomDropdownLabel) {
-      return _buildLabel(context, item as CustomDropdownLabel);
-    }
-    if (item is CustomDropdownSeparator) return _buildSeparator(context);
-    if (item is CustomDropdownItem) {
-      return _buildItem(context, item as CustomDropdownItem);
-    }
-    if (item is CustomDropdownCheckbox) {
-      return _buildCheckbox(context, item as CustomDropdownCheckbox);
-    }
-    if (item is CustomDropdownRadio) {
-      return _buildRadio(context, item as CustomDropdownRadio);
-    }
-    return const SizedBox.shrink();
+    final entry = item;
+    return switch (entry) {
+      AppDropdownLabel() => _DropdownLabel(label: entry),
+      AppDropdownSeparator() => const _DropdownSeparator(),
+      AppDropdownCheckbox() => _CheckboxItem(item: entry),
+      AppDropdownRadio() => _RadioItem(item: entry),
+      AppDropdownItem() => _DropdownRow(
+          item: entry,
+          onClose: onClose,
+          selectedValue: selectedValue,
+        ),
+      _ => const SizedBox.shrink(),
+    };
   }
+}
 
-  // ---------- Label ----------------------------------------------------------
+/// A non-interactive section heading inside the menu.
+class _DropdownLabel extends StatelessWidget {
+  const _DropdownLabel({required this.label});
 
-  Widget _buildLabel(BuildContext context, CustomDropdownLabel label) {
+  final AppDropdownLabel label;
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 12, 12, 8),
       child: Text(
         label.text,
-        style: TextStyle(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: Theme.of(context).colorScheme.onSurface,
-        ),
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
       ),
     );
   }
+}
 
-  // ---------- Separator ------------------------------------------------------
+/// A hairline between menu sections.
+class _DropdownSeparator extends StatelessWidget {
+  const _DropdownSeparator();
 
-  Widget _buildSeparator(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return Container(
       height: 1,
       margin: const EdgeInsets.symmetric(vertical: 4),
       color: Theme.of(context).colorScheme.outlineVariant,
     );
   }
+}
 
-  // ---------- Item -----------------------------------------------------------
+/// A selectable row: icon, text, check mark, optional shortcut.
+class _DropdownRow extends StatelessWidget {
+  const _DropdownRow({
+    required this.item,
+    required this.onClose,
+    required this.selectedValue,
+  });
 
-  Widget _buildItem(BuildContext context, CustomDropdownItem item) {
+  final AppDropdownItem item;
+  final VoidCallback onClose;
+  final String? selectedValue;
+
+  @override
+  Widget build(BuildContext context) {
     final colors = Theme.of(context).colorScheme;
+    final texts = Theme.of(context).textTheme;
     final isSelected = item.value != null && item.value == selectedValue;
 
     return InkWell(
@@ -88,20 +109,13 @@ class DropdownItemRenderer extends StatelessWidget {
         child: Row(
           children: [
             if (item.icon != null) ...[
-              Icon(
-                item.icon,
-                size: 16,
-                color: item.disabled
-                    ? colors.onSurfaceVariant
-                    : colors.onSurfaceVariant,
-              ),
+              Icon(item.icon, size: 16, color: colors.onSurfaceVariant),
               const SizedBox(width: 8),
             ],
             Expanded(
               child: Text(
                 item.text,
-                style: TextStyle(
-                  fontSize: 14,
+                style: texts.bodyMedium?.copyWith(
                   fontWeight: isSelected ? FontWeight.w500 : FontWeight.w400,
                   color: item.disabled
                       ? colors.onSurfaceVariant
@@ -117,9 +131,7 @@ class DropdownItemRenderer extends StatelessWidget {
               const SizedBox(width: 12),
               Text(
                 item.shortcut!,
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w400,
+                style: texts.labelMedium?.copyWith(
                   color: colors.onSurfaceVariant,
                 ),
               ),
@@ -129,16 +141,6 @@ class DropdownItemRenderer extends StatelessWidget {
       ),
     );
   }
-
-  // ---------- Checkbox -------------------------------------------------------
-
-  Widget _buildCheckbox(BuildContext context, CustomDropdownCheckbox item) =>
-      _CheckboxItem(item: item);
-
-  // ---------- Radio ----------------------------------------------------------
-
-  Widget _buildRadio(BuildContext context, CustomDropdownRadio item) =>
-      _RadioItem(item: item);
 }
 
 // ---------------------------------------------------------------------------
@@ -149,7 +151,7 @@ class DropdownItemRenderer extends StatelessWidget {
 // checkbox / radio visually reflect the tap immediately.
 
 class _CheckboxItem extends StatefulWidget {
-  final CustomDropdownCheckbox item;
+  final AppDropdownCheckbox item;
   const _CheckboxItem({required this.item});
 
   @override
@@ -225,7 +227,7 @@ class _CheckboxItemState extends State<_CheckboxItem> {
 // ---------------------------------------------------------------------------
 
 class _RadioItem extends StatefulWidget {
-  final CustomDropdownRadio item;
+  final AppDropdownRadio item;
   const _RadioItem({required this.item});
 
   @override

@@ -21,7 +21,8 @@ class LanguageSheetShimmer extends StatelessWidget {
           return Column(
             children: [
               const _LanguageOptionShimmer(),
-              if (index < itemCount - 1) Divider(color: Colors.grey.shade400),
+              if (index < itemCount - 1)
+                Divider(color: Theme.of(context).colorScheme.outlineVariant),
             ],
           );
         }),
@@ -46,17 +47,18 @@ class _LanguageOptionShimmer extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               border: Border.all(
-                color: Colors.grey.shade300,
+                color: Theme.of(context).colorScheme.outlineVariant,
                 width: 1.4,
               ),
-              color: Colors.grey.shade200,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
             ),
           ),
           const SizedBox(width: 20),
           // Text shimmer
           ShimmerShape.text(
             width: 150,
-            backgroundColor: Colors.grey.shade200,
+            backgroundColor:
+                Theme.of(context).colorScheme.surfaceContainerHighest,
           ),
         ],
       ),

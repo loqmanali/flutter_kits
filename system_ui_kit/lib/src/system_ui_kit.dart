@@ -24,6 +24,9 @@ class SystemUiKit {
     final statusIconBrightness = backgroundBrightness == Brightness.light
         ? Brightness.dark
         : Brightness.light;
+    // The OS nav bar is painted outside the widget tree, so there is no
+    // ColorScheme to read here — callers pass `navigationBarColor` from
+    // their own surface; this is only the last-resort fallback.
     final resolvedNavigationBarColor = navigationBarColor ??
         (themeBrightness == Brightness.dark ? Colors.black : Colors.white);
     final resolvedNavigationBarIconBrightness = navigationBarIconBrightness ??

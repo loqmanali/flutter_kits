@@ -3,16 +3,103 @@ import 'package:flutter/material.dart';
 import 'flexible_shimmer_loading.dart';
 import 'shimmer_shape.dart';
 
-/// Pre-built Shimmer Layouts
+/// Pre-built shimmer layouts.
+///
+/// Every entry here is a one-line alias for a widget class below — the class
+/// is what Flutter caches and skips, the static is just the call shape callers
+/// already use.
 class ShimmerLayouts {
-  // Tab Shimmer Layout
+  const ShimmerLayouts._();
+
   static Widget tabs({
     int count = 4,
     double tabHeight = 30,
     double minWidth = 80,
     double maxWidth = 120,
     EdgeInsets padding = const EdgeInsets.symmetric(horizontal: 8.0),
-  }) {
+  }) =>
+      ShimmerTabs(
+        count: count,
+        tabHeight: tabHeight,
+        minWidth: minWidth,
+        maxWidth: maxWidth,
+        padding: padding,
+      );
+
+  static Widget card({
+    double? width,
+    double height = 120,
+    bool showAvatar = true,
+    bool showTitle = true,
+    bool showSubtitle = true,
+    EdgeInsets padding = const EdgeInsets.all(16),
+  }) =>
+      ShimmerCard(
+        width: width,
+        height: height,
+        showAvatar: showAvatar,
+        showTitle: showTitle,
+        showSubtitle: showSubtitle,
+        padding: padding,
+      );
+
+  static Widget listItem({
+    bool showLeading = true,
+    bool showTrailing = true,
+    EdgeInsets padding =
+        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  }) =>
+      ShimmerListItem(
+        showLeading: showLeading,
+        showTrailing: showTrailing,
+        padding: padding,
+      );
+
+  static Widget cardList({
+    int count = 5,
+    double cardHeight = 140,
+    EdgeInsets padding = const EdgeInsets.all(16),
+  }) =>
+      ShimmerCardList(count: count, cardHeight: cardHeight, padding: padding);
+
+  static Widget banner({
+    double? width,
+    double height = 200,
+    bool showContent = true,
+    EdgeInsets margin = EdgeInsets.zero,
+  }) =>
+      ShimmerBanner(
+        width: width,
+        height: height,
+        showContent: showContent,
+        margin: margin,
+      );
+
+  static Widget orderItem({
+    EdgeInsets padding = const EdgeInsets.symmetric(vertical: 10),
+  }) =>
+      ShimmerOrderItem(padding: padding);
+}
+
+/// A horizontal strip of tab skeletons.
+class ShimmerTabs extends StatelessWidget {
+  const ShimmerTabs({
+    super.key,
+    this.count = 4,
+    this.tabHeight = 30,
+    this.minWidth = 80,
+    this.maxWidth = 120,
+    this.padding = const EdgeInsets.symmetric(horizontal: 8.0),
+  });
+
+  final int count;
+  final double tabHeight;
+  final double minWidth;
+  final double maxWidth;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
     return FlexibleShimmerLoading(
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -31,16 +118,29 @@ class ShimmerLayouts {
       ),
     );
   }
+}
 
-  // Card Shimmer Layout
-  static Widget card({
-    double? width,
-    double height = 120,
-    bool showAvatar = true,
-    bool showTitle = true,
-    bool showSubtitle = true,
-    EdgeInsets padding = const EdgeInsets.all(16),
-  }) {
+/// Avatar + title + subtitle skeleton.
+class ShimmerCard extends StatelessWidget {
+  const ShimmerCard({
+    super.key,
+    this.width,
+    this.height = 120,
+    this.showAvatar = true,
+    this.showTitle = true,
+    this.showSubtitle = true,
+    this.padding = const EdgeInsets.all(16),
+  });
+
+  final double? width;
+  final double height;
+  final bool showAvatar;
+  final bool showTitle;
+  final bool showSubtitle;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
     return FlexibleShimmerLoading(
       child: Container(
         width: width,
@@ -83,14 +183,23 @@ class ShimmerLayouts {
       ),
     );
   }
+}
 
-  // List Item Shimmer Layout
-  static Widget listItem({
-    bool showLeading = true,
-    bool showTrailing = true,
-    EdgeInsets padding =
-        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-  }) {
+/// Leading avatar, two text lines, optional trailing label.
+class ShimmerListItem extends StatelessWidget {
+  const ShimmerListItem({
+    super.key,
+    this.showLeading = true,
+    this.showTrailing = true,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+  });
+
+  final bool showLeading;
+  final bool showTrailing;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
     return FlexibleShimmerLoading(
       child: Padding(
         padding: padding,
@@ -119,31 +228,52 @@ class ShimmerLayouts {
       ),
     );
   }
+}
 
-  // Full-body loading state: a non-interactive column of card skeletons.
-  // Drop-in replacement for a centered CircularProgressIndicator on list
-  // screens while the first page loads.
-  static Widget cardList({
-    int count = 5,
-    double cardHeight = 140,
-    EdgeInsets padding = const EdgeInsets.all(16),
-  }) {
+/// Full-body loading state: a non-interactive column of [ShimmerCard]s.
+/// Drop-in replacement for a centered CircularProgressIndicator on list
+/// screens while the first page loads.
+class ShimmerCardList extends StatelessWidget {
+  const ShimmerCardList({
+    super.key,
+    this.count = 5,
+    this.cardHeight = 140,
+    this.padding = const EdgeInsets.all(16),
+  });
+
+  final int count;
+  final double cardHeight;
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
     return ListView.separated(
       padding: padding,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: count,
       separatorBuilder: (_, __) => const SizedBox(height: 16),
-      itemBuilder: (_, __) => card(height: cardHeight),
+      itemBuilder: (_, __) => ShimmerCard(height: cardHeight),
     );
   }
+}
 
-  // Banner Shimmer Layout
-  static Widget banner({
-    double? width,
-    double height = 200,
-    bool showContent = true,
-    EdgeInsets margin = EdgeInsets.zero,
-  }) {
+/// Hero/banner skeleton with an optional caption block.
+class ShimmerBanner extends StatelessWidget {
+  const ShimmerBanner({
+    super.key,
+    this.width,
+    this.height = 200,
+    this.showContent = true,
+    this.margin = EdgeInsets.zero,
+  });
+
+  final double? width;
+  final double height;
+  final bool showContent;
+  final EdgeInsets margin;
+
+  @override
+  Widget build(BuildContext context) {
     return FlexibleShimmerLoading(
       child: Container(
         width: width,
@@ -181,19 +311,27 @@ class ShimmerLayouts {
       ),
     );
   }
+}
 
-  // Order Item Shimmer Layout
-  static Widget orderItem({
-    EdgeInsets padding = const EdgeInsets.symmetric(vertical: 10),
-  }) {
+/// Order-card skeleton: header row, divider, product row, action button.
+class ShimmerOrderItem extends StatelessWidget {
+  const ShimmerOrderItem({
+    super.key,
+    this.padding = const EdgeInsets.symmetric(vertical: 10),
+  });
+
+  final EdgeInsets padding;
+
+  @override
+  Widget build(BuildContext context) {
     return FlexibleShimmerLoading(
       child: Padding(
         padding: padding,
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-          decoration: const BoxDecoration(
-            color: Colors.white,
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
           ),
           child: const Column(
             mainAxisSize: MainAxisSize.min,

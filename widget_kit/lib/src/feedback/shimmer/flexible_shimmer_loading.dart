@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../../theme/widget_kit_theme.dart';
 import 'shimmer_layouts.dart';
 
 /// Enhanced Shimmer Loading Widget with full customization
@@ -8,7 +9,11 @@ class FlexibleShimmerLoading extends HookWidget {
   final Widget child;
   final bool enabled;
   final Duration duration;
-  final List<Color> gradientColors;
+
+  /// Null → derived from the ambient [ColorScheme] (see [gradientFor]), so
+  /// the sweep stays visible on a light or a dark surface without the host
+  /// app configuring anything.
+  final List<Color>? gradientColors;
   final List<double>? gradientStops;
   final double gradientSpeed;
   final Alignment beginAlignment;
@@ -20,17 +25,7 @@ class FlexibleShimmerLoading extends HookWidget {
     required this.child,
     this.enabled = true,
     this.duration = const Duration(milliseconds: 2000),
-    this.gradientColors = const [
-      Colors.transparent,
-      Color(0x1AFFFFFF), // أبيض شفاف خفيف
-      Color(0x33E0E0E0), // رمادي فاتح
-      Color(0x66F5F5F5), // رمادي فاتح جداً
-      Colors.white, // أبيض نقي - النقطة المضيئة
-      Color(0x66F5F5F5), // رمادي فاتح جداً
-      Color(0x33E0E0E0), // رمادي فاتح
-      Color(0x1AFFFFFF), // أبيض شفاف خفيف
-      Colors.transparent,
-    ],
+    this.gradientColors,
     this.gradientStops,
     this.gradientSpeed = 2.0,
     this.beginAlignment = const Alignment(-1.0, 0.0),
@@ -73,6 +68,8 @@ class FlexibleShimmerLoading extends HookWidget {
       return child;
     }
 
+    final colors = gradientColors ?? gradientFor(context);
+
     return AnimatedBuilder(
       animation: animation,
       builder: (context, _) {
@@ -80,11 +77,11 @@ class FlexibleShimmerLoading extends HookWidget {
           blendMode: BlendMode.srcATop,
           shaderCallback: (bounds) {
             return LinearGradient(
-              colors: gradientColors,
+              colors: colors,
               stops: gradientStops ??
                   List.generate(
-                    gradientColors.length,
-                    (index) => index / (gradientColors.length - 1),
+                    colors.length,
+                    (index) => index / (colors.length - 1),
                   ),
               begin: Alignment(
                 beginAlignment.x + animation.value - 1,
@@ -101,6 +98,26 @@ class FlexibleShimmerLoading extends HookWidget {
         );
       },
     );
+  }
+
+  /// The default sweep: transparent → highlight → transparent, built from
+  /// [WidgetKitTheme.shimmerHighlightColor] when the app registers one, and
+  /// otherwise from the ambient scheme — `surfaceContainerHighest` reads as a
+  /// highlight against both light and dark surfaces.
+  static List<Color> gradientFor(BuildContext context) {
+    final highlight = WidgetKitTheme.of(context).shimmerHighlightColor ??
+        Theme.of(context).colorScheme.surfaceContainerHighest;
+    return <Color>[
+      Colors.transparent,
+      highlight.withValues(alpha: 0.10),
+      highlight.withValues(alpha: 0.20),
+      highlight.withValues(alpha: 0.40),
+      highlight,
+      highlight.withValues(alpha: 0.40),
+      highlight.withValues(alpha: 0.20),
+      highlight.withValues(alpha: 0.10),
+      Colors.transparent,
+    ];
   }
 }
 

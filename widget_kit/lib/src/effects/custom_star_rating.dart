@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
+import '../theme/widget_kit_theme.dart';
+
 // ==================== Rating Widget ====================
 
-class CustomStarRating extends StatefulWidget {
-  const CustomStarRating({
+class AppStarRating extends StatefulWidget {
+  const AppStarRating({
     super.key,
     required this.initialRating,
     this.starCount = 5,
     this.iconSize = 20,
     this.allowHalfRating = true,
-    this.filledColor = const Color(0xFFF4BD2F),
-    this.emptyColor = const Color(0xFF9CA3AF),
+    this.filledColor,
+    this.emptyColor,
     this.filledIcon = const Icon(Icons.star_rounded),
     this.halfIcon = const Icon(Icons.star_half_rounded),
     this.emptyIcon = const Icon(Icons.star_rounded),
@@ -24,8 +26,12 @@ class CustomStarRating extends StatefulWidget {
   final int starCount;
   final double iconSize;
   final bool allowHalfRating;
-  final Color filledColor;
-  final Color emptyColor;
+
+  /// Null → [WidgetKitTheme.ratingFilledColor].
+  final Color? filledColor;
+
+  /// Null → `colorScheme.outlineVariant`.
+  final Color? emptyColor;
   final Widget filledIcon;
   final Widget halfIcon;
   final Widget emptyIcon;
@@ -34,10 +40,10 @@ class CustomStarRating extends StatefulWidget {
   final ValueChanged<double>? onRatingChanged;
 
   @override
-  State<CustomStarRating> createState() => _CustomStarRatingState();
+  State<AppStarRating> createState() => _CustomStarRatingState();
 }
 
-class _CustomStarRatingState extends State<CustomStarRating> {
+class _CustomStarRatingState extends State<AppStarRating> {
   late double _currentRating;
 
   @override
@@ -60,6 +66,13 @@ class _CustomStarRatingState extends State<CustomStarRating> {
 
   @override
   Widget build(BuildContext context) {
+    final kit = WidgetKitTheme.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final filled = widget.filledColor ??
+        kit.ratingFilledColor ??
+        WidgetKitTheme.fallback.ratingFilledColor!;
+    final empty =
+        widget.emptyColor ?? kit.ratingEmptyColor ?? scheme.outlineVariant;
     final stars = <Widget>[];
     for (var index = 0; index < widget.starCount; index++) {
       stars.add(
@@ -68,8 +81,8 @@ class _CustomStarRatingState extends State<CustomStarRating> {
           rating: _currentRating,
           iconSize: widget.iconSize,
           allowHalfRating: widget.allowHalfRating,
-          filledColor: widget.filledColor,
-          emptyColor: widget.emptyColor,
+          filledColor: filled,
+          emptyColor: empty,
           filledIcon: widget.filledIcon,
           halfIcon: widget.halfIcon,
           emptyIcon: widget.emptyIcon,
@@ -108,7 +121,10 @@ class _StarButton extends StatelessWidget {
   final double rating;
   final double iconSize;
   final bool allowHalfRating;
+
+  /// Null → [WidgetKitTheme.ratingFilledColor].
   final Color filledColor;
+
   final Color emptyColor;
   final Widget filledIcon;
   final Widget halfIcon;

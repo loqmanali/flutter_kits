@@ -87,7 +87,7 @@ class AppWarningDialog extends StatelessWidget {
               Expanded(
                 child: AppButton(
                   label: cancelText,
-                  style: AppButtonStyleType.outlined,
+                  style: AppButtonVariant.outlined,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ),

@@ -9,8 +9,14 @@ import 'package:flutter/services.dart';
 
 import '../../feedback/adaptive_loading.dart';
 
-part 'src/app_button.dart';
-part 'src/app_button_enums.dart';
-part 'src/app_button_style.dart';
-part 'src/app_button_theme_extension.dart';
-part 'src/button_configs.dart';
+part 'app_button.dart';
+part 'app_button_resolver.dart';
+part 'app_button_content.dart';
+part 'app_button_cupertino.dart';
+part 'app_button_fab.dart';
+part 'app_button_material.dart';
+part 'relax_unbounded_width.dart';
+part 'app_button_enums.dart';
+part 'app_button_style.dart';
+part 'app_button_theme_extension.dart';
+part 'app_button_metrics.dart';

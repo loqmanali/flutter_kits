@@ -60,128 +60,16 @@ class ImageCarouselItem extends CarouselItem {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          _buildImage(fit),
-          if (overlay != null) _buildDefaultOverlay(),
+          _CarouselImage(
+            imagePath: imagePath,
+            isAsset: isAsset,
+            fit: fit,
+            placeholder: placeholder,
+            errorWidget: errorWidget,
+          ),
+          if (overlay != null) _CarouselOverlay(overlay: overlay!),
           if (customOverlay != null) customOverlay!,
         ],
-      ),
-    );
-  }
-
-  Widget _buildImage(BoxFit fit) {
-    if (isAsset || imagePath.startsWith('assets/')) {
-      return Image.asset(
-        imagePath,
-        fit: fit,
-        height: double.infinity,
-        width: double.infinity,
-        errorBuilder: (context, error, stackTrace) {
-          return errorWidget ??
-              Container(
-                color: const Color(0xFF1E1E1E),
-                child: const Center(
-                  child: Icon(
-                    Icons.image_not_supported,
-                    color: Colors.white54,
-                    size: 48,
-                  ),
-                ),
-              );
-        },
-      );
-    }
-
-    return Image.network(
-      imagePath,
-      fit: fit,
-      height: double.infinity,
-      width: double.infinity,
-      loadingBuilder: (context, child, loadingProgress) {
-        if (loadingProgress == null) return child;
-        return placeholder ??
-            Container(
-              color: const Color(0xFF2A2A2A),
-              child: Center(
-                child: CircularProgressIndicator(
-                  value: loadingProgress.expectedTotalBytes != null
-                      ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                      : null,
-                  color: Colors.white54,
-                ),
-              ),
-            );
-      },
-      errorBuilder: (context, error, stackTrace) {
-        return errorWidget ??
-            Container(
-              color: const Color(0xFF1E1E1E),
-              child: const Center(
-                child: Icon(
-                  Icons.broken_image,
-                  color: Colors.white54,
-                  size: 48,
-                ),
-              ),
-            );
-      },
-    );
-  }
-
-  Widget _buildDefaultOverlay() {
-    if (overlay == null) return const SizedBox.shrink();
-
-    return Positioned.fill(
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: overlay!.gradient ??
-              LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.black.withValues(alpha: overlay!.gradientOpacity),
-                ],
-              ),
-        ),
-        child: Padding(
-          padding: overlay!.padding,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: overlay!.crossAxisAlignment,
-            children: [
-              if (overlay!.title != null)
-                Text(
-                  overlay!.title!,
-                  style: overlay!.titleStyle ??
-                      const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                  maxLines: overlay!.titleMaxLines,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              if (overlay!.subtitle != null) ...[
-                const SizedBox(height: 4),
-                Text(
-                  overlay!.subtitle!,
-                  style: overlay!.subtitleStyle ??
-                      const TextStyle(
-                        color: Colors.white70,
-                        fontSize: 14,
-                      ),
-                  maxLines: overlay!.subtitleMaxLines,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ],
-              if (overlay!.trailing != null) ...[
-                const SizedBox(height: 8),
-                overlay!.trailing!,
-              ],
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -213,6 +101,150 @@ class ImageCarouselItem extends CarouselItem {
       id: id ?? this.id,
       metadata: metadata ?? this.metadata,
       onItemTap: onItemTap ?? this.onItemTap,
+    );
+  }
+}
+
+/// The photo itself: asset or network, with its placeholder and error states.
+class _CarouselImage extends StatelessWidget {
+  const _CarouselImage({
+    required this.imagePath,
+    required this.isAsset,
+    required this.fit,
+    required this.placeholder,
+    required this.errorWidget,
+  });
+
+  final String imagePath;
+  final bool isAsset;
+  final BoxFit fit;
+  final Widget? placeholder;
+  final Widget? errorWidget;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isAsset || imagePath.startsWith('assets/')) {
+      return Image.asset(
+        imagePath,
+        fit: fit,
+        height: double.infinity,
+        width: double.infinity,
+        errorBuilder: (context, error, stackTrace) {
+          return errorWidget ??
+              Container(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                child: Center(
+                  child: Icon(
+                    Icons.image_not_supported,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                    size: 48,
+                  ),
+                ),
+              );
+        },
+      );
+    }
+
+    return Image.network(
+      imagePath,
+      fit: fit,
+      height: double.infinity,
+      width: double.infinity,
+      loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) return child;
+        return placeholder ??
+            Container(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              child: Center(
+                child: CircularProgressIndicator(
+                  value: loadingProgress.expectedTotalBytes != null
+                      ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                      : null,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+              ),
+            );
+      },
+      errorBuilder: (context, error, stackTrace) {
+        return errorWidget ??
+            Container(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              child: Center(
+                child: Icon(
+                  Icons.broken_image,
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  size: 48,
+                ),
+              ),
+            );
+      },
+    );
+  }
+}
+
+/// Gradient scrim plus caption, drawn over the photo.
+class _CarouselOverlay extends StatelessWidget {
+  const _CarouselOverlay({required this.overlay});
+
+  final CarouselOverlay overlay;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: overlay.gradient ??
+              LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  // Scrim + caption sit on the photo: black/white is what
+                  // keeps them legible over arbitrary imagery.
+                  Colors.black.withValues(alpha: overlay.gradientOpacity),
+                ],
+              ),
+        ),
+        child: Padding(
+          padding: overlay.padding,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: overlay.crossAxisAlignment,
+            children: [
+              if (overlay.title != null)
+                Text(
+                  overlay.title!,
+                  style: overlay.titleStyle ??
+                      const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                  maxLines: overlay.titleMaxLines,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              if (overlay.subtitle != null) ...[
+                const SizedBox(height: 4),
+                Text(
+                  overlay.subtitle!,
+                  style: overlay.subtitleStyle ??
+                      const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 14,
+                      ),
+                  maxLines: overlay.subtitleMaxLines,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+              if (overlay.trailing != null) ...[
+                const SizedBox(height: 8),
+                overlay.trailing!,
+              ],
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

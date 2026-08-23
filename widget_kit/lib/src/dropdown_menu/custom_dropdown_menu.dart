@@ -5,7 +5,7 @@ import 'dropdown_manager.dart';
 import 'dropdown_panel.dart';
 
 // ============================================================================
-// CustomDropdownMenu
+// AppDropdownMenu
 // ============================================================================
 
 /// A flexible dropdown menu widget with overlay-based positioning.
@@ -18,9 +18,9 @@ import 'dropdown_panel.dart';
 /// - Auto-positioning (opens upward when space below is limited)
 /// - Optional close-on-tap-outside barrier
 /// - Auto-close when another dropdown opens
-class CustomDropdownMenu extends HookWidget {
+class AppDropdownMenu extends HookWidget {
   final Widget trigger;
-  final List<CustomDropdownEntry> items;
+  final List<AppDropdownEntry> items;
 
   /// Fixed width for the dropdown panel. Ignored when [autoWidth] is true.
   final double? width;
@@ -40,7 +40,7 @@ class CustomDropdownMenu extends HookWidget {
   /// Maximum height of the dropdown panel. Defaults to 60% of screen height.
   final double? maxHeight;
 
-  const CustomDropdownMenu({
+  const AppDropdownMenu({
     super.key,
     required this.trigger,
     required this.items,

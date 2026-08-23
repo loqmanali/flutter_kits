@@ -14,6 +14,8 @@ class YouTubePlayerWidget extends StatelessWidget {
   const YouTubePlayerWidget({
     super.key,
     required this.videoId,
+    // Letterboxing behind video is black in every player, light theme or
+    // dark — this is the medium's convention, not the app's palette.
     this.backgroundColor = Colors.black,
   });
 

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../buttons/adaptive_button/adaptive_button.dart';
+import '../config/widget_kit_config.dart';
+import '../theme/widget_kit_theme.dart';
 
 /// A premium empty state widget following Shadcn UI aesthetics.
 ///
@@ -50,9 +52,28 @@ class EmptyStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // final spacing = context.spacing;
-    // final colors = context.colors;
-    // final textStyles = context.textStyles;
+    // "interface": an app can swap the whole empty state widget app-wide.
+    final emptyBuilder = WidgetKitScope.of(context).builders.emptyStateBuilder;
+    if (emptyBuilder != null) {
+      return emptyBuilder(
+        context,
+        EmptyStateData(
+          title: title,
+          subtitle: subtitle,
+          icon: icon,
+          actionLabel: actionLabel,
+          onAction: onAction,
+          height: height,
+        ),
+      );
+    }
+
+    // Icon color: WidgetKitTheme.emptyStateIconColor, else a muted neutral
+    // from the ambient scheme so it reads on light and dark surfaces.
+    final scheme = Theme.of(context).colorScheme;
+    final texts = Theme.of(context).textTheme;
+    final iconColor = WidgetKitTheme.of(context).emptyStateIconColor ??
+        scheme.onSurfaceVariant.withValues(alpha: 0.3);
 
     return SizedBox(
       height: height,
@@ -72,7 +93,7 @@ class EmptyStateWidget extends StatelessWidget {
                 Icon(
                   icon ?? Icons.inbox_outlined,
                   size: 56,
-                  color: Colors.grey.withValues(alpha: 0.3),
+                  color: iconColor,
                 ),
                 const SizedBox(height: 16),
                 // Bold primary title
@@ -81,9 +102,9 @@ class EmptyStateWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: texts.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: Colors.grey,
+                    color: scheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -93,8 +114,8 @@ class EmptyStateWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.grey.withValues(alpha: 0.6),
+                  style: texts.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
                   ),
                 ),
                 if (actionLabel != null && onAction != null) ...[

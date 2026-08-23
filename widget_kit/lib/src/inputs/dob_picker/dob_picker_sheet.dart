@@ -201,7 +201,7 @@ class _DobPickerSheetState extends State<DobPickerSheet> {
               Navigator.of(context).pop(DateTime(_year, _month, _day));
             },
             label: _confirm,
-            size: AdaptiveButtonSize.large,
+            size: AppButtonSize.large,
           ),
         ),
       ],

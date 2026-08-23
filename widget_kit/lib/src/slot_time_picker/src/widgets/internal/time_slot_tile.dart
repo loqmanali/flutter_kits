@@ -42,7 +42,10 @@ class TimeSlotTile extends StatelessWidget {
                 ? const []
                 : [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .shadow
+                          .withValues(alpha: 0.04),
                       blurRadius: 6,
                       offset: const Offset(0, 2),
                     ),

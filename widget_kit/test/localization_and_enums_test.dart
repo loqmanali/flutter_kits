@@ -104,8 +104,11 @@ void main() {
   });
 
   group('AppButtonThemeExtension', () {
+    // Any scheme works: the styles are derived, never hardcoded.
+    const scheme = ColorScheme.light();
+
     test('defaults expose a style for every AppButtonStyleType', () {
-      const ext = AppButtonThemeExtension.defaults;
+      final ext = AppButtonThemeExtension.fromScheme(scheme);
       for (final type in AppButtonStyleType.values) {
         // getStyle must return a (non-null) style for each variant.
         expect(ext.getStyle(type), isA<AppButtonStyle>());
@@ -113,13 +116,13 @@ void main() {
     });
 
     test('getStyle returns the matching named style', () {
-      const ext = AppButtonThemeExtension.defaults;
+      final ext = AppButtonThemeExtension.fromScheme(scheme);
       expect(ext.getStyle(AppButtonStyleType.filled), ext.filled);
       expect(ext.getStyle(AppButtonStyleType.outlined), ext.outlined);
     });
 
     test('copyWith overrides only the provided style', () {
-      const ext = AppButtonThemeExtension.defaults;
+      final ext = AppButtonThemeExtension.fromScheme(scheme);
       const custom = AppButtonStyle(
         backgroundColor: Color(0xFF000000),
         foregroundColor: Color(0xFFFFFFFF),
@@ -133,8 +136,8 @@ void main() {
     });
 
     test('lerp at t=0 keeps this and t=1 reaches other', () {
-      const a = AppButtonThemeExtension.defaults;
-      const b = AppButtonThemeExtension.defaults;
+      final a = AppButtonThemeExtension.fromScheme(scheme);
+      final b = AppButtonThemeExtension.fromScheme(scheme);
       final lerped0 = a.lerp(b, 0) as AppButtonThemeExtension;
       final lerped1 = a.lerp(b, 1) as AppButtonThemeExtension;
       // Identical inputs → identical filled style at both ends.

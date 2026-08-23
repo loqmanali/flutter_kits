@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 class TravelingBorderWidget extends StatefulWidget {
   final Widget child;
   final Duration duration;
-  final Color borderColor;
+
+  /// Null → `colorScheme.primary`.
+  final Color? borderColor;
   final double strokeWidth;
   final double borderRadius;
   final AnimationController? controller;
@@ -15,7 +17,7 @@ class TravelingBorderWidget extends StatefulWidget {
     super.key,
     required this.child,
     this.duration = const Duration(milliseconds: 1500),
-    this.borderColor = Colors.blue,
+    this.borderColor,
     this.strokeWidth = 2.0,
     this.borderRadius = 10.0,
     this.controller,
@@ -63,7 +65,7 @@ class TravelingBorderWidgetState extends State<TravelingBorderWidget>
     return CustomPaint(
       foregroundPainter: _BorderPainter(
         animation: _controller,
-        color: widget.borderColor,
+        color: widget.borderColor ?? Theme.of(context).colorScheme.primary,
         strokeWidth: widget.strokeWidth,
         radius: widget.borderRadius,
         textDirection: Directionality.of(context),

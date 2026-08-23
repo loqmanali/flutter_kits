@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../config/carousel_config.dart';
 import '../config/indicator_config.dart';
+import '../config/visual_config.dart';
 import '../models/carousel_item.dart';
 import '../providers/carousel_controller_provider.dart';
 import 'carousel_indicator.dart';
@@ -100,135 +101,15 @@ class _CarouselState extends ConsumerState<Carousel> {
     if (widget.items.isEmpty) {
       return SizedBox(
         height: widget.config.visual.height,
-        child: _buildEmptyState(),
+        child: _CarouselEmptyState(visual: widget.config.visual),
       );
     }
 
-    return _buildCarousel();
-  }
-
-  Widget _buildEmptyState() {
-    return Center(
-      child: Container(
-        height: widget.config.visual.height,
-        decoration: BoxDecoration(
-          color: widget.config.visual.backgroundColor,
-          borderRadius:
-              BorderRadius.circular(widget.config.visual.borderRadius),
-        ),
-        child: const Icon(Icons.image_not_supported_outlined),
-      ),
-    );
-  }
-
-  Widget _buildCarousel() {
-    final indicator = widget.config.indicator;
-
-    if (indicator.position == IndicatorPosition.overlay) {
-      return _buildOverlayCarousel();
-    }
-
-    if (indicator.position == IndicatorPosition.above) {
-      return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CarouselIndicator(
-            currentPage: _currentIndex,
-            pageCount: widget.items.length,
-            config: indicator,
-          ),
-          _buildPageView(),
-        ],
-      );
-    }
-
-    // Default: below
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _buildPageView(),
-        if (indicator.show)
-          CarouselIndicator(
-            currentPage: _currentIndex,
-            pageCount: widget.items.length,
-            config: indicator,
-          ),
-      ],
-    );
-  }
-
-  Widget _buildOverlayCarousel() {
-    return SizedBox(
-      height: widget.config.visual.height,
-      child: Stack(
-        children: [
-          _buildPageView(),
-          if (widget.config.indicator.show)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: widget.config.indicator.margin,
-              child: CarouselIndicator(
-                currentPage: _currentIndex,
-                pageCount: widget.items.length,
-                config: widget.config.indicator,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildPageView() {
-    final visual = widget.config.visual;
-    final layout = widget.config.layout;
-
-    return GestureDetector(
-      onPanDown: (_) => _controller.onDragStart(),
-      onPanEnd: (_) => _controller.onDragEnd(),
-      // When the inner PageView wins the horizontal drag, this recognizer is
-      // rejected and fires onPanCancel (not onPanEnd). Without clearing the
-      // drag state here, `isDragging` stays true and auto-scroll freezes after
-      // the first swipe/tap.
-      onPanCancel: () => _controller.onDragEnd(),
-      child: Container(
-        height: visual.height,
-        decoration: BoxDecoration(
-          color: visual.backgroundColor,
-          borderRadius: BorderRadius.circular(visual.borderRadius),
-          border: visual.borderColor != null
-              ? Border.all(
-                  color: visual.borderColor!,
-                  width: visual.borderWidth,
-                )
-              : null,
-          boxShadow: visual.boxShadow,
-        ),
-        clipBehavior: visual.clipBehavior,
-        child: PageView.builder(
-          controller: _controller.pageController,
-          onPageChanged: _controller.onPageChangedInternal,
-          itemCount: widget.items.length,
-          padEnds: layout.padEnds,
-          itemBuilder: (context, index) {
-            return _buildItem(index);
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildItem(int index) {
-    final item = widget.items[index];
-    final visual = widget.config.visual;
-
-    return Padding(
-      padding: visual.padding,
-      child: item.build(
-        context,
-        borderRadius: visual.borderRadius,
-        fit: visual.imageFit,
-      ),
+    return _CarouselBody(
+      items: widget.items,
+      config: widget.config,
+      controller: _controller,
+      currentIndex: _currentIndex,
     );
   }
 }
@@ -318,32 +199,87 @@ class _ControlledCarouselState extends State<ControlledCarousel> {
     if (widget.items.isEmpty) {
       return SizedBox(
         height: widget.config.visual.height,
-        child: _buildEmptyState(),
+        child: _CarouselEmptyState(visual: widget.config.visual),
       );
     }
 
-    return _buildCarousel();
+    return _CarouselBody(
+      items: widget.items,
+      config: widget.config,
+      controller: _controller,
+      currentIndex: _currentIndex,
+    );
   }
+}
 
-  Widget _buildEmptyState() {
+/// Placeholder shown when a carousel is handed an empty item list.
+class _CarouselEmptyState extends StatelessWidget {
+  const _CarouselEmptyState({required this.visual});
+
+  final VisualConfig visual;
+
+  @override
+  Widget build(BuildContext context) {
     return Center(
       child: Container(
-        height: widget.config.visual.height,
+        height: visual.height,
         decoration: BoxDecoration(
-          color: widget.config.visual.backgroundColor,
-          borderRadius:
-              BorderRadius.circular(widget.config.visual.borderRadius),
+          color: visual.backgroundColor,
+          borderRadius: BorderRadius.circular(visual.borderRadius),
         ),
         child: const Icon(Icons.image_not_supported_outlined),
       ),
     );
   }
+}
 
-  Widget _buildCarousel() {
-    final indicator = widget.config.indicator;
+/// Page view + indicator, arranged per [IndicatorConfig.position].
+///
+/// Shared by [Carousel] and [ControlledCarousel]: both drive the same
+/// [CarouselController], so the layout lives here once instead of being
+/// copied into each state class.
+class _CarouselBody extends StatelessWidget {
+  const _CarouselBody({
+    required this.items,
+    required this.config,
+    required this.controller,
+    required this.currentIndex,
+  });
+
+  final List<CarouselItem> items;
+  final CarouselConfig config;
+  final CarouselController controller;
+  final int currentIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    final indicator = config.indicator;
+    final pageView = _CarouselPageView(
+      items: items,
+      config: config,
+      controller: controller,
+    );
 
     if (indicator.position == IndicatorPosition.overlay) {
-      return _buildOverlayCarousel();
+      return SizedBox(
+        height: config.visual.height,
+        child: Stack(
+          children: [
+            pageView,
+            if (indicator.show)
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: indicator.margin,
+                child: CarouselIndicator(
+                  currentPage: currentIndex,
+                  pageCount: items.length,
+                  config: indicator,
+                ),
+              ),
+          ],
+        ),
+      );
     }
 
     if (indicator.position == IndicatorPosition.above) {
@@ -351,11 +287,11 @@ class _ControlledCarouselState extends State<ControlledCarousel> {
         mainAxisSize: MainAxisSize.min,
         children: [
           CarouselIndicator(
-            currentPage: _currentIndex,
-            pageCount: widget.items.length,
+            currentPage: currentIndex,
+            pageCount: items.length,
             config: indicator,
           ),
-          _buildPageView(),
+          pageView,
         ],
       );
     }
@@ -364,51 +300,44 @@ class _ControlledCarouselState extends State<ControlledCarousel> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        _buildPageView(),
+        pageView,
         if (indicator.show)
           CarouselIndicator(
-            currentPage: _currentIndex,
-            pageCount: widget.items.length,
+            currentPage: currentIndex,
+            pageCount: items.length,
             config: indicator,
           ),
       ],
     );
   }
+}
 
-  Widget _buildOverlayCarousel() {
-    return SizedBox(
-      height: widget.config.visual.height,
-      child: Stack(
-        children: [
-          _buildPageView(),
-          if (widget.config.indicator.show)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: widget.config.indicator.margin,
-              child: CarouselIndicator(
-                currentPage: _currentIndex,
-                pageCount: widget.items.length,
-                config: widget.config.indicator,
-              ),
-            ),
-        ],
-      ),
-    );
-  }
+/// The scrolling strip itself, including the drag handling that keeps
+/// auto-scroll alive.
+class _CarouselPageView extends StatelessWidget {
+  const _CarouselPageView({
+    required this.items,
+    required this.config,
+    required this.controller,
+  });
 
-  Widget _buildPageView() {
-    final visual = widget.config.visual;
-    final layout = widget.config.layout;
+  final List<CarouselItem> items;
+  final CarouselConfig config;
+  final CarouselController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    final visual = config.visual;
+    final layout = config.layout;
 
     return GestureDetector(
-      onPanDown: (_) => _controller.onDragStart(),
-      onPanEnd: (_) => _controller.onDragEnd(),
+      onPanDown: (_) => controller.onDragStart(),
+      onPanEnd: (_) => controller.onDragEnd(),
       // When the inner PageView wins the horizontal drag, this recognizer is
       // rejected and fires onPanCancel (not onPanEnd). Without clearing the
       // drag state here, `isDragging` stays true and auto-scroll freezes after
       // the first swipe/tap.
-      onPanCancel: () => _controller.onDragEnd(),
+      onPanCancel: () => controller.onDragEnd(),
       child: Container(
         height: visual.height,
         decoration: BoxDecoration(
@@ -424,28 +353,19 @@ class _ControlledCarouselState extends State<ControlledCarousel> {
         ),
         clipBehavior: visual.clipBehavior,
         child: PageView.builder(
-          controller: _controller.pageController,
-          onPageChanged: _controller.onPageChangedInternal,
-          itemCount: widget.items.length,
+          controller: controller.pageController,
+          onPageChanged: controller.onPageChangedInternal,
+          itemCount: items.length,
           padEnds: layout.padEnds,
-          itemBuilder: (context, index) {
-            return _buildItem(index);
-          },
+          itemBuilder: (context, index) => Padding(
+            padding: visual.padding,
+            child: items[index].build(
+              context,
+              borderRadius: visual.borderRadius,
+              fit: visual.imageFit,
+            ),
+          ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildItem(int index) {
-    final item = widget.items[index];
-    final visual = widget.config.visual;
-
-    return Padding(
-      padding: visual.padding,
-      child: item.build(
-        context,
-        borderRadius: visual.borderRadius,
-        fit: visual.imageFit,
       ),
     );
   }

@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 /// Position of the page indicator relative to the carousel.
 enum IndicatorPosition {
@@ -84,10 +84,23 @@ class IndicatorConfig {
   final double spacing;
 
   /// Color of active indicator dot.
-  final Color activeColor;
+  /// Null → `colorScheme.primary` (see [activeColorOf]).
+  /// The dot color for the active page: [activeColor], or the host app's
+  /// primary. The kit carries no palette of its own, so an indicator adopts
+  /// whatever theme it is dropped into.
+  Color activeColorOf(BuildContext context) =>
+      activeColor ?? Theme.of(context).colorScheme.primary;
+
+  /// The dot color for the other pages: [inactiveColor], or a muted primary.
+  Color inactiveColorOf(BuildContext context) =>
+      inactiveColor ??
+      Theme.of(context).colorScheme.primary.withValues(alpha: 0.3);
+
+  final Color? activeColor;
 
   /// Color of inactive indicator dots.
-  final Color inactiveColor;
+  /// Null → `colorScheme.primary` at 30% (see [inactiveColorOf]).
+  final Color? inactiveColor;
 
   /// Border radius for pill/square shapes.
   final double borderRadius;
@@ -120,8 +133,8 @@ class IndicatorConfig {
     this.inactiveWidth = 8.0,
     this.inactiveHeight = 8.0,
     this.spacing = 8.0,
-    this.activeColor = const Color(0xFFD96B77),
-    this.inactiveColor = const Color(0xFFF5D2D7),
+    this.activeColor,
+    this.inactiveColor,
     this.borderRadius = 4.0,
     this.margin = 12.0,
     this.padding = EdgeInsets.zero,

@@ -317,8 +317,8 @@ final carouselControllerProvider =
 ///   ),
 /// ));
 /// ```
-final carouselControllerProviderWithConfig = Provider.autoDispose
-    .family<CarouselController, CarouselControllerConfig>(
+final carouselControllerProviderWithConfig =
+    Provider.autoDispose.family<CarouselController, CarouselControllerConfig>(
   (ref, config) => CarouselController(
     items: config.items,
     initialIndex: config.initialIndex,

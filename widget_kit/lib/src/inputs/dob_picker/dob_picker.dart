@@ -24,7 +24,7 @@ Future<DateTime?> showDobPicker(
 
   return UIHelper.showBottomSheet<DateTime?>(
     context,
-    backgroundColor: Colors.white,
+    backgroundColor: Theme.of(context).colorScheme.surface,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),

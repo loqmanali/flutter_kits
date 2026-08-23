@@ -54,6 +54,7 @@ class CarouselConfig {
     visual: VisualConfig.large,
     indicator: IndicatorConfig(
       position: IndicatorPosition.overlay,
+      // Over-media defaults: white reads on any photo.
       activeColor: Color(0xFFFFFFFF),
       inactiveColor: Color(0x80FFFFFF),
     ),

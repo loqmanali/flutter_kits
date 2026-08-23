@@ -144,17 +144,40 @@ class _MonthCalendarGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        _weekdayHeader(),
+        _WeekdayHeader(
+            theme: theme, locale: locale, firstWeekday: _firstWeekday),
         const SizedBox(height: 8),
-        _daysGrid(),
+        _DaysGrid(
+          days: days,
+          selectedDate: selectedDate,
+          dateConfig: dateConfig,
+          theme: theme,
+          leadingBlanks: _leadingBlanks,
+          cellSpacing: _cellSpacing,
+          onDaySelected: onDaySelected,
+        ),
       ],
     );
   }
+}
 
-  Widget _weekdayHeader() {
-    // A reference week starting on [_firstWeekday], used only for labels.
+/// The Sun–Sat (or Sat–Fri in RTL) label row above the grid.
+class _WeekdayHeader extends StatelessWidget {
+  const _WeekdayHeader({
+    required this.theme,
+    required this.locale,
+    required this.firstWeekday,
+  });
+
+  final SlotPickerTheme theme;
+  final String locale;
+  final int firstWeekday;
+
+  @override
+  Widget build(BuildContext context) {
+    // A reference week starting on [firstWeekday], used only for labels.
     // 2024-01-01 is a Monday (weekday 1).
-    final base = DateTime(2024, 1, 1).add(Duration(days: _firstWeekday - 1));
+    final base = DateTime(2024, 1, 1).add(Duration(days: firstWeekday - 1));
     final style = theme.dayNameStyle?.copyWith(color: theme.grey500) ??
         TextStyle(
           color: theme.grey500,
@@ -181,12 +204,34 @@ class _MonthCalendarGrid extends StatelessWidget {
       }),
     );
   }
+}
 
-  Widget _daysGrid() {
+/// The month's day cells, padded so the first day lands under its weekday.
+class _DaysGrid extends StatelessWidget {
+  const _DaysGrid({
+    required this.days,
+    required this.selectedDate,
+    required this.dateConfig,
+    required this.theme,
+    required this.leadingBlanks,
+    required this.cellSpacing,
+    required this.onDaySelected,
+  });
+
+  final List<DateTime> days;
+  final DateTime? selectedDate;
+  final SlotDateConfig dateConfig;
+  final SlotPickerTheme theme;
+  final int leadingBlanks;
+  final double cellSpacing;
+  final ValueChanged<DateTime> onDaySelected;
+
+  @override
+  Widget build(BuildContext context) {
     if (days.isEmpty) return const SizedBox.shrink();
 
     final cells = <Widget>[
-      for (var i = 0; i < _leadingBlanks; i++) const SizedBox.shrink(),
+      for (var i = 0; i < leadingBlanks; i++) const SizedBox.shrink(),
       for (final day in days)
         _DayCell(
           date: day,
@@ -203,8 +248,8 @@ class _MonthCalendarGrid extends StatelessWidget {
       crossAxisCount: 7,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: _cellSpacing,
-      crossAxisSpacing: _cellSpacing,
+      mainAxisSpacing: cellSpacing,
+      crossAxisSpacing: cellSpacing,
       padding: EdgeInsets.zero,
       children: cells,
     );
@@ -248,7 +293,7 @@ class _DayCell extends StatelessWidget {
     } else if (isSelected) {
       tileColor = theme.primaryColor;
       borderColor = theme.primaryColor;
-      numberColor = Colors.white;
+      numberColor = Theme.of(context).colorScheme.onPrimary;
       weight = FontWeight.w700;
     } else if (isToday) {
       tileColor = theme.primaryLightColor;

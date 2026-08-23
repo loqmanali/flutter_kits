@@ -124,12 +124,9 @@ class UIHelper {
     DismissDirection? dismissDirection,
     ui.TextDirection? direction,
     TextStyle? titleStyle,
-    ProgressIndicatorThemeData? progressBarTheme =
-        const ProgressIndicatorThemeData(
-      linearTrackColor: Color(0xFFf4f4f4),
-      circularTrackColor: Color(0xFF333333),
-      linearMinHeight: 1,
-    ),
+    // Null → the ambient ProgressIndicatorTheme, so the toast track follows
+    // the host app's theme instead of two baked-in greys.
+    ProgressIndicatorThemeData? progressBarTheme,
     CloseButtonShowType? closeButtonShowType = CloseButtonShowType.none,
   }) {
     // A toast is never critical to a flow — if no `ToastificationWrapper` is

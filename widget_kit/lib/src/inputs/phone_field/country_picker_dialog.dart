@@ -103,10 +103,11 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
     const defaultHorizontalPadding = 24.0;
     const defaultVerticalPadding = 24.0;
 
-    final bg = widget.style?.backgroundColor ?? Colors.white;
-    final dividerColor =
-        widget.style?.dividerColor ?? Colors.grey.withValues(alpha: 0.2);
-    final iconColor = widget.style?.iconColor ?? Colors.black54;
+    final scheme = Theme.of(context).colorScheme;
+    final bg = widget.style?.backgroundColor ?? scheme.surface;
+    final dividerColor = widget.style?.dividerColor ??
+        scheme.outlineVariant.withValues(alpha: 0.2);
+    final iconColor = widget.style?.iconColor ?? scheme.onSurfaceVariant;
 
     return Dialog(
       backgroundColor: bg,
@@ -175,7 +176,7 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
                       color: iconColor,
                     ),
                     backgroundColor:
-                        widget.style?.searchFillColor ?? Colors.white,
+                        widget.style?.searchFillColor ?? scheme.surface,
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
                       vertical: 14,
@@ -183,7 +184,7 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
                     focusedBorderWidth: 1,
                     focusedBorderColor: Theme.of(context).colorScheme.outline,
                     textColor: Theme.of(context).textTheme.bodySmall?.color ??
-                        const Color(0xFF000000),
+                        scheme.onSurface,
                     onChanged: (value) {
                       _filteredCountries = widget.countryList
                           .stringSearch(value)
@@ -214,7 +215,7 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
                         visualDensity: const VisualDensity(vertical: -1),
                         contentPadding: widget.style?.listTilePadding ??
                             const EdgeInsets.symmetric(),
-                        leading: _buildFlag(country),
+                        leading: _CountryFlag(country: country),
                         title: Text(
                           country.localizedName(widget.languageCode),
                           style: widget.style?.countryNameStyle ??
@@ -249,11 +250,20 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
       ),
     );
   }
+}
 
-  Widget _buildFlag(Country c) {
+/// A country's flag: emoji on device, a bundled PNG on web where the emoji
+/// font has no flag glyphs.
+class _CountryFlag extends StatelessWidget {
+  const _CountryFlag({required this.country});
+
+  final Country country;
+
+  @override
+  Widget build(BuildContext context) {
     if (kIsWeb) {
       return Image.asset(
-        'assets/flags/${c.code.toLowerCase()}.png',
+        'assets/flags/${country.code.toLowerCase()}.png',
         package: 'flutter_intl_phone_field',
         width: 28,
         height: 20,
@@ -261,7 +271,7 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
       );
     }
     return Text(
-      c.flag,
+      country.flag,
       style: const TextStyle(fontSize: 20),
     );
   }
