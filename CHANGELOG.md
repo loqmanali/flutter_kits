@@ -6,6 +6,31 @@ release notes.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.0.1] — 2026-09-28
+
+### Changed
+
+- **notify_kit** (`0.1.3` → `0.1.4`): accepts `firebase_messaging` 16.x and
+  `firebase_core` 4.x alongside 15.x / 3.x (`>=15.1.6 <17.0.0`,
+  `>=3.12.1 <5.0.0`).
+
+  Apps that adopt the UIScene lifecycle — mandatory when building with the
+  iOS 27 SDK — need `firebase_messaging` **16.7.0** or later. Under UIScene,
+  Flutter registers plugins only after `application:didFinishLaunching…`
+  returns, so 15.x misses the `UIApplicationDidFinishLaunchingNotification`
+  it listens for: `getInitialMessage()` never answers and the APNs delegate
+  proxying is never installed, so pushes stop arriving. 16.7.0 fixes that
+  ("register for APNs when UIScene plugins miss launch callbacks").
+
+  The range is widened rather than moved so apps still on 15.x / 3.x (and
+  `firebase_kit`, which is on `firebase_core ^3`) resolve unchanged. An app
+  opts in by requiring `firebase_messaging: ^16.7.0` itself.
+
+  Verified at both ends of the range: `flutter analyze` clean and 51 tests
+  pass against `firebase_messaging` 16.7.0 + `firebase_core` 4.15.0 and
+  against 15.1.6 + 3.12.1. `tool/bin/check_constraints.dart`: no disjoint
+  ranges.
+
 ## [2.0.0] — 2026-08-08
 
 No kit's public API changed in this release. The major bump marks the arrival of
