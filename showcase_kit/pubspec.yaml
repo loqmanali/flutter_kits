@@ -1,0 +1,21 @@
+name: showcase_kit
+description: A project-agnostic coach-marks / product-tour toolkit for Flutter — highlight any widget with a spotlight cut-out and a pulsing ring, walk the user through steps with Skip/Prev/Next, optional auto-play. Driven by a single hook, themed from the ambient ColorScheme.
+version: 1.0.0
+publish_to: "none"
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.10.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The public API is a hook (`useShowcaseTour`): the tour manager lives for
+  # the lifetime of the calling widget and is disposed with it.
+  flutter_hooks: ^0.20.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0

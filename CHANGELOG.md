@@ -1,3 +1,21 @@
+## confirm_kit 1.0.0
+
+New kit, generalized from `lekbox`'s `ActionConfirmationDialog` (a hard-coded
+SVG + two buttons + a `isDestructive` bool) into something reusable.
+
+- `ConfirmDialog<T>`: intent-driven accent/icon/label, 1..N `ConfirmAction<T>`s
+  in four button styles, optional `content` widget, centered or start-aligned.
+- Async actions render an in-button spinner, disable the siblings, and block
+  barrier/drag/back until the work settles — the original dialog could be
+  dismissed mid-request.
+- Three surfaces from one widget: dialog, bottom sheet (keyboard-aware), or
+  bare content embedded in a page. `.show()` returns the typed result,
+  `.ask()` the yes/no bool.
+- `ConfirmKitTheme` (`ThemeExtension`) + `ConfirmStrings` replace the hard-coded
+  colors, radii and English labels; unset colors resolve from `ColorScheme`, so
+  dark mode works without configuration.
+- Long content scrolls instead of overflowing on short screens.
+
 ## quran_madina_kit 0.1.0
 
 - New kit: renders Quran pages visually identical to the printed Madina Mushaf without images,
@@ -27,6 +45,26 @@ Individual packages may keep their own `CHANGELOG.md` for package-specific
 release notes.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
+## showcase_kit 1.0.0
+
+New kit, ported from a coach-marks widget that had been sitting unused in two
+app repos (`cardfiy`, `hayakum_app_v2`) as a near-duplicate copy.
+
+- `useShowcaseTour(steps)` returns a `ShowcaseController` (`start` / `stop` /
+  `isRunning`); the tour is owned by the calling widget and disposed with it.
+- `ShowcaseTarget` attaches the step's `GlobalKey` and nothing else, so it can
+  wrap any widget without touching layout.
+- Fixed while porting: the `OverlayEntry` and auto-play timer leaked when the
+  host widget was unmounted mid-tour; `Prev` on the first step silently ended
+  the tour; the bubble was pushed off the top edge for a target low on screen;
+  taps fell through the backdrop to the app behind it; a target key that never
+  mounted spun a post-frame loop forever.
+- Button copy comes from `TourLabels` (the original hard-coded English), and
+  the bubble follows the ambient `ColorScheme` instead of the default canvas
+  colour and `Colors.grey`.
+- 7 widget tests cover navigation, skip, auto-play, the modal backdrop and
+  disposal on unmount.
 
 ## [1.1.6] — 2026-07-19
 
