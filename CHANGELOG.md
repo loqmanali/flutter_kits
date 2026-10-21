@@ -6,6 +6,18 @@ release notes.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.0.2] — 2026-10-21
+
+### Changed
+
+- **force_update_gate** (`0.2.0` → `0.2.1`): accepts `package_info_plus` 10.x
+  alongside 9.x (`>=9.0.0 <11.0.0`).
+
+  `share_plus` 13.1.0+ and `package_info_plus` 10.x both need `win32` ^6, so
+  apps upgrading `share_plus` (needed for the iOS 26 share sheet fix) could not
+  resolve while this kit pinned `^9.0.0`. The kit only calls
+  `PackageInfo.fromPlatform()`, which is unchanged in 10.x.
+
 ## [2.0.1] — 2026-09-28
 
 ### Changed
