@@ -98,8 +98,8 @@ class NominatimGeocodingService implements GeocodingService {
           'format': 'json',
           'addressdetails': '1',
           'limit': limit.toString(),
-          if (country != null) 'countrycodes': country,
-          if (language != null) 'accept-language': language,
+          'countrycodes': ?country,
+          'accept-language': ?language,
         },
         options: Options(
           headers: {'User-Agent': userAgent},
@@ -133,7 +133,7 @@ class NominatimGeocodingService implements GeocodingService {
           'lon': position.longitude.toString(),
           'format': 'json',
           'addressdetails': '1',
-          if (language != null) 'accept-language': language,
+          'accept-language': ?language,
         },
         options: Options(
           headers: {'User-Agent': userAgent},
@@ -189,7 +189,7 @@ class NominatimGeocodingService implements GeocodingService {
           'limit': limit.toString(),
           'viewbox': viewbox,
           'bounded': '1',
-          if (language != null) 'accept-language': language,
+          'accept-language': ?language,
         },
         options: Options(
           headers: {'User-Agent': userAgent},

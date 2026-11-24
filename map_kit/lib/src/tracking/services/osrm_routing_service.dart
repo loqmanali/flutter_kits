@@ -199,8 +199,7 @@ class OsrmRoutingService implements RoutingService {
 
             // Decode the encoded polyline string
             final geometry = route['geometry'] as String;
-            final polylinePoints = PolylinePoints();
-            final decodedPoints = polylinePoints.decodePolyline(geometry);
+            final decodedPoints = PolylinePoints.decodePolyline(geometry);
 
             // Convert to LatLng list for flutter_map
             final points = decodedPoints

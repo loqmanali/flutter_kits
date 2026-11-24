@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/models.dart';
@@ -121,7 +121,7 @@ class SearchResultsList extends ConsumerWidget {
         shrinkWrap: true,
         padding: const EdgeInsets.symmetric(vertical: 8),
         itemCount: results.length,
-        separatorBuilder: (_, __) => const Divider(height: 1),
+        separatorBuilder: (_, _) => const Divider(height: 1),
         itemBuilder: (context, index) {
           final result = results[index];
 
