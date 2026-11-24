@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// App-wide visual defaults for [CustomDropdownMenu] and its rendered items.
 ///
