@@ -32,25 +32,25 @@ AppButton(label: 'Filled', onPressed: () {})
 
 AppButton(
   label: 'Filled tonal',
-  style: AppButtonStyleType.filledTonal,
+  style: AppButtonVariant.filledTonal,
   onPressed: () {},
 )
 
 AppButton(
   label: 'Elevated',
-  style: AppButtonStyleType.elevated,
+  style: AppButtonVariant.elevated,
   onPressed: () {},
 )
 
 AppButton(
   label: 'Outlined',
-  style: AppButtonStyleType.outlined,
+  style: AppButtonVariant.outlined,
   onPressed: () {},
 )
 
 AppButton(
   label: 'Text',
-  style: AppButtonStyleType.text,
+  style: AppButtonVariant.text,
   onPressed: () {},
 )
 ''';
@@ -58,19 +58,19 @@ AppButton(
 const kAppButtonSizes = '''
 AppButton(
   label: 'Large',
-  size: AdaptiveButtonSize.large,   // 56dp tall, 16sp label
+  size: AppButtonSize.large,   // 56dp tall, 16sp label
   onPressed: () {},
 )
 
 AppButton(
   label: 'Medium',
-  size: AdaptiveButtonSize.medium,  // 48dp tall, 14sp label — the default
+  size: AppButtonSize.medium,  // 48dp tall, 14sp label — the default
   onPressed: () {},
 )
 
 AppButton(
   label: 'Small',
-  size: AdaptiveButtonSize.small,   // 32dp tall, 12sp label
+  size: AppButtonSize.small,   // 32dp tall, 12sp label
   onPressed: () {},
 )
 ''';
@@ -96,21 +96,21 @@ AppButton(
 const kAppButtonIconOnly = '''
 // The four icon styles require `icon` and ignore `label`.
 AppButton(
-  style: AppButtonStyleType.icon,
+  style: AppButtonVariant.icon,
   icon: const Icon(Icons.favorite_border_rounded),
   tooltip: 'Save to favourites',
   onPressed: () {},
 )
 
 AppButton(
-  style: AppButtonStyleType.iconFilled,
+  style: AppButtonVariant.iconFilled,
   icon: const Icon(Icons.add_rounded),
   tooltip: 'Add item',
   onPressed: () {},
 )
 
 AppButton(
-  style: AppButtonStyleType.iconOutlined,
+  style: AppButtonVariant.iconOutlined,
   icon: const Icon(Icons.share_rounded),
   tooltip: 'Share',
   onPressed: () {},
@@ -172,7 +172,7 @@ AppButton.fab(
 AppButton.fab(
   icon: const Icon(Icons.edit),
   label: 'Compose',
-  buttonType: FloatingActionButtonType.extended,
+  buttonType: AppFabVariant.extended,
   heroTag: 'compose-extended',
   onPressed: () {},
 )
@@ -190,25 +190,30 @@ AppButton(
 const kAppButtonThemeExtension = '''
 // AppButton reads its colours from AppButtonThemeExtension — register one on
 // your ThemeData and every AppButton in the app follows it.
+final defaults = AppButtonThemeExtension.fromScheme(
+  ColorScheme.fromSeed(seedColor: const Color(0xFF104C65)),
+);
+
 MaterialApp(
   theme: ThemeData.light().copyWith(
-    extensions: const [
+    extensions: [
       AppButtonThemeExtension(
         filled: AppButtonStyle(
           backgroundColor: Color(0xFF104C65),
           foregroundColor: Colors.white,
           overlayColor: Color(0x14104C65),
         ),
-        // The other nine styles are required too; copy the defaults you keep:
-        filledTonal: AppButtonStyle.filledTonal,
-        elevated: AppButtonStyle.elevated,
-        outlined: AppButtonStyle.outlined,
-        text: AppButtonStyle.text,
-        icon: AppButtonStyle.icon,
-        iconFilled: AppButtonStyle.iconFilled,
-        iconFilledTonal: AppButtonStyle.iconFilledTonal,
-        iconOutlined: AppButtonStyle.iconOutlined,
-        fab: AppButtonStyle.fab,
+        // The other nine styles are required too; start from the scheme-derived
+        // defaults and keep the ones you don't override:
+        filledTonal: defaults.filledTonal,
+        elevated: defaults.elevated,
+        outlined: defaults.outlined,
+        text: defaults.text,
+        icon: defaults.icon,
+        iconFilled: defaults.iconFilled,
+        iconFilledTonal: defaults.iconFilledTonal,
+        iconOutlined: defaults.iconOutlined,
+        fab: defaults.fab,
       ),
     ],
   ),

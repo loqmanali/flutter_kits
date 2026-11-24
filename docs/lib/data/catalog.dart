@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../content/otp_kit/sections/otp_text_field_section.dart';
 import '../content/otp_kit/sections/overview_section.dart';

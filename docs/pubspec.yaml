@@ -22,6 +22,8 @@ dependencies:
   # otp_kit is built on hooks_riverpod; we host ProviderScope here and read
   # controllers/selectors in the demos, so declare it directly.
   hooks_riverpod: ^3.3.2
+  material_ui: ^1.11.1
+  cupertino_ui: ^1.1.7
 
 dev_dependencies:
   flutter_test:

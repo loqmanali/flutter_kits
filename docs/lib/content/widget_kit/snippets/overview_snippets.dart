@@ -31,14 +31,16 @@ AppButton(
 const kWidgetKitTheming = '''
 MaterialApp(
   theme: ThemeData.light().copyWith(
-    extensions: const [
+    extensions: [
       // Styling for inputs, dialogs, sheets and spacing.
       WidgetKitTheme(
         inputBorderRadius: 12,
         primaryButtonColor: Color(0xFF104C65),
       ),
       // Button colours live in their own extension — see the AppButton page.
-      AppButtonThemeExtension.defaults,
+      AppButtonThemeExtension.fromScheme(
+        ColorScheme.fromSeed(seedColor: Color(0xFF104C65)),
+      ),
     ],
   ),
 );

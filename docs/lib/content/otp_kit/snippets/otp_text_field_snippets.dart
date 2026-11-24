@@ -7,7 +7,7 @@ library;
 // ---------------------------------------------------------------------------
 // Basic 4-digit
 // ---------------------------------------------------------------------------
-const String kOtpBasicSnippet = r'''import 'package:flutter/material.dart';
+const String kOtpBasicSnippet = r'''import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:otp_kit/otp_kit.dart';
 

@@ -3,7 +3,7 @@
 // kits: widget_kit
 // pub: hooks_riverpod
 // output: lib/app.dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:widget_kit/widget_kit.dart';
 
@@ -46,15 +46,15 @@ class App extends StatelessWidget {
     );
 
     return base.copyWith(
-      extensions: const <ThemeExtension<dynamic>>[
+      extensions: <ThemeExtension<dynamic>>[
         // Replace both with the pair `fkit theme` generates.
-        WidgetKitTheme(
+        const WidgetKitTheme(
           inputBorderRadius: 12,
           buttonBorderRadius: 12,
           dialogBorderRadius: 20,
           sheetBorderRadius: 20,
         ),
-        AppButtonThemeExtension.defaults,
+        AppButtonThemeExtension.fromScheme(base.colorScheme),
       ],
     );
   }

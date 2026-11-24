@@ -6,7 +6,7 @@
 // These files are real, analyzed source — `flutter analyze` on the docs app is
 // what keeps the snippets the CLI ships from going stale. The header above is
 // metadata for tool/sync_snippets.dart and is stripped before emitting.
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:widget_kit/widget_kit.dart';
 
 /// A button that runs [onPressed] and stays in its loading state until the
@@ -20,7 +20,7 @@ class AsyncButton extends StatefulWidget {
     required this.label,
     required this.onPressed,
     this.loadingLabel,
-    this.style = AppButtonStyleType.filled,
+    this.style = AppButtonVariant.filled,
     this.widthMode,
     this.icon,
   });
@@ -33,7 +33,7 @@ class AsyncButton extends StatefulWidget {
   /// The work to run. Errors are rethrown after the loading state is cleared.
   final Future<void> Function() onPressed;
 
-  final AppButtonStyleType style;
+  final AppButtonVariant style;
   final AppButtonWidthMode? widthMode;
   final Widget? icon;
 

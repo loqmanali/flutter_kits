@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:otp_kit/otp_kit.dart';
 
 import '../../../core/component_page.dart';
