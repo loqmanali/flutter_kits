@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 import 'hole_painter.dart';
@@ -79,7 +79,7 @@ class SpotlightWidget extends HookWidget {
           ),
           AnimatedBuilder(
             animation: pulse,
-            builder: (_, __) {
+            builder: (_, _) {
               final t = pulse.value;
               final ring = rect.inflate(theme.padding * (1 + t * .5));
               return Positioned(
