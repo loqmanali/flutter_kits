@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide CarouselController;
+import 'package:material_ui/material_ui.dart' hide CarouselController;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../config/carousel_config.dart';

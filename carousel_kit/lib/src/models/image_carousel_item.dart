@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'carousel_item.dart';
 import 'carousel_overlay.dart';
@@ -68,7 +68,7 @@ class ImageCarouselItem extends CarouselItem {
             errorWidget: errorWidget,
           ),
           if (overlay != null) _CarouselOverlay(overlay: overlay!),
-          if (customOverlay != null) customOverlay!,
+          ?customOverlay,
         ],
       ),
     );

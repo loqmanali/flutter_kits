@@ -20,14 +20,11 @@ class CarouselController extends ChangeNotifier {
   CarouselController({
     List<CarouselItem> items = const [],
     int initialIndex = 0,
-    AutoScrollConfig autoScrollConfig = const AutoScrollConfig(),
-    VisualConfig visualConfig = const VisualConfig(),
-    LayoutConfig layoutConfig = const LayoutConfig(),
+    this._autoScrollConfig = const AutoScrollConfig(),
+    this._visualConfig = const VisualConfig(),
+    this._layoutConfig = const LayoutConfig(),
     this.onPageChanged,
-  })  : _autoScrollConfig = autoScrollConfig,
-        _visualConfig = visualConfig,
-        _layoutConfig = layoutConfig,
-        _state = CarouselState(
+  })  : _state = CarouselState(
           items: items,
           currentIndex: initialIndex.clamp(
             0,
