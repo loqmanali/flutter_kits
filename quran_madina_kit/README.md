@@ -33,7 +33,7 @@ dependency_overrides:
 for every view under it:
 
 ```dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:quran_madina_kit/quran_madina_kit.dart';
 
 void main() => runApp(

@@ -38,7 +38,7 @@ Map<String, dynamic> manifestJson({
       'font_url': 'assets/fonts/$family.woff2',
       'font_size': 16,
       'line_width': 270,
-      if (hash != null) 'content_hash': hash,
+      'content_hash': ?hash,
       'suras': [
         ['سورة الفاتحة', 9],
         ['سورة البقرة', 288],

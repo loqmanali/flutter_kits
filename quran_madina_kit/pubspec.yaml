@@ -1,11 +1,11 @@
 name: quran_madina_kit
 description: Renders Quran pages visually identical to the printed Madina Mushaf without images, driven by pre-computed JSON databases. A Flutter port of the quran-madina-html web runtime.
-version: 0.1.0
+version: 0.2.0
 publish_to: "none"
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.10.0"
+  sdk: ^3.13.0
+  flutter: ">=3.47.0"
 
 dependencies:
   flutter:
@@ -21,6 +21,7 @@ dependencies:
   # The translate action opens quran.com inside the app rather than handing the
   # user off to a browser. Official package: Android + iOS. Every other platform
   # gets the copy-link fallback in MadinaWebPage.
+  material_ui: ^1.11.1
   webview_flutter: ^4.4.0
 
 dev_dependencies:

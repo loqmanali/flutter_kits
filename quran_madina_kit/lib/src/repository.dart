@@ -7,10 +7,9 @@ class MadinaDb {
   MadinaDb._({
     required this.manifest,
     required this.dbStem,
-    required MadinaSource source,
-    required void Function(String) log,
-  })  : _source = source,
-        _log = log;
+    required this._source,
+    required this._log,
+  });
 
   final MadinaManifest manifest;
 
