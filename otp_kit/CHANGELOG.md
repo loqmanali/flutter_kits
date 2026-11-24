@@ -2,6 +2,13 @@
 
 All notable changes to the OTP Module will be documented in this file.
 
+## 3.3.0
+
+Flutter 3.50 / Dart 3.14 migration (monorepo release 2.1.0).
+
+- Migrated from the deprecated `package:flutter/material.dart` / `cupertino.dart` to `package:material_ui` / `package:cupertino_ui`. Requires Flutter >= 3.47 / Dart >= 3.13; extensions and themes are now material_ui `ThemeData` types.
+- Dependencies: `material_ui ^1.11.1`.
+
 ## [3.2.0] - 2026-07-23
 
 ### Added
