@@ -120,7 +120,7 @@ class ThemeCommand extends Command<int> {
 //
 // AppButton reads only the second one. Drop it and every button falls back to
 // widget_kit's built-in brand red.
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:widget_kit/widget_kit.dart';
 
 /// The brand colour everything below is derived from.
