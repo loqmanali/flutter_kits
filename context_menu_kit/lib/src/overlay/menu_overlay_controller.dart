@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Manages a stack of [OverlayEntry] instances for a single menu tree.
 ///
