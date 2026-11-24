@@ -1,6 +1,6 @@
 name: carousel_kit
 description: A flexible, project-agnostic carousel module for Flutter — image/widget carousels, auto-scroll, indicators, RTL, overlays, and Riverpod-powered state. Drop-in for any project.
-version: 1.2.0
+version: 2.0.0
 publish_to: "none"
 
 environment:

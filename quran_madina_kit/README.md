@@ -16,7 +16,7 @@ dependencies:
     git:
       url: https://github.com/loqmanali/flutter_kits.git
       path: quran_madina_kit
-      ref: v0.1.0        # a tag or commit SHA — bump deliberately, per app
+      ref: v3.0.0        # a tag or commit SHA — bump deliberately, per app
 ```
 
 Developing the kit alongside your app? Override locally and leave the committed

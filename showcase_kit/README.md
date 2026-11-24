@@ -33,7 +33,7 @@ dependencies:
     git:
       url: https://github.com/loqmanali/flutter_kits.git
       path: showcase_kit
-      ref: v1.2.0   # tag or commit SHA
+      ref: v3.0.0   # tag or commit SHA
 ```
 
 ```dart

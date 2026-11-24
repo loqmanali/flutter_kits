@@ -1,6 +1,6 @@
 name: force_update_gate
 description: A drop-in Flutter widget that gates your app behind a force-update screen when a newer version is published on the App Store / Play Store. No Firebase, no backend.
-version: 0.3.0
+version: 1.0.0
 publish_to: "none"
 
 environment:

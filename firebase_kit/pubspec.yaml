@@ -1,6 +1,6 @@
 name: firebase_kit
 description: Self-contained, project-agnostic Firebase module — auth (all methods), Firestore generic CRUD, Firebase AI, Riverpod providers, and pluggable adapters.
-version: 1.1.0
+version: 2.0.0
 publish_to: "none"
 repository: https://example.com/firebase_kit
 

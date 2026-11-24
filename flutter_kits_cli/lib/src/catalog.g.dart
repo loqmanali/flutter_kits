@@ -13,63 +13,73 @@ const kRepoUrl = 'https://github.com/loqmanali/flutter_kits.git';
 /// Kits are pinned to this, not to their own package versions:
 /// widget_kit 1.2.0 ships *inside* this tag, and no `v1.2.0`
 /// tag exists to pin to.
-const kDefaultRef = 'v2.0.0';
+const kDefaultRef = 'v2.0.2';
 
 /// Every installable kit, sorted by name.
 const kCatalog = <Kit>[
   Kit(
+    name: 'adaptive_kit',
+    version: '1.0.0',
+    description: 'Unified phone/tablet/desktop layout kit. Two complementary APIs on one kit: (1) an Adaptive singleton + AdaptiveBuilder + AdaptiveLayout (widget-ba…',
+  ),
+  Kit(
     name: 'animation_kit',
-    version: '0.1.1',
+    version: '1.0.0',
     description: 'A comprehensive Flutter animation package providing reusable animation widgets, providers, and utilities for building smooth, performant animations.',
   ),
   Kit(
     name: 'api_kit',
-    version: '1.0.1',
+    version: '2.0.0',
     description: 'A pluggable, project-agnostic API networking layer for Flutter',
   ),
   Kit(
     name: 'carousel_kit',
-    version: '1.1.4',
+    version: '2.0.0',
     description: 'A flexible, project-agnostic carousel module for Flutter',
   ),
   Kit(
     name: 'commerce_kit',
-    version: '1.0.0',
+    version: '2.0.0',
     description: 'A comprehensive, standalone e-commerce module for Flutter applications.',
   ),
   Kit(
+    name: 'confirm_kit',
+    version: '2.0.0',
+    description: 'A project-agnostic confirmation-dialog toolkit for Flutter',
+  ),
+  Kit(
     name: 'context_menu_kit',
-    version: '1.0.0',
+    version: '2.0.0',
     description: 'A project-agnostic context menu / popup menu module for Flutter',
   ),
   Kit(
     name: 'deep_link_kit',
-    version: '1.0.0',
+    version: '2.0.0',
     description: 'A project-agnostic deep-link toolkit for Flutter',
   ),
   Kit(
     name: 'dropdown_menu_kit',
-    version: '1.0.0',
+    version: '2.0.0',
     description: 'A flexible, overlay-based dropdown menu widget for Flutter with rich item types (items, labels, separators, checkboxes, radios), smart positioning,…',
   ),
   Kit(
     name: 'firebase_kit',
-    version: '1.0.0',
+    version: '2.0.0',
     description: 'Self-contained, project-agnostic Firebase module',
   ),
   Kit(
     name: 'force_update_gate',
-    version: '0.2.0',
+    version: '1.0.0',
     description: 'A drop-in Flutter widget that gates your app behind a force-update screen when a newer version is published on the App Store / Play Store',
   ),
   Kit(
     name: 'local_db_kit',
-    version: '1.2.1',
+    version: '2.0.0',
     description: 'A pluggable, project-agnostic local relational-database kit for Flutter',
   ),
   Kit(
     name: 'localization_kit',
-    version: '1.0.0',
+    version: '2.0.0',
     description: 'A pluggable, project-agnostic localization toolkit for Flutter',
   ),
   Kit(
@@ -79,42 +89,57 @@ const kCatalog = <Kit>[
   ),
   Kit(
     name: 'map_kit',
-    version: '1.0.0',
+    version: '2.0.0',
     description: 'A unified map toolkit for Flutter — location picker (map + search + reverse geocoding) and delivery tracking (live driver position + OSRM routing +…',
   ),
   Kit(
     name: 'navigation_kit',
-    version: '1.1.0',
+    version: '2.0.0',
     description: 'A project-agnostic, fully customizable bottom navigation bar for Flutter',
   ),
   Kit(
     name: 'notify_kit',
-    version: '0.1.3',
+    version: '1.0.0',
     description: 'FCM + local notifications behind one init() call, with unified tap routing across foreground/background/terminated states.',
   ),
   Kit(
     name: 'otp_kit',
-    version: '3.2.0',
+    version: '4.0.0',
     description: 'A comprehensive, high-performance OTP input solution for Flutter',
   ),
   Kit(
-    name: 'selection_kit',
+    name: 'quran_madina_kit',
     version: '1.0.0',
+    description: 'Renders Quran pages visually identical to the printed Madina Mushaf without images, driven by pre-computed JSON databases',
+  ),
+  Kit(
+    name: 'selection_kit',
+    version: '2.0.0',
     description: 'A pluggable, project-agnostic selection-control widget library for Flutter',
   ),
   Kit(
+    name: 'showcase_kit',
+    version: '2.0.0',
+    description: 'A project-agnostic coach-marks / product-tour toolkit for Flutter',
+  ),
+  Kit(
     name: 'storage_kit',
-    version: '1.0.1',
+    version: '2.0.0',
     description: 'A pluggable, project-agnostic key-value storage facade for Flutter',
   ),
   Kit(
     name: 'system_ui_kit',
-    version: '1.0.0',
+    version: '2.0.0',
     description: 'Project-agnostic Flutter helpers for synchronizing status bar and navigation bar colors with custom app bars and top surfaces.',
   ),
   Kit(
+    name: 'toast_kit',
+    version: '1.0.0',
+    description: 'A project-agnostic toast/notification kit',
+  ),
+  Kit(
     name: 'widget_kit',
-    version: '1.2.0',
+    version: '2.0.0',
     description: 'A project-agnostic collection of reusable Flutter widgets',
   ),
 ];

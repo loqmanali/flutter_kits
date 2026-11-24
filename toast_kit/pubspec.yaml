@@ -1,6 +1,6 @@
 name: toast_kit
 description: A project-agnostic toast/notification kit — queued, deduped, theme-able, with a frame-occlusion-safe auto-dismiss timer. No host-app coupling.
-version: 0.2.0
+version: 1.0.0
 publish_to: "none"
 
 environment:

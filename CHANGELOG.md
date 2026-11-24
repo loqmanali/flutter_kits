@@ -1,45 +1,76 @@
-## [2.1.0] — 2026-11-24
+## [3.0.0] — 2026-11-24
 
-Flutter 3.50.1 / Dart 3.14 migration of every kit.
+Flutter 3.50.1 / Dart 3.14 migration of every kit. Every kit that changed gets
+a MAJOR bump (pre-1.0 kits go to 1.0.0).
+
+### BREAKING
+
+- **material_ui / cupertino_ui.** All kits moved from the deprecated
+  `package:flutter/material.dart` and `cupertino.dart` to `package:material_ui`
+  and `package:cupertino_ui`. Their `ThemeExtension`s and themes are now
+  material_ui types: a legacy `flutter/material` `ThemeData` cannot carry them,
+  and widgets built on legacy-only packages need `MaterialUiCompatibilityBridge`.
+- **Flutter >= 3.47 / Dart >= 3.13** for every kit that uses material_ui;
+  `notify_kit` needs Dart >= 3.12. Android apps need Gradle >= 9.3.1 and
+  AGP >= 9.1.1 (Flutter 3.50), `compileSdk` 37 and `desugar_jdk_libs` >= 2.1.4
+  (flutter_local_notifications 23).
+- **widget_kit**: the embedded carousel is gone (use `carousel_kit`); the API
+  follows the 3733432 rename refactor (`AppStarRating`, `AppDropdown*`,
+  `AppFabVariant`, `AppButtonVariant`, `AppButtonSize`; `AppButtonThemeExtension.fromScheme`
+  replaces `.defaults`); `RefreshTrigger` gains load-more, controller and display
+  modes (`TriggerStage.failed`).
+- **widget_kit** depends on the prerelease `flutter_inappwebview ^6.2.0-beta.3`
+  because AGP 9 rejects the stable 1.1.3 Android plugin; it moves to stable
+  `^6.2.0` once that ships.
+- **localization_kit** no longer depends on `flutter_localizations` directly.
+- **firebase_kit** uses `FirebaseAI.agentPlatform()` (firebase_ai 5).
+- **flutter_kits_cli**: generated templates import material_ui.
 
 ### Changed
 
-- All kits moved from the deprecated `package:flutter/material.dart` and
-  `package:flutter/cupertino.dart` to `package:material_ui` and
-  `package:cupertino_ui`; their `ThemeExtension`s are now material_ui types and
-  the SDK floor is Flutter >= 3.47 / Dart >= 3.13. Every kit's dependencies were
-  raised to the latest that resolves (see each kit's CHANGELOG).
 - `notify_kit`: firebase_core 5, firebase_messaging 17, flutter_local_notifications 23,
-  timezone 0.11. Public API unchanged.
+  timezone 0.11. Public API unchanged; `getToken()`/`onTokenRefresh` keep emitting
+  the FCM token through firebase_messaging's deprecated members.
 - `widget_kit`: cached_network_image 4, flutter_hooks 0.21.4, toastification 3.2, xml 7.
+- Every other kit's dependencies were raised to the latest that resolves.
+
+### Notes for apps (zone_app)
+
+- Rename widget_kit identifiers as above, move `ThemeData` to material_ui, and
+  use `Localization.localizationDelegates` / material_ui's
+  `GlobalMaterialLocalizations.delegates`.
+- Android: Gradle 9.5.0, AGP 9.3.1, built-in Kotlin (drop `kotlin-android`),
+  `enableJetifier=false`, larger Gradle heap.
+- `requests_inspector` still pins `sensors_plus` ^6, which applies KGP: Flutter
+  prints a warning until that moves.
 
 Versions:
 
-- **adaptive_kit** (`0.1.0` → `0.2.0`)
-- **animation_kit** (`0.1.1` → `0.2.0`)
-- **api_kit** (`1.0.1` → `1.1.0`)
-- **carousel_kit** (`1.1.4` → `1.2.0`)
-- **commerce_kit** (`1.0.0` → `1.1.0`)
-- **confirm_kit** (`1.0.0` → `1.1.0`)
-- **context_menu_kit** (`1.0.0` → `1.1.0`)
-- **deep_link_kit** (`1.0.0` → `1.1.0`)
-- **dropdown_menu_kit** (`1.0.0` → `1.1.0`)
-- **firebase_kit** (`1.0.0` → `1.1.0`)
-- **flutter_kits_cli** (`0.1.0` → `0.2.0`)
-- **force_update_gate** (`0.2.1` → `0.3.0`)
-- **local_db_kit** (`1.2.1` → `1.3.0`)
-- **localization_kit** (`1.0.0` → `1.1.0`)
-- **map_kit** (`1.0.0` → `1.1.0`)
-- **navigation_kit** (`1.1.0` → `1.2.0`)
-- **notify_kit** (`0.1.4` → `0.2.0`)
-- **otp_kit** (`3.2.0` → `3.3.0`)
-- **quran_madina_kit** (`0.1.0` → `0.2.0`)
-- **selection_kit** (`1.0.0` → `1.1.0`)
-- **showcase_kit** (`1.0.0` → `1.1.0`)
-- **storage_kit** (`1.0.1` → `1.1.0`)
-- **system_ui_kit** (`1.0.0` → `1.1.0`)
-- **toast_kit** (`0.1.0` → `0.2.0`)
-- **widget_kit** (`1.2.0` → `1.3.0`)
+- **adaptive_kit** (`0.1.0` → `1.0.0`)
+- **animation_kit** (`0.1.1` → `1.0.0`)
+- **api_kit** (`1.0.1` → `2.0.0`)
+- **carousel_kit** (`1.1.4` → `2.0.0`)
+- **commerce_kit** (`1.0.0` → `2.0.0`)
+- **confirm_kit** (`1.0.0` → `2.0.0`)
+- **context_menu_kit** (`1.0.0` → `2.0.0`)
+- **deep_link_kit** (`1.0.0` → `2.0.0`)
+- **dropdown_menu_kit** (`1.0.0` → `2.0.0`)
+- **firebase_kit** (`1.0.0` → `2.0.0`)
+- **flutter_kits_cli** (`0.1.0` → `1.0.0`)
+- **force_update_gate** (`0.2.1` → `1.0.0`)
+- **local_db_kit** (`1.2.1` → `2.0.0`)
+- **localization_kit** (`1.0.0` → `2.0.0`)
+- **map_kit** (`1.0.0` → `2.0.0`)
+- **navigation_kit** (`1.1.0` → `2.0.0`)
+- **notify_kit** (`0.1.4` → `1.0.0`)
+- **otp_kit** (`3.2.0` → `4.0.0`)
+- **quran_madina_kit** (`0.1.0` → `1.0.0`)
+- **selection_kit** (`1.0.0` → `2.0.0`)
+- **showcase_kit** (`1.0.0` → `2.0.0`)
+- **storage_kit** (`1.0.1` → `2.0.0`)
+- **system_ui_kit** (`1.0.0` → `2.0.0`)
+- **toast_kit** (`0.1.0` → `1.0.0`)
+- **widget_kit** (`1.2.0` → `2.0.0`)
 
 ## confirm_kit 1.0.0
 

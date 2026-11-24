@@ -9,7 +9,7 @@ dependencies:
     git:
       url: https://github.com/loqmanali/flutter_kits.git
       path: widget_kit
-      ref: v1.1.0   # tag or commit SHA — bump deliberately, per app
+      ref: v3.0.0   # tag or commit SHA — bump deliberately, per app
 ```
 
 While actively developing a kit alongside an app, override locally (keep the

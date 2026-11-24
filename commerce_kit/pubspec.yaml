@@ -1,6 +1,6 @@
 name: commerce_kit
 description: A comprehensive, standalone e-commerce module for Flutter applications.
-version: 1.1.0
+version: 2.0.0
 publish_to: 'none'
 
 environment:

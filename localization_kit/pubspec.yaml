@@ -1,6 +1,6 @@
 name: localization_kit
 description: A pluggable, project-agnostic localization toolkit for Flutter — locale state with Riverpod, persistent storage of the chosen language, optional API-driven language lists, RTL handling, and ready-made widgets. Works with any Flutter app's generated AppLocalizations.
-version: 1.1.0
+version: 2.0.0
 publish_to: "none"
 
 environment:

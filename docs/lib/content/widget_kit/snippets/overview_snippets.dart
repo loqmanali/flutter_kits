@@ -8,8 +8,8 @@ dependencies:
       url: https://github.com/loqmanali/flutter_kits.git
       path: widget_kit
       # Tags are monorepo releases, not per-package versions —
-      # widget_kit 1.2.0 ships inside the v2.0.0 tag.
-      ref: v2.0.0
+      # widget_kit 2.0.0 ships inside the v3.0.0 tag.
+      ref: v3.0.0
 
 # While working on the kit itself, point at your checkout instead:
 dependency_overrides:

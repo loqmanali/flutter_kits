@@ -146,7 +146,7 @@ dependencies:
     git:
       url: https://github.com/loqmanali/flutter_kits.git
       path: confirm_kit
-      ref: v1.0.0
+      ref: v3.0.0
 ```
 
 Run the gallery of every case with `cd example && flutter run`.

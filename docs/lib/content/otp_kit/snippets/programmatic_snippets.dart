@@ -46,8 +46,8 @@ dependencies:
       url: https://github.com/loqmanali/flutter_kits.git
       path: otp_kit
       # Tags are monorepo releases, not per-package versions —
-      # otp_kit 3.2.0 ships inside the v2.0.0 tag.
-      ref: v2.0.0
+      # otp_kit 4.0.0 ships inside the v3.0.0 tag.
+      ref: v3.0.0
 
 # During local development, override with a path dep (git-ignored):
 # dependency_overrides:

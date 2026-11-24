@@ -6,7 +6,7 @@ description: >-
   (context.isTablet, responsivePadding…) plus ResponsiveLayout / ResponsiveGrid
   / ResponsiveContent / ResponsiveBuilder / ResponsiveVisibility. Depends only
   on Flutter, so it can be reused across apps.
-version: 0.2.0
+version: 1.0.0
 publish_to: none
 
 environment:
