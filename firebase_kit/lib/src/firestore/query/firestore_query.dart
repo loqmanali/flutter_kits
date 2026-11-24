@@ -20,16 +20,12 @@ class FirestoreQueryBuilder {
   const FirestoreQueryBuilder() : this._();
 
   const FirestoreQueryBuilder._({
-    List<_WhereClause> wheres = const [],
-    List<_OrderClause> orderBys = const [],
-    int? limit,
-    int? limitToLast,
-    Object? startAfter,
-  })  : _wheres = wheres,
-        _orderBys = orderBys,
-        _limit = limit,
-        _limitToLast = limitToLast,
-        _startAfter = startAfter;
+    this._wheres = const [],
+    this._orderBys = const [],
+    this._limit,
+    this._limitToLast,
+    this._startAfter,
+  });
 
   FirestoreQueryBuilder where(
     String field, {

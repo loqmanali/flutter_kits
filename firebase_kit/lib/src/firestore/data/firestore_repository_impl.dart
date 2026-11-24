@@ -20,12 +20,10 @@ class FirestoreRepositoryImpl<T> implements FirestoreRepository<T> {
   final FirestoreConverter<T> _converter;
 
   FirestoreRepositoryImpl({
-    required String path,
-    required FirestoreConverter<T> converter,
+    required this._path,
+    required this._converter,
     FirebaseFirestore? firestore,
-  })  : _path = path,
-        _converter = converter,
-        _firestore = firestore ?? FirebaseFirestore.instance;
+  })  : _firestore = firestore ?? FirebaseFirestore.instance;
 
   @override
   String get path => _path;
