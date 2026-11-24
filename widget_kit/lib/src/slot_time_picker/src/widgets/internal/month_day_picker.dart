@@ -1,5 +1,5 @@
 import 'dart:ui' as ui;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/intl.dart';
 import '../../config/slot_date_config.dart';
 import '../../theme/slot_picker_theme.dart';
@@ -414,7 +414,7 @@ class _DayStripState extends State<_DayStrip> {
         controller: _scrollController,
         scrollDirection: Axis.horizontal,
         itemCount: widget.days.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 12),
+        separatorBuilder: (_, _) => const SizedBox(width: 12),
         itemBuilder: (context, index) {
           final day = widget.days[index];
           final isSelected = widget.selectedDate != null &&

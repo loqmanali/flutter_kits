@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:widget_kit/widget_kit.dart';
 
 import '../gallery/demo_section.dart';
 import '../gallery/gallery_scaffold.dart';
 
-/// Documents CustomDropdownMenu and all its entry types.
+/// Documents AppDropdownMenu and all its entry types.
 class DropdownPage extends StatelessWidget {
   const DropdownPage({super.key});
 
@@ -35,28 +35,28 @@ class _BasicDropdownState extends State<_BasicDropdown> {
     return DemoSection(
       title: 'Items, icons & shortcuts',
       description:
-          'Tap the trigger to open. Each CustomDropdownItem can carry '
+          'Tap the trigger to open. Each AppDropdownItem can carry '
           'an icon, a shortcut hint, and an onTap.',
-      demo: CustomDropdownMenu(
+      demo: AppDropdownMenu(
         trigger: FilledButton.tonalIcon(
           onPressed: null,
           icon: const Icon(Icons.menu),
           label: Text(_selected),
         ),
         items: [
-          CustomDropdownItem(
+          AppDropdownItem(
             text: 'Profile',
             icon: Icons.person,
             onTap: () => setState(() => _selected = 'Profile'),
           ),
-          CustomDropdownItem(
+          AppDropdownItem(
             text: 'Settings',
             icon: Icons.settings,
             shortcut: '⌘,',
             onTap: () => setState(() => _selected = 'Settings'),
           ),
-          CustomDropdownSeparator(),
-          CustomDropdownItem(
+          AppDropdownSeparator(),
+          AppDropdownItem(
             text: 'Sign out',
             icon: Icons.logout,
             onTap: () => setState(() => _selected = 'Sign out'),
@@ -64,12 +64,12 @@ class _BasicDropdownState extends State<_BasicDropdown> {
         ],
       ),
       code: '''
-CustomDropdownMenu(
+AppDropdownMenu(
   trigger: const Text('Menu'),
   items: [
-    CustomDropdownItem(text: 'Profile', icon: Icons.person, onTap: ...),
-    CustomDropdownSeparator(),
-    CustomDropdownItem(text: 'Sign out', icon: Icons.logout, onTap: ...),
+    AppDropdownItem(text: 'Profile', icon: Icons.person, onTap: ...),
+    AppDropdownSeparator(),
+    AppDropdownItem(text: 'Sign out', icon: Icons.logout, onTap: ...),
   ],
 )''',
     );
@@ -92,24 +92,24 @@ class _RichDropdownState extends State<_RichDropdown> {
     return DemoSection(
       title: 'Labels, checkboxes & radios',
       description:
-          'Group entries under a CustomDropdownLabel, and use checkbox '
+          'Group entries under a AppDropdownLabel, and use checkbox '
           'and radio entries for stateful options.',
-      demo: CustomDropdownMenu(
+      demo: AppDropdownMenu(
         trigger: const Chip(
           avatar: Icon(Icons.tune, size: 18),
           label: Text('Preferences'),
         ),
         items: [
-          CustomDropdownLabel(text: 'General'),
-          CustomDropdownCheckbox(
+          AppDropdownLabel(text: 'General'),
+          AppDropdownCheckbox(
             text: 'Notifications',
             checked: _notifications,
             onChanged: (v) => setState(() => _notifications = v ?? false),
           ),
-          CustomDropdownSeparator(),
-          CustomDropdownLabel(text: 'Theme'),
+          AppDropdownSeparator(),
+          AppDropdownLabel(text: 'Theme'),
           for (final t in ['system', 'light', 'dark'])
-            CustomDropdownRadio(
+            AppDropdownRadio(
               text: t,
               value: t,
               groupValue: _theme,
@@ -118,13 +118,13 @@ class _RichDropdownState extends State<_RichDropdown> {
         ],
       ),
       code: '''
-CustomDropdownMenu(
+AppDropdownMenu(
   trigger: const Text('Preferences'),
   items: [
-    CustomDropdownLabel(text: 'General'),
-    CustomDropdownCheckbox(text: 'Notifications', checked: on, onChanged: ...),
-    CustomDropdownLabel(text: 'Theme'),
-    CustomDropdownRadio(text: 'dark', value: 'dark', groupValue: sel, onChanged: ...),
+    AppDropdownLabel(text: 'General'),
+    AppDropdownCheckbox(text: 'Notifications', checked: on, onChanged: ...),
+    AppDropdownLabel(text: 'Theme'),
+    AppDropdownRadio(text: 'dark', value: 'dark', groupValue: sel, onChanged: ...),
   ],
 )''',
     );

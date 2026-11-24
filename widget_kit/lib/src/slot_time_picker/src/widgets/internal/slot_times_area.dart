@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '../../l10n/slot_picker_labels.dart';
 import '../../models/slot_item.dart';
 import '../../theme/slot_picker_theme.dart';

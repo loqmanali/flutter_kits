@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:widget_kit/widget_kit.dart';
 
 import '../gallery/demo_section.dart';
@@ -28,7 +28,7 @@ class DialogsPage extends StatelessWidget {
               demo: Builder(
                 builder: (context) => AppButton(
                   label: 'Show warning',
-                  style: AppButtonStyleType.outlined,
+                  style: AppButtonVariant.outlined,
                   onPressed: () => showDialog<void>(
                     context: context,
                     builder: (dialogContext) => AppWarningDialog(
@@ -59,7 +59,7 @@ showDialog(
               demo: Builder(
                 builder: (context) => AppButton(
                   label: 'Show picker dialog',
-                  style: AppButtonStyleType.outlined,
+                  style: AppButtonVariant.outlined,
                   onPressed: () => UIHelper.showDialogPicker<void>(
                     context,
                     child: Padding(
@@ -143,7 +143,7 @@ UIHelper.showBottomSheet(
                 children: [
                   AppButton(
                     label: 'Success',
-                    size: AdaptiveButtonSize.small,
+                    size: AppButtonSize.small,
                     onPressed: () => UIHelper.showToast(
                       title: 'Saved!',
                       type: ToastificationType.success,
@@ -151,8 +151,8 @@ UIHelper.showBottomSheet(
                   ),
                   AppButton(
                     label: 'Error',
-                    size: AdaptiveButtonSize.small,
-                    style: AppButtonStyleType.outlined,
+                    size: AppButtonSize.small,
+                    style: AppButtonVariant.outlined,
                     onPressed: () => UIHelper.showToast(
                       title: 'Something failed',
                       type: ToastificationType.error,
@@ -160,8 +160,8 @@ UIHelper.showBottomSheet(
                   ),
                   AppButton(
                     label: 'Info',
-                    size: AdaptiveButtonSize.small,
-                    style: AppButtonStyleType.text,
+                    size: AppButtonSize.small,
+                    style: AppButtonVariant.text,
                     onPressed: () => UIHelper.showToast(
                       title: 'Heads up',
                       type: ToastificationType.info,

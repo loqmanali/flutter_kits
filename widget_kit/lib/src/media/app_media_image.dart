@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/widget_kit_theme.dart';
@@ -106,7 +106,7 @@ class AppMediaImage extends StatelessWidget {
 
   Future<String> _sanitizeSvgDimensionsAsync(String svg) async {
     try {
-      return compute(_sanitizeSvgDimensionsIsolate, svg);
+      return await compute(_sanitizeSvgDimensionsIsolate, svg);
     } catch (_) {
       return svg; // Return original if sanitization fails
     }
@@ -149,7 +149,7 @@ class AppMediaImage extends StatelessWidget {
         fit: fit,
         width: width,
         height: height,
-        errorWidget: (_, __, ___) => _AssetImage(
+        errorWidget: (_, _, _) => _AssetImage(
           assetPath: fallbackAsset,
           fallbackAsset: fallbackAsset,
           fit: fit,
@@ -157,7 +157,7 @@ class AppMediaImage extends StatelessWidget {
           height: height,
           semanticLabel: semanticLabel,
         ),
-        placeholder: (_, __) => _MediaPlaceholder(
+        placeholder: (_, _) => _MediaPlaceholder(
           width: width,
           height: height,
           placeholderColor: placeholderColor,
@@ -284,7 +284,7 @@ class _AssetImage extends StatelessWidget {
       semanticLabel: semanticLabel,
       // One hop only: if the fallback itself fails, show the broken-image
       // glyph rather than recursing.
-      errorBuilder: (_, __, ___) => assetPath == fallbackAsset
+      errorBuilder: (_, _, _) => assetPath == fallbackAsset
           ? const Icon(Icons.broken_image_outlined)
           : _AssetImage(
               assetPath: fallbackAsset,
@@ -360,7 +360,7 @@ class _DecodedImage extends StatelessWidget {
       width: width,
       height: height,
       semanticLabel: semanticLabel,
-      errorBuilder: (_, __, ___) => _AssetImage(
+      errorBuilder: (_, _, _) => _AssetImage(
         assetPath: fallbackAsset,
         fallbackAsset: fallbackAsset,
         fit: fit,

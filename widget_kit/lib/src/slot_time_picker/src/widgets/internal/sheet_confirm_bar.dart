@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '../../theme/slot_picker_theme.dart';
 
 /// The bottom confirm bar of the bottom-sheet picker.

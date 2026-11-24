@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:widget_kit/widget_kit.dart';
 
@@ -6,10 +6,10 @@ Widget _wrap(Widget child) =>
     MaterialApp(home: Scaffold(body: Center(child: child)));
 
 void main() {
-  group('CustomStarRating', () {
+  group('AppStarRating', () {
     testWidgets('renders the requested number of stars', (tester) async {
       await tester.pumpWidget(
-        _wrap(const CustomStarRating(initialRating: 0, starCount: 5)),
+        _wrap(const AppStarRating(initialRating: 0, starCount: 5)),
       );
       // Each star renders an Icon (filled/half/empty all use an Icon widget).
       expect(find.byType(Icon), findsNWidgets(5));
@@ -20,7 +20,7 @@ void main() {
       double? reported;
       await tester.pumpWidget(
         _wrap(
-          CustomStarRating(
+          AppStarRating(
             initialRating: 0,
             onRatingChanged: (r) => reported = r,
           ),
@@ -41,7 +41,7 @@ void main() {
       var fired = 0;
       await tester.pumpWidget(
         _wrap(
-          CustomStarRating(
+          AppStarRating(
             initialRating: 2,
             readOnly: true,
             onRatingChanged: (_) => fired++,
@@ -61,7 +61,7 @@ void main() {
       var fired = 0;
       await tester.pumpWidget(
         _wrap(
-          CustomStarRating(
+          AppStarRating(
             initialRating: 3, // already 3 stars
             allowHalfRating: false,
             onRatingChanged: (_) => fired++,
@@ -84,7 +84,7 @@ void main() {
       const empty = Color(0xFF9CA3AF);
       await tester.pumpWidget(
         _wrap(
-          const CustomStarRating(
+          const AppStarRating(
             initialRating: 99,
             starCount: 5,
             filledColor: filled,
@@ -105,14 +105,14 @@ void main() {
 
     testWidgets('asserts starCount > 0', (tester) async {
       expect(
-        () => CustomStarRating(initialRating: 0, starCount: 0),
+        () => AppStarRating(initialRating: 0, starCount: 0),
         throwsAssertionError,
       );
     });
 
     testWidgets('asserts iconSize > 0', (tester) async {
       expect(
-        () => CustomStarRating(initialRating: 0, iconSize: 0),
+        () => AppStarRating(initialRating: 0, iconSize: 0),
         throwsAssertionError,
       );
     });

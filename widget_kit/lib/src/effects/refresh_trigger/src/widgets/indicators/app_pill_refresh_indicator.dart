@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../models/refresh_trigger_stage.dart';
 import '../../theme/refresh_trigger_theme.dart';
@@ -41,7 +41,7 @@ class AppPillRefreshIndicator {
         label = stage.extentValue >= 1 ? releaseText : pullText;
         trailing = AnimatedBuilder(
           animation: stage.extent,
-          builder: (_, __) => Transform.rotate(
+          builder: (_, _) => Transform.rotate(
             angle: -math.pi * stage.extentValue.clamp(0.0, 1.0),
             child: Icon(
               stage.isHeader ? Icons.arrow_downward : Icons.arrow_upward,

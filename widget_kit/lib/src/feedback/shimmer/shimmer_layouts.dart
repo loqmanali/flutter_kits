@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'flexible_shimmer_loading.dart';
 import 'shimmer_shape.dart';
@@ -251,8 +251,8 @@ class ShimmerCardList extends StatelessWidget {
       padding: padding,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: count,
-      separatorBuilder: (_, __) => const SizedBox(height: 16),
-      itemBuilder: (_, __) => ShimmerCard(height: cardHeight),
+      separatorBuilder: (_, _) => const SizedBox(height: 16),
+      itemBuilder: (_, _) => ShimmerCard(height: cardHeight),
     );
   }
 }

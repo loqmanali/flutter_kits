@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../app_text_form_field.dart';
 import 'countries.dart';
@@ -207,7 +207,7 @@ class _CountryPickerDialogState extends State<CountryPickerDialog> {
                 child: Scrollbar(
                   child: ListView.separated(
                     itemCount: _filteredCountries.length,
-                    separatorBuilder: (_, __) =>
+                    separatorBuilder: (_, _) =>
                         Divider(height: 1, thickness: 1, color: dividerColor),
                     itemBuilder: (ctx, index) {
                       final country = _filteredCountries[index];

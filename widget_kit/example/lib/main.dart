@@ -5,7 +5,7 @@
 //   gallery/   shared scaffolding (DemoSection, CodeBlock, GalleryScaffold) +
 //              the category registry (single source of truth for home + routing)
 //   pages/     one page per widget category, each composed of DemoSections.
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:intl/date_symbol_data_local.dart';
 // ToastificationWrapper + WidgetKitTheme + every widget come from the barrel,
 // which re-exports toastification.

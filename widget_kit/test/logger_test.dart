@@ -26,7 +26,7 @@ void main() {
 
     test('reset restores level to info', () {
       AppLogger.setLevel(AppLogLevel.error);
-      AppLogger.setLogHandler((_, __, ___, ____) {});
+      AppLogger.setLogHandler((_, _, _, _) {});
       AppLogger.reset();
       expect(AppLogger.level, AppLogLevel.info);
     });
@@ -79,7 +79,7 @@ void main() {
     test('emits nothing when disabled', () {
       var calls = 0;
       AppLogger.setEnabled(false);
-      AppLogger.setLogHandler((_, __, ___, ____) => calls++);
+      AppLogger.setLogHandler((_, _, _, _) => calls++);
 
       AppLogger.error('should be swallowed');
       expect(calls, 0);
@@ -89,7 +89,7 @@ void main() {
       var calls = 0;
       AppLogger.setEnabled(true);
       AppLogger.setLevel(AppLogLevel.none);
-      AppLogger.setLogHandler((_, __, ___, ____) => calls++);
+      AppLogger.setLogHandler((_, _, _, _) => calls++);
 
       AppLogger.error('still silenced');
       expect(calls, 0);
@@ -99,7 +99,7 @@ void main() {
       final levels = <AppLogLevel>[];
       AppLogger.setEnabled(true);
       AppLogger.setLevel(AppLogLevel.warning);
-      AppLogger.setLogHandler((level, _, __, ___) => levels.add(level));
+      AppLogger.setLogHandler((level, _, _, _) => levels.add(level));
 
       AppLogger.debug('drop');
       AppLogger.info('drop');

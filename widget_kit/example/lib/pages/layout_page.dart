@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:widget_kit/widget_kit.dart';
 
 import '../gallery/demo_section.dart';
@@ -114,7 +114,7 @@ PageTopBar(
           demo: Builder(
             builder: (context) => AppButton(
               label: 'Open ProfilePageLayout',
-              style: AppButtonStyleType.outlined,
+              style: AppButtonVariant.outlined,
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute<void>(
                   builder: (_) => ProfilePageLayout(
