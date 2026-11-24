@@ -1,5 +1,5 @@
 import 'package:confirm_kit/confirm_kit.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() => runApp(const ExampleApp());
 
@@ -218,7 +218,7 @@ Future<bool?> _askForTypedDelete(BuildContext context) {
     context: context,
     builder: (_) => ValueListenableBuilder<String>(
       valueListenable: typed,
-      builder: (_, value, __) => ConfirmDialog<bool>(
+      builder: (_, value, _) => ConfirmDialog<bool>(
         title: 'Delete workspace',
         message: 'Type DELETE to confirm. This cannot be undone.',
         intent: ConfirmIntent.destructive,

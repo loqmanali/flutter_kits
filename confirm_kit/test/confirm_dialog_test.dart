@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:confirm_kit/confirm_kit.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 enum _Choice { save, discard, keep }

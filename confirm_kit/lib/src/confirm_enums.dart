@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Semantic meaning of a confirmation. Drives the accent color, the default
 /// icon, and the default confirm label.
