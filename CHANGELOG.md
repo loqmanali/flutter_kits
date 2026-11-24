@@ -1,3 +1,46 @@
+## [2.1.0] — 2026-11-24
+
+Flutter 3.50.1 / Dart 3.14 migration of every kit.
+
+### Changed
+
+- All kits moved from the deprecated `package:flutter/material.dart` and
+  `package:flutter/cupertino.dart` to `package:material_ui` and
+  `package:cupertino_ui`; their `ThemeExtension`s are now material_ui types and
+  the SDK floor is Flutter >= 3.47 / Dart >= 3.13. Every kit's dependencies were
+  raised to the latest that resolves (see each kit's CHANGELOG).
+- `notify_kit`: firebase_core 5, firebase_messaging 17, flutter_local_notifications 23,
+  timezone 0.11. Public API unchanged.
+- `widget_kit`: cached_network_image 4, flutter_hooks 0.21.4, toastification 3.2, xml 7.
+
+Versions:
+
+- **adaptive_kit** (`0.1.0` → `0.2.0`)
+- **animation_kit** (`0.1.1` → `0.2.0`)
+- **api_kit** (`1.0.1` → `1.1.0`)
+- **carousel_kit** (`1.1.4` → `1.2.0`)
+- **commerce_kit** (`1.0.0` → `1.1.0`)
+- **confirm_kit** (`1.0.0` → `1.1.0`)
+- **context_menu_kit** (`1.0.0` → `1.1.0`)
+- **deep_link_kit** (`1.0.0` → `1.1.0`)
+- **dropdown_menu_kit** (`1.0.0` → `1.1.0`)
+- **firebase_kit** (`1.0.0` → `1.1.0`)
+- **flutter_kits_cli** (`0.1.0` → `0.2.0`)
+- **force_update_gate** (`0.2.1` → `0.3.0`)
+- **local_db_kit** (`1.2.1` → `1.3.0`)
+- **localization_kit** (`1.0.0` → `1.1.0`)
+- **map_kit** (`1.0.0` → `1.1.0`)
+- **navigation_kit** (`1.1.0` → `1.2.0`)
+- **notify_kit** (`0.1.4` → `0.2.0`)
+- **otp_kit** (`3.2.0` → `3.3.0`)
+- **quran_madina_kit** (`0.1.0` → `0.2.0`)
+- **selection_kit** (`1.0.0` → `1.1.0`)
+- **showcase_kit** (`1.0.0` → `1.1.0`)
+- **storage_kit** (`1.0.1` → `1.1.0`)
+- **system_ui_kit** (`1.0.0` → `1.1.0`)
+- **toast_kit** (`0.1.0` → `0.2.0`)
+- **widget_kit** (`1.2.0` → `1.3.0`)
+
 ## confirm_kit 1.0.0
 
 New kit, generalized from `lekbox`'s `ActionConfirmationDialog` (a hard-coded
