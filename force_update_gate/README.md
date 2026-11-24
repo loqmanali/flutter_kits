@@ -43,7 +43,7 @@ flutter pub get
 ## Quick start
 
 ```dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:force_update_gate/force_update_gate.dart';
 
 void main() => runApp(const MyApp());
