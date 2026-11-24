@@ -6,7 +6,7 @@
 // Run codegen before launching: `dart run build_runner build`.
 import 'package:drift/drift.dart';
 // `Table` exists in both drift and material; we want drift's here.
-import 'package:flutter/material.dart' hide Table;
+import 'package:material_ui/material_ui.dart' hide Table;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:local_db_kit/local_db_kit.dart';
 
