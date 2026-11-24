@@ -13,7 +13,7 @@ const kRepoUrl = 'https://github.com/loqmanali/flutter_kits.git';
 /// Kits are pinned to this, not to their own package versions:
 /// widget_kit 1.2.0 ships *inside* this tag, and no `v1.2.0`
 /// tag exists to pin to.
-const kDefaultRef = 'v2.0.2';
+const kDefaultRef = 'v3.0.0';
 
 /// Every installable kit, sorted by name.
 const kCatalog = <Kit>[
