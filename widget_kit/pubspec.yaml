@@ -1,6 +1,6 @@
 name: widget_kit
 description: A project-agnostic collection of reusable Flutter widgets — buttons, inputs, dialogs, feedback states, media, shimmer, and effects. Drop-in for any project, fully customizable via theme extension or per-widget overrides.
-version: 1.3.0
+version: 2.0.0
 publish_to: "none"
 
 environment:
@@ -22,7 +22,10 @@ dependencies:
   flutter_svg: ^2.0.9
 
   # Used by generic_video_webview + youtube_player_widget
-  flutter_inappwebview: ^6.0.0
+  # Prerelease on purpose: AGP 9 (required by Flutter 3.50) rejects the stable
+  # 1.1.3 Android plugin (getDefaultProguardFile('proguard-android.txt')).
+  # Move to the stable ^6.2.0 once it ships.
+  flutter_inappwebview: ^6.2.0-beta.3
 
   # Used by UiHelper.showToast
   toastification: ^3.0.3
