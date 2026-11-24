@@ -1,3 +1,10 @@
+## 1.1.0
+
+Flutter 3.50 / Dart 3.14 migration (monorepo release 2.1.0).
+
+- Migrated from the deprecated `package:flutter/material.dart` / `cupertino.dart` to `package:material_ui` / `package:cupertino_ui`. Requires Flutter >= 3.47 / Dart >= 3.13; extensions and themes are now material_ui `ThemeData` types.
+- Dependencies: `equatable ^3.0.0`.
+
 ## 1.0.1
 
 ### Added
