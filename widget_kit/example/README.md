@@ -28,7 +28,6 @@ copy-able code snippets**:
 | Layout | `Accordion`, `AppSpacing`, `PageTopBar`, `ProfilePageLayout` |
 | Effects | `CustomStarRating`, `TravelingBorderWidget`, `RefreshTrigger` |
 | Dropdown Menu | `CustomDropdownMenu` + item / label / separator / checkbox / radio |
-| Carousel | `Carousel` (banner/hero presets), `CarouselIndicator` |
 | Context Menu | `ContextMenu` (tap / long-press, submenus, disabled rows) |
 | Slot / Time Picker | `InlineSlotTimePicker` (date+time and time-only modes) |
 | Theme & Tokens | `WidgetKitTokens`, `WidgetKitTheme` extension |
@@ -37,8 +36,8 @@ copy-able code snippets**:
 
 ```
 lib/
-  main.dart                 app entry: ToastificationWrapper + ProviderScope +
-                            WidgetKitTheme + the home catalogue grid
+  main.dart                 app entry: ToastificationWrapper + WidgetKitTheme +
+                            the home catalogue grid
   gallery/
     categories.dart         single source of truth: the category registry that
                             drives both the home grid and routing
@@ -57,7 +56,6 @@ single entry in `categories.dart`.
 ## Setup notes
 
 - **Toasts** need a `ToastificationWrapper` above the app — `main.dart` provides it.
-- **Carousel** needs a `ProviderScope` (Riverpod) — provided at the root.
 - **Slot picker** date strip needs `initializeDateFormatting()` — called in `main`.
 - The webview-based media widgets (`GenericVideoWebview`, `YoutubePlayerWidget`)
   are integration-only and not shown in the gallery.

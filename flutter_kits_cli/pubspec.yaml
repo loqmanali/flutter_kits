@@ -1,0 +1,28 @@
+name: flutter_kits_cli
+description: >-
+  Command-line tool for the flutter_kits monorepo: browse the kits, add them to
+  a project's pubspec with the right git ref, and generate the theming
+  boilerplate they expect.
+publish_to: "none"
+version: 0.1.0
+
+environment:
+  sdk: ^3.8.0
+
+executables:
+  fkit: fkit
+
+dependencies:
+  args: ^2.5.0
+  # Prompts, spinners and ANSI colour. Hand-rolling raw-mode terminal input is
+  # the classic way to break a CLI on someone else's terminal.
+  mason_logger: ^0.3.1
+  path: ^1.9.0
+  # Edits pubspec.yaml in place without reformatting it or eating comments —
+  # the whole reason this isn't string surgery.
+  yaml: ^3.1.2
+  yaml_edit: ^2.2.1
+
+dev_dependencies:
+  lints: ^5.0.0
+  test: ^1.25.0

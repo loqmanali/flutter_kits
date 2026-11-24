@@ -2,6 +2,23 @@
 
 All notable changes to the OTP Module will be documented in this file.
 
+## [3.2.0] - 2026-07-23
+
+### Added
+
+- `OTPConfig.expand` — when true, cells fill the available width as
+  rectangles (width = available / length, height = `size`) instead of
+  fixed squares. Enables full-width OTP inputs. Defaults to false.
+
+## [3.1.0] - 2026-07-23
+
+### Added
+
+- `OTPConfig.successColor` — border color applied when every cell is
+  filled without an error (the "valid" state). Defaults to null, so
+  existing configs keep using `activeColor`/`inactiveColor` for
+  completed cells.
+
 ## [3.0.0] - 2026-07-06
 
 Internal rewrite of `OTPTextField` for mobile-soft-keyboard correctness.

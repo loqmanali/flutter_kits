@@ -7,23 +7,17 @@ class CustomPageTransition<T> extends PageRouteBuilder<T> {
   /// The page to transition to
   final Widget page;
 
-  /// Duration of the transition
-  @override
-  final Duration transitionDuration;
-
-  /// Reverse duration of the transition
-  @override
-  final Duration reverseTransitionDuration;
-
-  /// Creates a custom page transition
+  /// Creates a custom page transition.
+  ///
+  /// [transitionDuration] and [reverseTransitionDuration] are forwarded to
+  /// [PageRouteBuilder], which already stores and exposes them — redeclaring
+  /// them here as fields shadowed the inherited ones (`overridden_fields`).
   CustomPageTransition({
     required this.page,
-    this.transitionDuration = const Duration(milliseconds: 300),
-    this.reverseTransitionDuration = const Duration(milliseconds: 300),
+    super.transitionDuration = const Duration(milliseconds: 300),
+    super.reverseTransitionDuration = const Duration(milliseconds: 300),
   }) : super(
           pageBuilder: (context, animation, secondaryAnimation) => page,
-          transitionDuration: transitionDuration,
-          reverseTransitionDuration: reverseTransitionDuration,
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(
               opacity: animation,

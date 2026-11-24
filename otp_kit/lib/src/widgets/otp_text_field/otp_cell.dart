@@ -6,19 +6,24 @@ part of '../otp_text_field.dart';
 /// [OTPConfig.showCursor] is on.
 class _OtpCell extends StatelessWidget {
   const _OtpCell({
+    super.key,
     required this.config,
     required this.character,
-    required this.size,
+    required this.width,
+    required this.height,
     required this.isActive,
     required this.hasError,
+    this.isSuccess = false,
     this.caret,
   });
 
   final OTPConfig config;
   final String character;
-  final double size;
+  final double width;
+  final double height;
   final bool isActive;
   final bool hasError;
+  final bool isSuccess;
   final Animation<double>? caret;
 
   @override
@@ -29,6 +34,8 @@ class _OtpCell extends StatelessWidget {
     final Color borderColor;
     if (hasError) {
       borderColor = config.errorColor ?? scheme.error;
+    } else if (isSuccess && config.successColor != null) {
+      borderColor = config.successColor!;
     } else if (isActive) {
       borderColor = config.activeColor ?? scheme.primary;
     } else {
@@ -59,8 +66,8 @@ class _OtpCell extends StatelessWidget {
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 150),
-      width: size,
-      height: size,
+      width: width,
+      height: height,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: config.backgroundColor ?? Colors.transparent,

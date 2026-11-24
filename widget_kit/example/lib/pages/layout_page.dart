@@ -30,8 +30,7 @@ class LayoutPage extends StatelessWidget {
                     'A project-agnostic collection of reusable Flutter widgets.',
                 'Is it themable?':
                     'Yes — via WidgetKitTheme plus per-widget overrides.',
-                'Does it need Riverpod?':
-                    'Only the carousel; everything else is framework-agnostic.',
+                'Does it need Riverpod?': 'No — the kit is framework-agnostic.',
               }.entries)
                 AccordionItemData(
                   header: Padding(

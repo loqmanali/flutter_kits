@@ -31,6 +31,7 @@ class NavigationKitBar extends StatefulWidget {
     this.activeColor,
     this.inactiveColor,
     this.indicatorColor,
+    this.shadowColor,
     this.animationDuration = const Duration(milliseconds: 500),
     this.labelBehavior = NavigationLabelBehavior.alwaysShow,
     this.elevation = 6,
@@ -85,6 +86,10 @@ class NavigationKitBar extends StatefulWidget {
 
   /// Color for the indicator. Falls back to [ColorScheme.secondary].
   final Color? indicatorColor;
+
+  /// Color of the bar's drop shadow. Falls back to the built-in translucent
+  /// black. Set it to match a branded [backgroundColor].
+  final Color? shadowColor;
 
   /// Duration of the indicator transition between two slots.
   final Duration animationDuration;
@@ -212,14 +217,16 @@ class _NavigationKitBarState extends State<NavigationKitBar>
       child: Material(
         color: Colors.transparent,
         elevation: widget.elevation,
-        shadowColor: Colors.black.withValues(alpha: 0.08),
+        shadowColor:
+            widget.shadowColor ?? Colors.black.withValues(alpha: 0.08),
         child: Container(
           decoration: BoxDecoration(
             color: background,
             borderRadius: widget.borderRadius,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withValues(alpha: 0.06),
+                color:
+                    widget.shadowColor ?? Colors.black.withValues(alpha: 0.06),
                 blurRadius: 10,
                 offset: const Offset(0, -4),
               ),

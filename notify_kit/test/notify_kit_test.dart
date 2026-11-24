@@ -86,6 +86,14 @@ class _FakeFcm implements FcmService {
     initCalls++;
   }
 
+  /// Unused here — the bounded-fetch behaviour has its own test in
+  /// `initial_message_timeout_test.dart`, against the real [FcmService].
+  @override
+  Future<RemoteMessage?> Function() fetchInitialMessage = () async => null;
+
+  @override
+  Future<RemoteMessage?> initialMessageOrNull() async => null;
+
   @override
   Stream<NotifyMessage> get foregroundMessages => const Stream.empty();
 

@@ -3,7 +3,6 @@
 // up at render time (Hero tag clashes, RenderFlex overflows) without needing to
 // drive the app by hand.
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:widget_kit/widget_kit.dart';
@@ -26,14 +25,12 @@ void main() {
 
       await tester.pumpWidget(
         ToastificationWrapper(
-          child: ProviderScope(
-            child: MaterialApp(
-              theme: ThemeData(
-                useMaterial3: true,
-                extensions: const [WidgetKitTheme()],
-              ),
-              home: category.build(),
+          child: MaterialApp(
+            theme: ThemeData(
+              useMaterial3: true,
+              extensions: const [WidgetKitTheme()],
             ),
+            home: category.build(),
           ),
         ),
       );

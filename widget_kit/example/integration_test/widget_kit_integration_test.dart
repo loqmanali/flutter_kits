@@ -14,7 +14,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -271,32 +270,6 @@ void main() {
         expect(find.text('Times'), findsOneWidget);
       },
     );
-  });
-
-  group('Carousel in a full app (Riverpod)', () {
-    testWidgets('renders items inside a real PageView', (tester) async {
-      await tester.pumpWidget(
-        ProviderScope(
-          child: MaterialApp(
-            home: Scaffold(
-              body: SizedBox(
-                height: 260,
-                child: Carousel(
-                  config: CarouselConfig.banner,
-                  items: [
-                    WidgetCarouselItem(builder: (_) => const Text('Slide A')),
-                    WidgetCarouselItem(builder: (_) => const Text('Slide B')),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
-      await tester.pump();
-      expect(find.text('Slide A'), findsOneWidget);
-      expect(find.byType(PageView), findsOneWidget);
-    });
   });
 
   group('ContextMenu in a full app (Overlay)', () {

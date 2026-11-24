@@ -38,6 +38,11 @@ class OTPConfig {
   /// Error state border color
   final Color? errorColor;
 
+  /// Border color when every cell is filled without an error (the
+  /// "valid" state). When null, completed cells keep using
+  /// [activeColor]/[inactiveColor].
+  final Color? successColor;
+
   /// Background color for input fields
   final Color? backgroundColor;
 
@@ -105,6 +110,11 @@ class OTPConfig {
   /// digit alone signals progress.
   final bool showCursor;
 
+  /// When true, each cell expands to fill the available width
+  /// (rectangular: width = available / length, height = [size]).
+  /// When false (default) cells stay square at [size].
+  final bool expand;
+
   const OTPConfig({
     this.length = 4,
     this.spacing = 8.0,
@@ -114,6 +124,7 @@ class OTPConfig {
     this.activeColor,
     this.inactiveColor,
     this.errorColor,
+    this.successColor,
     this.backgroundColor,
     this.textColor,
     this.textStyle,
@@ -134,6 +145,7 @@ class OTPConfig {
     this.shadowElevation = 2.0,
     this.dedupeCompletion = false,
     this.showCursor = true,
+    this.expand = false,
   });
 
   /// Create a copy of this config with specified fields replaced
@@ -146,6 +158,7 @@ class OTPConfig {
     Color? activeColor,
     Color? inactiveColor,
     Color? errorColor,
+    Color? successColor,
     Color? backgroundColor,
     Color? textColor,
     TextStyle? textStyle,
@@ -166,6 +179,7 @@ class OTPConfig {
     double? shadowElevation,
     bool? dedupeCompletion,
     bool? showCursor,
+    bool? expand,
   }) {
     return OTPConfig(
       length: length ?? this.length,
@@ -176,6 +190,7 @@ class OTPConfig {
       activeColor: activeColor ?? this.activeColor,
       inactiveColor: inactiveColor ?? this.inactiveColor,
       errorColor: errorColor ?? this.errorColor,
+      successColor: successColor ?? this.successColor,
       backgroundColor: backgroundColor ?? this.backgroundColor,
       textColor: textColor ?? this.textColor,
       textStyle: textStyle ?? this.textStyle,
@@ -196,6 +211,7 @@ class OTPConfig {
       shadowElevation: shadowElevation ?? this.shadowElevation,
       dedupeCompletion: dedupeCompletion ?? this.dedupeCompletion,
       showCursor: showCursor ?? this.showCursor,
+      expand: expand ?? this.expand,
     );
   }
 
@@ -212,6 +228,7 @@ class OTPConfig {
         other.activeColor == activeColor &&
         other.inactiveColor == inactiveColor &&
         other.errorColor == errorColor &&
+        other.successColor == successColor &&
         other.backgroundColor == backgroundColor &&
         other.textColor == textColor &&
         other.textStyle == textStyle &&
@@ -231,7 +248,8 @@ class OTPConfig {
         other.enableShadow == enableShadow &&
         other.shadowElevation == shadowElevation &&
         other.dedupeCompletion == dedupeCompletion &&
-        other.showCursor == showCursor;
+        other.showCursor == showCursor &&
+        other.expand == expand;
   }
 
   @override
@@ -245,6 +263,7 @@ class OTPConfig {
       activeColor,
       inactiveColor,
       errorColor,
+      successColor,
       backgroundColor,
       textColor,
       textStyle,
@@ -265,6 +284,7 @@ class OTPConfig {
       shadowElevation,
       dedupeCompletion,
       showCursor,
+      expand,
     ]);
   }
 

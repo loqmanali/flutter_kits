@@ -321,6 +321,13 @@ class _OTPTextFieldState extends ConsumerState<OTPTextField>
                       math.min(available / _config.length, _config.size),
                     );
 
+                    final cellWidth = _config.expand
+                        ? math.max(20.0, available / _config.length)
+                        : fieldSize;
+                    final cellHeight = _config.expand
+                        ? _config.size
+                        : fieldSize;
+
                     return Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: List.generate(_config.length * 2 - 1, (i) {
@@ -343,9 +350,13 @@ class _OTPTextFieldState extends ConsumerState<OTPTextField>
                               character: index < state.value.length
                                   ? state.value[index]
                                   : '',
-                              size: fieldSize,
+                              width: cellWidth,
+                              height: cellHeight,
                               isActive: isActive,
                               hasError: state.hasError,
+                              isSuccess:
+                                  state.value.length == _config.length &&
+                                  !state.hasError,
                               caret: isActive ? _caretController : null,
                             ),
                           ),

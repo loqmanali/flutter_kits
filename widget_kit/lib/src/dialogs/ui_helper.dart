@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:toastification/toastification.dart';
 
+import '../config/widget_kit_config.dart';
 import 'dialog_picker.dart';
 
 /// {@template ui_helper}
@@ -14,23 +15,33 @@ class UIHelper {
     BuildContext context, {
     required Widget child,
     BottomSheetType type = BottomSheetType.scrollable,
-    bool isDismissible = true,
+    bool? isDismissible,
     Color? backgroundColor,
     double? elevation,
     ShapeBorder? shape,
-    bool useRootNavigator = true,
+    bool? useRootNavigator,
+    bool? useSafeArea,
+    bool showDragHandle = false,
   }) {
+    // Resolution: call-site arg > WidgetKitBehavior > built-in default.
+    final behavior = WidgetKitScope.of(context).behavior;
+    final safeArea = useSafeArea ?? behavior.bottomSheetUseSafeArea ?? false;
+    final dismissible =
+        isDismissible ?? behavior.bottomSheetIsDismissible ?? true;
+    final rootNavigator = useRootNavigator ?? behavior.useRootNavigator ?? true;
+
     return showModalBottomSheet<T>(
       context: context,
       isScrollControlled: type == BottomSheetType.scrollable,
-      isDismissible: isDismissible,
+      isDismissible: dismissible,
       backgroundColor: backgroundColor,
       elevation: elevation,
-      useSafeArea: true,
+      useSafeArea: safeArea,
       shape: shape,
-      useRootNavigator: useRootNavigator,
-      showDragHandle: false,
-      builder: (context) => SafeArea(child: child),
+      useRootNavigator: rootNavigator,
+      showDragHandle: showDragHandle,
+      builder: (context) =>
+          safeArea ? SafeArea(top: false, child: child) : child,
     );
   }
 
@@ -57,15 +68,18 @@ class UIHelper {
   static Future<T?> showDialogPicker<T>(
     BuildContext context, {
     required Widget child,
-    bool barrierDismissible = true,
+    bool? barrierDismissible,
     Color? barrierColor,
     Color? backgroundColor,
     EdgeInsets? insetPadding,
     Widget? dialogWidget,
   }) {
+    final behavior = WidgetKitScope.of(context).behavior;
+    final dismissible =
+        barrierDismissible ?? behavior.dialogBarrierDismissible ?? true;
     return showDialog<T>(
       context: context,
-      barrierDismissible: barrierDismissible,
+      barrierDismissible: dismissible,
       barrierColor: barrierColor,
       builder: (context) =>
           dialogWidget ??

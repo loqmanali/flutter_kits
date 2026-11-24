@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../theme/widget_kit_theme.dart';
 import 'shimmer_shape_type.dart';
 
 /// Shimmer Container for creating different shapes
@@ -79,8 +80,10 @@ class ShimmerShape extends StatelessWidget {
       margin: margin,
       padding: padding,
       decoration: BoxDecoration(
+        // Resolution: instance > WidgetKitTheme.shimmerBaseColor > colorScheme.
         // Theme-derived so skeletons read correctly in light and dark.
         color: backgroundColor ??
+            WidgetKitTheme.of(context).shimmerBaseColor ??
             Theme.of(context).colorScheme.surfaceContainerHighest,
         borderRadius: type == ShimmerShapeType.circle
             ? null
