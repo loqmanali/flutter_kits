@@ -7,12 +7,10 @@ import 'toast_controller.dart';
 /// `ScaffoldFeatureController` (`closed` future, `close()`/here `dismiss()`).
 final class ToastHandle {
   ToastHandle({
-    required int id,
-    required ToastController controller,
-    required Completer<ToastDismissReason> completer,
-  })  : _id = id,
-        _controller = controller,
-        _completer = completer;
+    required this._id,
+    required this._controller,
+    required this._completer,
+  });
 
   final int _id;
   final ToastController _controller;

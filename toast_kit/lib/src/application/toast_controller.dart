@@ -25,10 +25,9 @@ import 'toast_lifecycle_state.dart';
 /// no-op, not a resurrection.
 final class ToastController {
   ToastController({
-    ToastClock clock = const SystemToastClock(),
-    ToastPolicy policy = ToastPolicy.fallback,
-  })  : _clock = clock,
-        _policy = policy;
+    this._clock = const SystemToastClock(),
+    this._policy = ToastPolicy.fallback,
+  });
 
   final ToastClock _clock;
   final ToastPolicy _policy;

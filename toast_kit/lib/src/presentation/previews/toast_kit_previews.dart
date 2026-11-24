@@ -1,7 +1,7 @@
 // Not exported from the barrel (`lib/toast_kit.dart`): previews are a
 // development-time surface for `flutter widget-preview`, not part of the
 // kit's public API.
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/widget_previews.dart';
 
 import '../../domain/toast_action.dart';
