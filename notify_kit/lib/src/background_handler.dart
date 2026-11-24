@@ -25,7 +25,7 @@ Future<FlutterLocalNotificationsPlugin> _backgroundPlugin() async {
         requestSoundPermission: false,
       ),
     );
-    await plugin.initialize(initSettings);
+    await plugin.initialize(settings: initSettings);
 
     if (Platform.isAndroid) {
       await plugin
@@ -71,10 +71,10 @@ Future<void> _showDataOnlyNotification(RemoteMessage message) async {
       (message.messageId ?? DateTime.now().toString()).hashCode;
 
   await plugin.show(
-    notificationId,
-    content.title,
-    content.body,
-    const NotificationDetails(
+    id: notificationId,
+    title: content.title,
+    body: content.body,
+    notificationDetails: const NotificationDetails(
       android: AndroidNotificationDetails(
         kDefaultChannelId,
         kDefaultChannelName,
