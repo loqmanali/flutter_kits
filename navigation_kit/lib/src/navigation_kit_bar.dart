@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'indicators/drop_indicator.dart';
 import 'indicators/indicator_params.dart';
@@ -281,7 +281,7 @@ class _NavigationKitBarState extends State<NavigationKitBar>
     if (widget.indicatorBuilder != null) {
       return AnimatedBuilder(
         animation: _controller,
-        builder: (_, __) => widget.indicatorBuilder!(context, params),
+        builder: (_, _) => widget.indicatorBuilder!(context, params),
       );
     }
     if (widget.showDropIndicator) {

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'indicator_params.dart';
 
@@ -63,7 +63,7 @@ class DropIndicator extends StatelessWidget {
 
     return AnimatedBuilder(
       animation: params.animation,
-      builder: (_, __) {
+      builder: (_, _) {
         final x = slide.value - (itemWidth / 2);
         final t = params.animation.value;
         return Transform.translate(
