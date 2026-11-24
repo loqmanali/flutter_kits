@@ -4,7 +4,7 @@
 /// These demonstrate the visual components of the Commerce Kit package.
 library;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../commerce_kit.dart';
@@ -683,17 +683,21 @@ class CheckoutExamplePage extends ConsumerWidget {
             Card(
               child: Column(
                 children: [
-                  RadioListTile<String>(
-                    title: const Text('Cash on Delivery'),
-                    value: 'cash',
+                  RadioGroup<String>(
                     groupValue: 'cash',
                     onChanged: (value) {},
-                  ),
-                  RadioListTile<String>(
-                    title: const Text('Credit Card'),
-                    value: 'card',
-                    groupValue: 'cash',
-                    onChanged: (value) {},
+                    child: const Column(
+                      children: [
+                        RadioListTile<String>(
+                          title: Text('Cash on Delivery'),
+                          value: 'cash',
+                        ),
+                        RadioListTile<String>(
+                          title: Text('Credit Card'),
+                          value: 'card',
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
