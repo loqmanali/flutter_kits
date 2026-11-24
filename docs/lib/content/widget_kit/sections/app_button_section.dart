@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart' show CupertinoColors;
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart' show CupertinoColors;
+import 'package:material_ui/material_ui.dart';
 import 'package:widget_kit/widget_kit.dart';
 
 import '../../../core/api_table.dart';
@@ -34,12 +34,12 @@ class AppButtonSection extends StatelessWidget {
         ApiParam(name: 'child', type: 'Widget?', note: 'Replaces label entirely.'),
         ApiParam(
           name: 'style',
-          type: 'AppButtonStyleType',
+          type: 'AppButtonVariant',
           defaultValue: '.filled',
         ),
         ApiParam(
           name: 'size',
-          type: 'AdaptiveButtonSize',
+          type: 'AppButtonSize',
           defaultValue: '.medium',
         ),
         ApiParam(
@@ -320,11 +320,11 @@ class _Styles extends StatelessWidget {
     return _DemoWrap(
       children: [
         for (final (style, label) in const [
-          (AppButtonStyleType.filled, 'Filled'),
-          (AppButtonStyleType.filledTonal, 'Filled tonal'),
-          (AppButtonStyleType.elevated, 'Elevated'),
-          (AppButtonStyleType.outlined, 'Outlined'),
-          (AppButtonStyleType.text, 'Text'),
+          (AppButtonVariant.filled, 'Filled'),
+          (AppButtonVariant.filledTonal, 'Filled tonal'),
+          (AppButtonVariant.elevated, 'Elevated'),
+          (AppButtonVariant.outlined, 'Outlined'),
+          (AppButtonVariant.text, 'Text'),
         ])
           AppButton(
             label: label,
@@ -345,9 +345,9 @@ class _Sizes extends StatelessWidget {
     return _DemoWrap(
       children: [
         for (final (size, label) in const [
-          (AdaptiveButtonSize.large, 'Large'),
-          (AdaptiveButtonSize.medium, 'Medium'),
-          (AdaptiveButtonSize.small, 'Small'),
+          (AppButtonSize.large, 'Large'),
+          (AppButtonSize.medium, 'Medium'),
+          (AppButtonSize.small, 'Small'),
         ])
           AppButton(
             label: label,
@@ -393,25 +393,25 @@ class _IconOnly extends StatelessWidget {
     return _DemoWrap(
       children: [
         AppButton(
-          style: AppButtonStyleType.icon,
+          style: AppButtonVariant.icon,
           icon: const Icon(Icons.favorite_border_rounded),
           tooltip: 'Save to favourites',
           onPressed: () {},
         ),
         AppButton(
-          style: AppButtonStyleType.iconFilled,
+          style: AppButtonVariant.iconFilled,
           icon: const Icon(Icons.add_rounded),
           tooltip: 'Add item',
           onPressed: () {},
         ),
         AppButton(
-          style: AppButtonStyleType.iconFilledTonal,
+          style: AppButtonVariant.iconFilledTonal,
           icon: const Icon(Icons.bookmark_border_rounded),
           tooltip: 'Bookmark',
           onPressed: () {},
         ),
         AppButton(
-          style: AppButtonStyleType.iconOutlined,
+          style: AppButtonVariant.iconOutlined,
           icon: const Icon(Icons.share_rounded),
           tooltip: 'Share',
           onPressed: () {},
@@ -525,7 +525,7 @@ class _Fabs extends StatelessWidget {
       children: [
         AppButton.fab(
           icon: const Icon(Icons.add),
-          buttonType: FloatingActionButtonType.small,
+          buttonType: AppFabVariant.small,
           heroTag: 'docs-fab-small',
           onPressed: () {},
         ),
@@ -537,7 +537,7 @@ class _Fabs extends StatelessWidget {
         AppButton.fab(
           icon: const Icon(Icons.edit),
           label: 'Compose',
-          buttonType: FloatingActionButtonType.extended,
+          buttonType: AppFabVariant.extended,
           heroTag: 'docs-fab-extended',
           onPressed: () {},
         ),
@@ -573,9 +573,12 @@ class _ThemedPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final defaults = AppButtonThemeExtension.fromScheme(
+      Theme.of(context).colorScheme,
+    );
     return Theme(
       data: Theme.of(context).copyWith(
-        extensions: const [
+        extensions: [
           AppButtonThemeExtension(
             filled: AppButtonStyle(
               backgroundColor: _brand,
@@ -587,7 +590,7 @@ class _ThemedPreview extends StatelessWidget {
               foregroundColor: _brand,
               overlayColor: Color(0x1A104C65),
             ),
-            elevated: AppButtonStyle.elevated,
+            elevated: defaults.elevated,
             outlined: AppButtonStyle(
               backgroundColor: Color(0x00000000),
               foregroundColor: _brand,
@@ -600,21 +603,21 @@ class _ThemedPreview extends StatelessWidget {
               foregroundColor: _brand,
               overlayColor: Color(0x0F104C65),
             ),
-            icon: AppButtonStyle.icon,
-            iconFilled: AppButtonStyle.iconFilled,
-            iconFilledTonal: AppButtonStyle.iconFilledTonal,
-            iconOutlined: AppButtonStyle.iconOutlined,
-            fab: AppButtonStyle.fab,
+            icon: defaults.icon,
+            iconFilled: defaults.iconFilled,
+            iconFilledTonal: defaults.iconFilledTonal,
+            iconOutlined: defaults.iconOutlined,
+            fab: defaults.fab,
           ),
         ],
       ),
       child: _DemoWrap(
         children: [
           for (final (style, label) in const [
-            (AppButtonStyleType.filled, 'Filled'),
-            (AppButtonStyleType.filledTonal, 'Tonal'),
-            (AppButtonStyleType.outlined, 'Outlined'),
-            (AppButtonStyleType.text, 'Text'),
+            (AppButtonVariant.filled, 'Filled'),
+            (AppButtonVariant.filledTonal, 'Tonal'),
+            (AppButtonVariant.outlined, 'Outlined'),
+            (AppButtonVariant.text, 'Text'),
           ])
             AppButton(
               label: label,
@@ -646,7 +649,7 @@ class _Cupertino extends StatelessWidget {
         ),
         AppButton(
           label: 'Cancel',
-          style: AppButtonStyleType.text,
+          style: AppButtonVariant.text,
           useCupertinoStyle: true,
           widthMode: AppButtonWidthMode.hug,
           onPressed: () {},

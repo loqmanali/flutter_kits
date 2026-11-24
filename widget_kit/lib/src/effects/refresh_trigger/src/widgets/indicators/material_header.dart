@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../models/refresh_trigger_stage.dart';
 
@@ -15,7 +15,9 @@ class MaterialHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = this.color ?? Theme.of(context).colorScheme.primary;
+    final scheme = Theme.of(context).colorScheme;
+    final color = this.color ?? scheme.primary;
+    final onColor = scheme.onPrimary;
 
     return Center(
       child: AnimatedBuilder(
@@ -33,17 +35,17 @@ class MaterialHeader extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                child: const Icon(Icons.check, color: Colors.white, size: 24),
+                child: Icon(Icons.check, color: onColor, size: 24),
               );
             case TriggerStage.failed:
               return Container(
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.error,
+                  color: scheme.error,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(Icons.close, color: Colors.white, size: 24),
+                child: Icon(Icons.close, color: scheme.onError, size: 24),
               );
             case TriggerStage.idle:
             case TriggerStage.pulling:

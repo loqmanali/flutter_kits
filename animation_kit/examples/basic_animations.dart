@@ -1,6 +1,6 @@
 import 'package:animation_kit/animation_kit.dart';
 import 'package:animation_kit/config/transition_config.dart' as config;
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Basic Animations Example
 ///

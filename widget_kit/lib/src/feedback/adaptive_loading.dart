@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import '../config/widget_kit_config.dart';
@@ -208,18 +208,32 @@ class LoadingIndicatorBuilder extends StatelessWidget {
         color ?? WidgetKitTheme.of(context).loadingColor ?? theme.colorScheme.primary;
     final defaultSize = size ?? 30.0;
 
-    return _buildIndicator(
-      context,
-      defaultColor,
-      defaultSize,
+    return _ResolvedIndicator(
+      type: type,
+      color: defaultColor,
+      size: defaultSize,
+      strokeWidth: strokeWidth,
     );
   }
+}
 
-  Widget _buildIndicator(
-    BuildContext context,
-    Color color,
-    double size,
-  ) {
+/// The indicator for one [LoadingIndicatorType], with color and size already
+/// resolved by [LoadingIndicator].
+class _ResolvedIndicator extends StatelessWidget {
+  const _ResolvedIndicator({
+    required this.type,
+    required this.color,
+    required this.size,
+    required this.strokeWidth,
+  });
+
+  final LoadingIndicatorType type;
+  final Color color;
+  final double size;
+  final double? strokeWidth;
+
+  @override
+  Widget build(BuildContext context) {
     switch (type) {
       case LoadingIndicatorType.circular:
         return SizedBox(

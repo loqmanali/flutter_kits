@@ -114,7 +114,9 @@ class NotifyKit {
       _fcm.foregroundMessages;
 
   /// Fires whenever the FCM token rotates.
+  // FCM token, not the FID that onRegistered emits (see FcmService).
   static Stream<String> get onTokenRefresh =>
+      // ignore: deprecated_member_use
       FirebaseMessaging.instance.onTokenRefresh;
 
   /// Subscribes to raw FCM topics (e.g. `all_users`). Waits for the iOS APNS

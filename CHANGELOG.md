@@ -1,3 +1,117 @@
+## [3.0.0] — 2026-11-24
+
+Flutter 3.50.1 / Dart 3.14 migration of every kit. Every kit that changed gets
+a MAJOR bump (pre-1.0 kits go to 1.0.0).
+
+### BREAKING
+
+- **material_ui / cupertino_ui.** All kits moved from the deprecated
+  `package:flutter/material.dart` and `cupertino.dart` to `package:material_ui`
+  and `package:cupertino_ui`. Their `ThemeExtension`s and themes are now
+  material_ui types: a legacy `flutter/material` `ThemeData` cannot carry them,
+  and widgets built on legacy-only packages need `MaterialUiCompatibilityBridge`.
+- **Flutter >= 3.47 / Dart >= 3.13** for every kit that uses material_ui;
+  `notify_kit` needs Dart >= 3.12. Android apps need Gradle >= 9.3.1 and
+  AGP >= 9.1.1 (Flutter 3.50), `compileSdk` 37 and `desugar_jdk_libs` >= 2.1.4
+  (flutter_local_notifications 23).
+- **widget_kit**: the embedded carousel is gone (use `carousel_kit`); the API
+  follows the 3733432 rename refactor (`AppStarRating`, `AppDropdown*`,
+  `AppFabVariant`, `AppButtonVariant`, `AppButtonSize`; `AppButtonThemeExtension.fromScheme`
+  replaces `.defaults`); `RefreshTrigger` gains load-more, controller and display
+  modes (`TriggerStage.failed`).
+- **widget_kit** depends on the prerelease `flutter_inappwebview ^6.2.0-beta.3`
+  because AGP 9 rejects the stable 1.1.3 Android plugin; it moves to stable
+  `^6.2.0` once that ships.
+- **localization_kit** no longer depends on `flutter_localizations` directly.
+- **firebase_kit** uses `FirebaseAI.agentPlatform()` (firebase_ai 5).
+- **flutter_kits_cli**: generated templates import material_ui.
+
+### Changed
+
+- `notify_kit`: firebase_core 5, firebase_messaging 17, flutter_local_notifications 23,
+  timezone 0.11. Public API unchanged; `getToken()`/`onTokenRefresh` keep emitting
+  the FCM token through firebase_messaging's deprecated members.
+- `widget_kit`: cached_network_image 4, flutter_hooks 0.21.4, toastification 3.2, xml 7.
+- Every other kit's dependencies were raised to the latest that resolves.
+
+### Notes for apps (zone_app)
+
+- Rename widget_kit identifiers as above, move `ThemeData` to material_ui, and
+  use `Localization.localizationDelegates` / material_ui's
+  `GlobalMaterialLocalizations.delegates`.
+- Android: Gradle 9.5.0, AGP 9.3.1, built-in Kotlin (drop `kotlin-android`),
+  `enableJetifier=false`, larger Gradle heap.
+- `requests_inspector` still pins `sensors_plus` ^6, which applies KGP: Flutter
+  prints a warning until that moves.
+
+Versions:
+
+- **adaptive_kit** (`0.1.0` → `1.0.0`)
+- **animation_kit** (`0.1.1` → `1.0.0`)
+- **api_kit** (`1.0.1` → `2.0.0`)
+- **carousel_kit** (`1.1.4` → `2.0.0`)
+- **commerce_kit** (`1.0.0` → `2.0.0`)
+- **confirm_kit** (`1.0.0` → `2.0.0`)
+- **context_menu_kit** (`1.0.0` → `2.0.0`)
+- **deep_link_kit** (`1.0.0` → `2.0.0`)
+- **dropdown_menu_kit** (`1.0.0` → `2.0.0`)
+- **firebase_kit** (`1.0.0` → `2.0.0`)
+- **flutter_kits_cli** (`0.1.0` → `1.0.0`)
+- **force_update_gate** (`0.2.1` → `1.0.0`)
+- **local_db_kit** (`1.2.1` → `2.0.0`)
+- **localization_kit** (`1.0.0` → `2.0.0`)
+- **map_kit** (`1.0.0` → `2.0.0`)
+- **navigation_kit** (`1.1.0` → `2.0.0`)
+- **notify_kit** (`0.1.4` → `1.0.0`)
+- **otp_kit** (`3.2.0` → `4.0.0`)
+- **quran_madina_kit** (`0.1.0` → `1.0.0`)
+- **selection_kit** (`1.0.0` → `2.0.0`)
+- **showcase_kit** (`1.0.0` → `2.0.0`)
+- **storage_kit** (`1.0.1` → `2.0.0`)
+- **system_ui_kit** (`1.0.0` → `2.0.0`)
+- **toast_kit** (`0.1.0` → `1.0.0`)
+- **widget_kit** (`1.2.0` → `2.0.0`)
+
+## confirm_kit 1.0.0
+
+New kit, generalized from `lekbox`'s `ActionConfirmationDialog` (a hard-coded
+SVG + two buttons + a `isDestructive` bool) into something reusable.
+
+- `ConfirmDialog<T>`: intent-driven accent/icon/label, 1..N `ConfirmAction<T>`s
+  in four button styles, optional `content` widget, centered or start-aligned.
+- Async actions render an in-button spinner, disable the siblings, and block
+  barrier/drag/back until the work settles — the original dialog could be
+  dismissed mid-request.
+- Three surfaces from one widget: dialog, bottom sheet (keyboard-aware), or
+  bare content embedded in a page. `.show()` returns the typed result,
+  `.ask()` the yes/no bool.
+- `ConfirmKitTheme` (`ThemeExtension`) + `ConfirmStrings` replace the hard-coded
+  colors, radii and English labels; unset colors resolve from `ColorScheme`, so
+  dark mode works without configuration.
+- Long content scrolls instead of overflowing on short screens.
+
+## quran_madina_kit 0.1.0
+
+- New kit: renders Quran pages visually identical to the printed Madina Mushaf without images,
+  driven byte-for-byte by the `quran-madina-html` JSON databases.
+- Full behavioural parity with the web runtime: `page` / `sura`+`aya` / `words` render modes,
+  `highlight`/`error` word marking in every mode, `headless`, `quotes`, `inline`, `notitle`,
+  copy-to-clipboard, quran.com translate links, the per-aya popup, the decorative sura frame, and
+  arbitrary font sizes 6–100 via anchor interpolation.
+- Bundles all five fonts at both anchor sizes (Hafs, Uthman, Amiri Quran, Amiri Quran Colored,
+  me_quran) — ~19 MB of JSON, fully offline. Amiri Quran Colored's COLRv0 tajweed colouring is
+  verified to render, not assumed.
+- Links never leave the app: the translate action opens quran.com on a full-screen page inside the
+  app (`webview_flutter`), and `MadinaConfig.onTranslate` hands it to the host app's own browser or
+  router instead.
+- Sharded lazy DB loading (manifest + 30 juz' shards) with request coalescing, content-hash cache
+  invalidation and a monolithic fallback. Asset and network sources are swappable.
+- Justification verified per font across all ~8800 justified lines of the Mushaf. `stored` mode
+  replays the DB's Chrome-measured factors and keeps half of all lines within 1%, but its tail is
+  font-dependent (Hafs p95 0.77%, Uthman p95 3.09% / max 8.62%). `MadinaStretchMode.measured` is
+  therefore the default: it fills every justified line exactly (0.0000% max drift, all five fonts),
+  memoised so only the first layout of a line costs anything.
+
 # Changelog
 
 All notable changes to the `flutter_kits` monorepo are documented in this file.
@@ -5,6 +119,26 @@ Individual packages may keep their own `CHANGELOG.md` for package-specific
 release notes.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
+
+## showcase_kit 1.0.0
+
+New kit, ported from a coach-marks widget that had been sitting unused in two
+app repos (`cardfiy`, `hayakum_app_v2`) as a near-duplicate copy.
+
+- `useShowcaseTour(steps)` returns a `ShowcaseController` (`start` / `stop` /
+  `isRunning`); the tour is owned by the calling widget and disposed with it.
+- `ShowcaseTarget` attaches the step's `GlobalKey` and nothing else, so it can
+  wrap any widget without touching layout.
+- Fixed while porting: the `OverlayEntry` and auto-play timer leaked when the
+  host widget was unmounted mid-tour; `Prev` on the first step silently ended
+  the tour; the bubble was pushed off the top edge for a target low on screen;
+  taps fell through the backdrop to the app behind it; a target key that never
+  mounted spun a post-frame loop forever.
+- Button copy comes from `TourLabels` (the original hard-coded English), and
+  the bubble follows the ambient `ColorScheme` instead of the default canvas
+  colour and `Colors.grey`.
+- 7 widget tests cover navigation, skip, auto-play, the modal backdrop and
+  disposal on unmount.
 
 ## [2.0.2] — 2026-10-21
 

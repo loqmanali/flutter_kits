@@ -44,7 +44,7 @@ class FirebaseAiDataSource {
     double? temperatureOverride,
     int? maxOutputTokensOverride,
   }) {
-    final backend = cfg.useVertexAi ? FirebaseAI.vertexAI() : FirebaseAI.googleAI();
+    final backend = cfg.useVertexAi ? FirebaseAI.agentPlatform() : FirebaseAI.googleAI();
     final sysText = systemInstructionOverride ?? cfg.systemInstruction;
     final temp = temperatureOverride ?? cfg.temperature;
     final maxTok = maxOutputTokensOverride ?? cfg.maxOutputTokens;

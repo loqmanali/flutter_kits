@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'indicator_params.dart';
 
@@ -40,7 +40,7 @@ class UnderlineIndicator extends StatelessWidget {
 
     return AnimatedBuilder(
       animation: animation,
-      builder: (_, __) {
+      builder: (_, _) {
         final x = Tween<double>(begin: begin, end: end).evaluate(animation);
         return Transform.translate(
           offset: Offset(x, 0),

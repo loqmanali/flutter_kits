@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Clamps a desired menu origin so the menu rectangle stays fully inside
 /// the screen.

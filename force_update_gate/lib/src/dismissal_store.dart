@@ -10,7 +10,7 @@ import 'config.dart';
 /// - `force_update_gate.skipped_version` — the store version string the
 ///   user dismissed (used by [ForceUpdateSkipMode.version]).
 class DismissalStore {
-  DismissalStore({SharedPreferences? prefs}) : _prefs = prefs;
+  DismissalStore({this._prefs});
 
   static const _kCooldownKey = 'force_update_gate.dismissed_until';
   static const _kVersionKey = 'force_update_gate.skipped_version';

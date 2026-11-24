@@ -2,7 +2,7 @@
 // throwing — this deterministically catches the runtime errors that only show
 // up at render time (Hero tag clashes, RenderFlex overflows) without needing to
 // drive the app by hand.
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:widget_kit/widget_kit.dart';

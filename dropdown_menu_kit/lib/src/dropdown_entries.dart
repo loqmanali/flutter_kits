@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Horizontal alignment of the dropdown panel relative to its trigger.
 enum CustomDropdownAlignment { start, center, end }

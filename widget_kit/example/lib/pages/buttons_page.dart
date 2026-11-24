@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:widget_kit/widget_kit.dart';
 
 import '../gallery/demo_section.dart';
@@ -24,35 +24,35 @@ class ButtonsPage extends StatelessWidget {
             DemoSection(
               title: 'The ten styles',
               description:
-                  'Pass an AppButtonStyleType to switch emphasis. Filled is '
+                  'Pass an AppButtonVariant to switch emphasis. Filled is '
                   'highest-emphasis; text/outlined are lowest.',
               demo: const Wrap(
                 spacing: 10,
                 runSpacing: 10,
                 alignment: WrapAlignment.center,
                 children: [
-                  AppButton(label: 'Filled', style: AppButtonStyleType.filled),
+                  AppButton(label: 'Filled', style: AppButtonVariant.filled),
                   AppButton(
                     label: 'Tonal',
-                    style: AppButtonStyleType.filledTonal,
+                    style: AppButtonVariant.filledTonal,
                   ),
                   AppButton(
                     label: 'Elevated',
-                    style: AppButtonStyleType.elevated,
+                    style: AppButtonVariant.elevated,
                   ),
                   AppButton(
                     label: 'Outlined',
-                    style: AppButtonStyleType.outlined,
+                    style: AppButtonVariant.outlined,
                   ),
-                  AppButton(label: 'Text', style: AppButtonStyleType.text),
+                  AppButton(label: 'Text', style: AppButtonVariant.text),
                 ],
               ),
               code: '''
-AppButton(label: 'Filled',   style: AppButtonStyleType.filled)
-AppButton(label: 'Tonal',    style: AppButtonStyleType.filledTonal)
-AppButton(label: 'Elevated', style: AppButtonStyleType.elevated)
-AppButton(label: 'Outlined', style: AppButtonStyleType.outlined)
-AppButton(label: 'Text',     style: AppButtonStyleType.text)''',
+AppButton(label: 'Filled',   style: AppButtonVariant.filled)
+AppButton(label: 'Tonal',    style: AppButtonVariant.filledTonal)
+AppButton(label: 'Elevated', style: AppButtonVariant.elevated)
+AppButton(label: 'Outlined', style: AppButtonVariant.outlined)
+AppButton(label: 'Text',     style: AppButtonVariant.text)''',
             ),
             DemoSection(
               title: 'Icon buttons',
@@ -61,17 +61,17 @@ AppButton(label: 'Text',     style: AppButtonStyleType.text)''',
                 spacing: 10,
                 children: [
                   AppButton(
-                    style: AppButtonStyleType.icon,
+                    style: AppButtonVariant.icon,
                     icon: const Icon(Icons.favorite_border),
                     onPressed: () {},
                   ),
                   AppButton(
-                    style: AppButtonStyleType.iconFilled,
+                    style: AppButtonVariant.iconFilled,
                     icon: const Icon(Icons.add),
                     onPressed: () {},
                   ),
                   AppButton(
-                    style: AppButtonStyleType.iconOutlined,
+                    style: AppButtonVariant.iconOutlined,
                     icon: const Icon(Icons.share),
                     onPressed: () {},
                   ),
@@ -79,7 +79,7 @@ AppButton(label: 'Text',     style: AppButtonStyleType.text)''',
               ),
               code: '''
 AppButton(
-  style: AppButtonStyleType.iconFilled,
+  style: AppButtonVariant.iconFilled,
   icon: const Icon(Icons.add),
   onPressed: () {},
 )''',
@@ -97,15 +97,15 @@ AppButton(
               demo: const Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  AppButton(label: 'Large', size: AdaptiveButtonSize.large),
+                  AppButton(label: 'Large', size: AppButtonSize.large),
                   SizedBox(height: 10),
-                  AppButton(label: 'Medium', size: AdaptiveButtonSize.medium),
+                  AppButton(label: 'Medium', size: AppButtonSize.medium),
                   SizedBox(height: 10),
-                  AppButton(label: 'Small', size: AdaptiveButtonSize.small),
+                  AppButton(label: 'Small', size: AppButtonSize.small),
                 ],
               ),
               code:
-                  "AppButton(label: 'Medium', size: AdaptiveButtonSize.medium)",
+                  "AppButton(label: 'Medium', size: AppButtonSize.medium)",
             ),
             DemoSection(
               title: 'Label + icon',
@@ -175,14 +175,14 @@ AppButton(label: 'Disabled', isDisabled: true)''',
                   AppButton.fab(
                     heroTag: 'fab-small',
                     icon: const Icon(Icons.edit),
-                    buttonType: FloatingActionButtonType.small,
+                    buttonType: AppFabVariant.small,
                     onPressed: () {},
                   ),
                   AppButton.fab(
                     heroTag: 'fab-extended',
                     icon: const Icon(Icons.navigation),
                     label: 'Navigate',
-                    buttonType: FloatingActionButtonType.extended,
+                    buttonType: AppFabVariant.extended,
                     onPressed: () {},
                   ),
                 ],
@@ -195,7 +195,7 @@ AppButton.fab(
   heroTag: 'navigate',
   icon: const Icon(Icons.navigation),
   label: 'Navigate',
-  buttonType: FloatingActionButtonType.extended,
+  buttonType: AppFabVariant.extended,
   onPressed: () {},
 )''',
             ),

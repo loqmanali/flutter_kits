@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Wraps a navigation destination in a [Semantics] node with the
 /// "Tab N of M" label used by screen readers, and marks the selected state.

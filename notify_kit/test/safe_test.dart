@@ -37,7 +37,7 @@ void main() {
 
   test('runSafely does not call onError on success', () {
     var called = false;
-    runSafely('test', () {}, onError: (_, __, ___) => called = true);
+    runSafely('test', () {}, onError: (_, _, _) => called = true);
     expect(called, isFalse);
   });
 
@@ -46,7 +46,7 @@ void main() {
       () => runSafely(
         'test',
         () => throw StateError('boom'),
-        onError: (_, __, ___) => throw ArgumentError('handler bug'),
+        onError: (_, _, _) => throw ArgumentError('handler bug'),
       ),
       returnsNormally,
     );

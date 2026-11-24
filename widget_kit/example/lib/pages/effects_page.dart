@@ -1,10 +1,10 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:widget_kit/widget_kit.dart';
 
 import '../gallery/demo_section.dart';
 import '../gallery/gallery_scaffold.dart';
 
-/// Documents CustomStarRating, RefreshTrigger and TravelingBorderWidget.
+/// Documents AppStarRating, RefreshTrigger and TravelingBorderWidget.
 class EffectsPage extends StatelessWidget {
   const EffectsPage({super.key});
 
@@ -57,14 +57,14 @@ class _StarRatingDemoState extends State<_StarRatingDemo> {
   @override
   Widget build(BuildContext context) {
     return DemoSection(
-      title: 'CustomStarRating',
+      title: 'AppStarRating',
       description:
           'Tap (or drag for half-stars) to rate. Set readOnly to use '
           'it purely as a display.',
       demo: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          CustomStarRating(
+          AppStarRating(
             initialRating: _rating,
             iconSize: 36,
             onRatingChanged: (r) => setState(() => _rating = r),
@@ -73,11 +73,11 @@ class _StarRatingDemoState extends State<_StarRatingDemo> {
           Text('Rating: $_rating'),
           const SizedBox(height: 16),
           const Text('Read-only:'),
-          const CustomStarRating(initialRating: 4, readOnly: true),
+          const AppStarRating(initialRating: 4, readOnly: true),
         ],
       ),
       code: '''
-CustomStarRating(
+AppStarRating(
   initialRating: 3,
   allowHalfRating: true,
   onRatingChanged: (r) => setState(() => rating = r),

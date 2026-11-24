@@ -101,8 +101,7 @@ class _ChatHandleImpl implements AiChatHandle {
   final fa.ChatSession session;
   final List<AiMessage> _history;
 
-  _ChatHandleImpl({required this.session, required List<AiMessage> history})
-      : _history = history;
+  _ChatHandleImpl({required this.session, required this._history});
 
   @override
   List<AiMessage> get history => List.unmodifiable(_history);

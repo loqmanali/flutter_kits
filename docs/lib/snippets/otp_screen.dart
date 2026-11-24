@@ -3,7 +3,7 @@
 // kits: otp_kit
 // pub: hooks_riverpod
 // output: lib/features/auth/otp_screen.dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:otp_kit/otp_kit.dart';
 

@@ -2,7 +2,7 @@
 // description: A yes/no confirmation sheet for destructive actions.
 // kits: widget_kit
 // output: lib/widgets/confirm.dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:widget_kit/widget_kit.dart';
 
 /// Asks the user to confirm a destructive action.

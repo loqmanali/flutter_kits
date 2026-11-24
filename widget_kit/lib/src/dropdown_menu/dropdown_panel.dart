@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import 'dropdown_entries.dart';
 import 'dropdown_item_renderer.dart';
@@ -8,7 +8,7 @@ import 'dropdown_item_renderer.dart';
 // ============================================================================
 
 class DropdownPanel extends StatefulWidget {
-  final List<CustomDropdownEntry> items;
+  final List<AppDropdownEntry> items;
   final double? width;
   final bool autoWidth;
   final GlobalKey triggerKey;
@@ -127,7 +127,7 @@ class _DropdownPanelState extends State<DropdownPanel>
 // ============================================================================
 
 class _DropdownItemsList extends StatefulWidget {
-  final List<CustomDropdownEntry> items;
+  final List<AppDropdownEntry> items;
   final bool autoWidth;
   final bool openUpward;
   final VoidCallback onClose;

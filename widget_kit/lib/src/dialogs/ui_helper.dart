@@ -1,6 +1,9 @@
 import 'dart:ui' as ui;
 
-import 'package:flutter/material.dart';
+// toastification still builds on the legacy flutter/material ThemeData types.
+// ignore: deprecated_member_use
+import 'package:flutter/material.dart' as legacy show ProgressIndicatorThemeData;
+import 'package:material_ui/material_ui.dart';
 import 'package:toastification/toastification.dart';
 
 import '../config/widget_kit_config.dart';
@@ -138,12 +141,9 @@ class UIHelper {
     DismissDirection? dismissDirection,
     ui.TextDirection? direction,
     TextStyle? titleStyle,
-    ProgressIndicatorThemeData? progressBarTheme =
-        const ProgressIndicatorThemeData(
-      linearTrackColor: Color(0xFFf4f4f4),
-      circularTrackColor: Color(0xFF333333),
-      linearMinHeight: 1,
-    ),
+    // Null → the ambient ProgressIndicatorTheme, so the toast track follows
+    // the host app's theme instead of two baked-in greys.
+    ProgressIndicatorThemeData? progressBarTheme,
     CloseButtonShowType? closeButtonShowType = CloseButtonShowType.none,
   }) {
     // A toast is never critical to a flow — if no `ToastificationWrapper` is
@@ -165,7 +165,25 @@ class UIHelper {
         pauseOnHover: pauseOnHover,
         dismissDirection: dismissDirection,
         direction: direction,
-        progressBarTheme: progressBarTheme,
+        progressBarTheme: progressBarTheme == null
+            ? null
+            : legacy.ProgressIndicatorThemeData(
+                color: progressBarTheme.color,
+                linearTrackColor: progressBarTheme.linearTrackColor,
+                linearMinHeight: progressBarTheme.linearMinHeight,
+                circularTrackColor: progressBarTheme.circularTrackColor,
+                refreshBackgroundColor: progressBarTheme.refreshBackgroundColor,
+                borderRadius: progressBarTheme.borderRadius,
+                stopIndicatorColor: progressBarTheme.stopIndicatorColor,
+                stopIndicatorRadius: progressBarTheme.stopIndicatorRadius,
+                strokeWidth: progressBarTheme.strokeWidth,
+                strokeAlign: progressBarTheme.strokeAlign,
+                strokeCap: progressBarTheme.strokeCap,
+                constraints: progressBarTheme.constraints,
+                trackGap: progressBarTheme.trackGap,
+                circularTrackPadding: progressBarTheme.circularTrackPadding,
+                controller: progressBarTheme.controller,
+              ),
         closeButton: ToastCloseButton(
           showType: closeButtonShowType ?? CloseButtonShowType.none,
         ),

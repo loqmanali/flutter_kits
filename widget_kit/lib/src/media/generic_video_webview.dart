@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 /// A simple inline WebView for playing non-YouTube video URLs inside the app.
@@ -12,6 +12,8 @@ class GenericVideoWebView extends StatelessWidget {
   const GenericVideoWebView({
     super.key,
     required this.videoUrl,
+    // Letterboxing behind video is black in every player, light theme or
+    // dark — this is the medium's convention, not the app's palette.
     this.backgroundColor = Colors.black,
   });
 

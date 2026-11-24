@@ -8,8 +8,8 @@ dependencies:
       url: https://github.com/loqmanali/flutter_kits.git
       path: widget_kit
       # Tags are monorepo releases, not per-package versions —
-      # widget_kit 1.2.0 ships inside the v2.0.0 tag.
-      ref: v2.0.0
+      # widget_kit 2.0.0 ships inside the v3.0.0 tag.
+      ref: v3.0.0
 
 # While working on the kit itself, point at your checkout instead:
 dependency_overrides:
@@ -31,14 +31,16 @@ AppButton(
 const kWidgetKitTheming = '''
 MaterialApp(
   theme: ThemeData.light().copyWith(
-    extensions: const [
+    extensions: [
       // Styling for inputs, dialogs, sheets and spacing.
       WidgetKitTheme(
         inputBorderRadius: 12,
         primaryButtonColor: Color(0xFF104C65),
       ),
       // Button colours live in their own extension — see the AppButton page.
-      AppButtonThemeExtension.defaults,
+      AppButtonThemeExtension.fromScheme(
+        ColorScheme.fromSeed(seedColor: Color(0xFF104C65)),
+      ),
     ],
   ),
 );

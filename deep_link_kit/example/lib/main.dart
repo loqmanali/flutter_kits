@@ -1,5 +1,5 @@
 import 'package:deep_link_kit/deep_link_kit.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

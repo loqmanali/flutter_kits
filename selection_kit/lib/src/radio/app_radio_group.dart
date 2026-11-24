@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../internal/selection_group_shell.dart';
 import '../internal/selection_indicators.dart';

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../content/otp_kit/sections/otp_text_field_section.dart';
 import '../content/otp_kit/sections/overview_section.dart';
@@ -20,7 +20,7 @@ final List<KitEntry> catalog = [
     slug: 'widget_kit',
     title: 'widget_kit',
     blurb: 'Buttons, inputs, dialogs, feedback, media, menus, pickers, effects.',
-    version: 'v1.2.0',
+    version: 'v2.0.0',
     icon: Icons.widgets_rounded,
     landing: () => const widget_kit.WidgetKitOverview(),
     pages: [
@@ -37,7 +37,7 @@ final List<KitEntry> catalog = [
     slug: 'otp_kit',
     title: 'otp_kit',
     blurb: 'OTP input: Riverpod state, validation, resend cooldown, theming, RTL.',
-    version: 'v3.2.0',
+    version: 'v4.0.0',
     icon: Icons.password_rounded,
     landing: () => const OtpKitOverview(),
     pages: [

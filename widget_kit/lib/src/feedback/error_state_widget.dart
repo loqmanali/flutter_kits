@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../buttons/adaptive_button/adaptive_button.dart';
 import '../config/widget_kit_config.dart';
@@ -56,7 +56,8 @@ class ErrorStateWidget extends StatelessWidget {
     }
 
     // Accent: WidgetKitTheme.errorStateIconColor, else the built-in red.
-    final accent = WidgetKitTheme.of(context).errorStateIconColor ?? Colors.red;
+    final accent = WidgetKitTheme.of(context).errorStateIconColor ??
+        Theme.of(context).colorScheme.error;
 
     return Center(
       child: Padding(

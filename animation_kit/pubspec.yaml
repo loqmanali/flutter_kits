@@ -1,17 +1,18 @@
 name: animation_kit
 description: A comprehensive Flutter animation package providing reusable animation widgets, providers, and utilities for building smooth, performant animations.
-version: 0.1.1
+version: 1.0.0
 publish_to: "none"
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.10.0"
+  sdk: ^3.13.0
+  flutter: ">=3.47.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  equatable: ^2.0.7
+  equatable: ^3.0.0
   shared_preferences: ^2.5.0
+  material_ui: ^1.11.1
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Signature for a custom selection indicator. The first argument is whether
 /// the option is currently selected; the second is whether it is enabled.

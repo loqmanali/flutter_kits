@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '../../theme/slot_picker_theme.dart';
 
 /// The bottom confirm bar of the bottom-sheet picker.
@@ -34,7 +34,7 @@ class SheetConfirmBar extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: t.primaryColor,
                 disabledBackgroundColor: t.primaryColor.withValues(alpha: 0.4),
-                foregroundColor: Colors.white,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),

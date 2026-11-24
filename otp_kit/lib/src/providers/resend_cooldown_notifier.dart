@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:hooks_riverpod/legacy.dart';
 
 import '../models/resend_state.dart';
 import '../services/resend_cooldown_service.dart';
@@ -37,12 +36,12 @@ class ResendCooldownConfig {
 
   @override
   int get hashCode => Object.hash(
-    namespace,
-    initialCountdownSeconds,
-    shortCooldownSeconds,
-    longCooldownSeconds,
-    maxAttempts,
-  );
+        namespace,
+        initialCountdownSeconds,
+        shortCooldownSeconds,
+        longCooldownSeconds,
+        maxAttempts,
+      );
 }
 
 /// Single-source-of-truth provider for the [ResendCooldownService]. Override
@@ -54,19 +53,23 @@ final resendCooldownServiceProvider = Provider<ResendCooldownService>(
 /// Notifier that drives the resend timer. Uses a wall-clock end-time per
 /// phase so pause/resume and backgrounding don't drift, and a single 1-second
 /// `Timer.periodic` to recompute the public state.
-class ResendCooldownNotifier extends StateNotifier<ResendState> {
-  ResendCooldownNotifier({
-    required this.config,
-    required ResendCooldownService service,
-  }) : _service = service,
-       super(
-         IdleResendState(attemptsUsed: 0, maxAttempts: config.maxAttempts),
-       ) {
-    _bootstrap();
-  }
+class ResendCooldownNotifier extends Notifier<ResendState> {
+  ResendCooldownNotifier(this.config);
 
   final ResendCooldownConfig config;
-  final ResendCooldownService _service;
+
+  /// Read through `ref` rather than held as a field: a Notifier instance
+  /// outlives its builds, so an injected service could go stale.
+  ResendCooldownService get _service => ref.read(resendCooldownServiceProvider);
+
+  @override
+  ResendState build() {
+    // The ticker outlives no rebuild: dispose is registered here, not in an
+    // overridden dispose(), because a Notifier is reused across builds.
+    ref.onDispose(() => _ticker?.cancel());
+    _bootstrap();
+    return IdleResendState(attemptsUsed: 0, maxAttempts: config.maxAttempts);
+  }
 
   Timer? _ticker;
   DateTime? _phaseEndsAt;
@@ -133,29 +136,29 @@ class ResendCooldownNotifier extends StateNotifier<ResendState> {
   }
 
   ResendState _rebuild(ResendState current, int remaining) => switch (current) {
-    TickingResendState() => TickingResendState(
-      remainingSeconds: remaining,
-      attemptsUsed: current.attemptsUsed,
-      maxAttempts: config.maxAttempts,
-    ),
-    ShortCooldownResendState() => ShortCooldownResendState(
-      remainingSeconds: remaining,
-      attemptsUsed: current.attemptsUsed,
-      maxAttempts: config.maxAttempts,
-    ),
-    LongCooldownResendState() => LongCooldownResendState(
-      remainingSeconds: remaining,
-      attemptsUsed: current.attemptsUsed,
-      maxAttempts: config.maxAttempts,
-    ),
-    IdleResendState() => current,
-  };
+        TickingResendState() => TickingResendState(
+            remainingSeconds: remaining,
+            attemptsUsed: current.attemptsUsed,
+            maxAttempts: config.maxAttempts,
+          ),
+        ShortCooldownResendState() => ShortCooldownResendState(
+            remainingSeconds: remaining,
+            attemptsUsed: current.attemptsUsed,
+            maxAttempts: config.maxAttempts,
+          ),
+        LongCooldownResendState() => LongCooldownResendState(
+            remainingSeconds: remaining,
+            attemptsUsed: current.attemptsUsed,
+            maxAttempts: config.maxAttempts,
+          ),
+        IdleResendState() => current,
+      };
 
   TickingResendState _buildTicking(int attemptsUsed) => TickingResendState(
-    remainingSeconds: _remaining(),
-    attemptsUsed: attemptsUsed,
-    maxAttempts: config.maxAttempts,
-  );
+        remainingSeconds: _remaining(),
+        attemptsUsed: attemptsUsed,
+        maxAttempts: config.maxAttempts,
+      );
 
   ShortCooldownResendState _buildShort(int attemptsUsed) =>
       ShortCooldownResendState(
@@ -178,7 +181,7 @@ class ResendCooldownNotifier extends StateNotifier<ResendState> {
   }
 
   void _emit(ResendState next) {
-    if (!mounted) return;
+    if (!ref.mounted) return;
     state = next;
   }
 
@@ -214,23 +217,8 @@ class ResendCooldownNotifier extends StateNotifier<ResendState> {
     await _service.reset(config.namespace);
     _emit(IdleResendState(attemptsUsed: 0, maxAttempts: config.maxAttempts));
   }
-
-  @override
-  void dispose() {
-    _ticker?.cancel();
-    super.dispose();
-  }
 }
 
 /// Family provider keyed by [ResendCooldownConfig].
-final resendCooldownProvider =
-    StateNotifierProvider.family<
-      ResendCooldownNotifier,
-      ResendState,
-      ResendCooldownConfig
-    >((ref, config) {
-      return ResendCooldownNotifier(
-        config: config,
-        service: ref.watch(resendCooldownServiceProvider),
-      );
-    });
+final resendCooldownProvider = NotifierProvider.family<ResendCooldownNotifier,
+    ResendState, ResendCooldownConfig>(ResendCooldownNotifier.new);

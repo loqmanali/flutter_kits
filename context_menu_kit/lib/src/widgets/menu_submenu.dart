@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../items/menu_item.dart';
 import '../overlay/menu_overlay_controller.dart';

@@ -4,7 +4,7 @@ publish_to: "none"
 version: 1.0.0
 
 environment:
-  sdk: ">=3.8.0 <4.0.0"
+  sdk: ^3.13.0
   flutter: ">=3.10.0"
 
 dependencies:
@@ -17,6 +17,7 @@ dependencies:
 
 # Encrypt-capable sqlite build, so the encryption examples work. Plain databases
 # opened without a key remain unencrypted.
+  material_ui: ^1.11.1
 hooks:
   user_defines:
     sqlite3:

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../buttons/adaptive_button/adaptive_button.dart';
 import '../config/widget_kit_config.dart';
@@ -68,9 +68,12 @@ class EmptyStateWidget extends StatelessWidget {
       );
     }
 
-    // Icon color: WidgetKitTheme.emptyStateIconColor, else the built-in grey.
+    // Icon color: WidgetKitTheme.emptyStateIconColor, else a muted neutral
+    // from the ambient scheme so it reads on light and dark surfaces.
+    final scheme = Theme.of(context).colorScheme;
+    final texts = Theme.of(context).textTheme;
     final iconColor = WidgetKitTheme.of(context).emptyStateIconColor ??
-        Colors.grey.withValues(alpha: 0.3);
+        scheme.onSurfaceVariant.withValues(alpha: 0.3);
 
     return SizedBox(
       height: height,
@@ -99,9 +102,9 @@ class EmptyStateWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(
+                  style: texts.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: Colors.grey,
+                    color: scheme.onSurfaceVariant,
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -111,8 +114,8 @@ class EmptyStateWidget extends StatelessWidget {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    color: Colors.grey.withValues(alpha: 0.6),
+                  style: texts.bodyMedium?.copyWith(
+                    color: scheme.onSurfaceVariant.withValues(alpha: 0.6),
                   ),
                 ),
                 if (actionLabel != null && onAction != null) ...[

@@ -9,7 +9,7 @@ dependencies:
     git:
       url: https://github.com/loqmanali/flutter_kits.git
       path: widget_kit
-      ref: v1.1.0   # tag or commit SHA — bump deliberately, per app
+      ref: v3.0.0   # tag or commit SHA — bump deliberately, per app
 ```
 
 While actively developing a kit alongside an app, override locally (keep the
@@ -38,7 +38,10 @@ dependency_overrides:
 | `deep_link_kit` | Deep-link parsing/dispatch |
 | `map_kit` | Map widgets + OSRM/Nominatim helpers (bring your own server) |
 | `carousel_kit` | Standalone image/content carousel |
+| `quran_madina_kit` | Renders Quran pages identical to the printed Madina Mushaf without images, from pre-computed JSON databases (Flutter port of `quran-madina-html`) |
 | `firebase_kit` | Firebase auth/data-source wrappers |
+| `showcase_kit` | Coach-marks / product tour: spotlight cut-out over any widget, pulsing ring, Skip/Prev/Next bubble, optional auto-play — driven by one hook |
+| `confirm_kit` | Confirmation dialogs/sheets: intents (destructive/success/warning/info), 1..N actions with async loading, custom content, `ConfirmKitTheme` |
 | `selection_kit`, `dropdown_menu_kit`, `context_menu_kit`, `system_ui_kit`, `animation_kit`, `commerce_kit`, `force_update_gate` | Smaller focused kits |
 
 ## Rules

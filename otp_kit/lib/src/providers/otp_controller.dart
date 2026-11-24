@@ -1,6 +1,5 @@
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:hooks_riverpod/legacy.dart';
 
 import '../models/otp_models.dart';
 import '../validators/otp_validator.dart';
@@ -22,10 +21,13 @@ import '../validators/otp_validator.dart';
 ///   }
 /// });
 /// ```
-class OTPController extends StateNotifier<OTPState> {
+class OTPController extends Notifier<OTPState> {
+  OTPController(this.config);
+
   final OTPConfig config;
 
-  OTPController(this.config) : super(OTPState.initial(config.length));
+  @override
+  OTPState build() => OTPState.initial(config.length);
 
   /// Update a single digit at the specified index
   ///
@@ -232,10 +234,10 @@ class OTPController extends StateNotifier<OTPState> {
 /// ```dart
 /// final controller = ref.watch(otpControllerProvider(myConfig));
 /// ```
-final otpControllerProvider = StateNotifierProvider.autoDispose
-    .family<OTPController, OTPState, OTPConfig>((ref, config) {
-      return OTPController(config);
-    });
+final otpControllerProvider =
+    NotifierProvider.autoDispose.family<OTPController, OTPState, OTPConfig>(
+  OTPController.new,
+);
 
 /// Provider for OTP configuration
 ///

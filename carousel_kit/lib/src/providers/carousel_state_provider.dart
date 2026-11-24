@@ -95,8 +95,7 @@ final carouselStateProvider =
 /// final currentIndex = ref.watch(carouselIndexProvider);
 /// ref.read(carouselIndexProvider.notifier).state = 2;
 /// ```
-final carouselIndexProvider =
-    NotifierProvider.autoDispose<_CarouselIndex, int>(
+final carouselIndexProvider = NotifierProvider.autoDispose<_CarouselIndex, int>(
   _CarouselIndex.new,
 );
 

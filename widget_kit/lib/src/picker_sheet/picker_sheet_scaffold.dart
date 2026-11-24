@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// {@template picker_sheet_scaffold}
 /// Generic bottom-sheet shell shared by every "pick one item from a list"
@@ -58,7 +58,7 @@ class PickerSheetScaffold extends StatelessWidget {
         return Column(
           children: [
             const PickerSheetHandle(),
-            if (header != null) header,
+            ?header,
             Expanded(child: body(context, scrollController)),
           ],
         );

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../../config/transition_config.dart';
 import '../../../core/enums/animation_curve.dart';

@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:cupertino_ui/cupertino_ui.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter/services.dart';
 
 import '../../buttons/adaptive_button/adaptive_button.dart';
@@ -201,7 +201,7 @@ class _DobPickerSheetState extends State<DobPickerSheet> {
               Navigator.of(context).pop(DateTime(_year, _month, _day));
             },
             label: _confirm,
-            size: AdaptiveButtonSize.large,
+            size: AppButtonSize.large,
           ),
         ),
       ],

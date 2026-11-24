@@ -37,8 +37,8 @@ class FcmService {
   /// The cold-start tap, or null if none arrived within
   /// [initialMessageTimeout]. Never throws and never outlives the window.
   @visibleForTesting
-  Future<RemoteMessage?> initialMessageOrNull() => fetchInitialMessage()
-          .timeout(
+  Future<RemoteMessage?> initialMessageOrNull() =>
+      fetchInitialMessage().timeout(
         initialMessageTimeout,
         onTimeout: () {
           debugPrint(
@@ -131,6 +131,9 @@ class FcmService {
         await _handleToken(config, token);
       }
       _subscriptions.add(
+        // FCM token (not the FID that onRegistered emits) is what notify-hub and
+        // apps' backends store, so the deprecated-but-working stream stays.
+        // ignore: deprecated_member_use
         messaging.onTokenRefresh.listen(
           (token) => _handleToken(config, token),
         ),
@@ -162,7 +165,9 @@ class FcmService {
   void reportOpened(NotifyConfig config, NotifyMessage message) {
     final backend = config.backend;
     final notificationId = message.data['nh_notification_id'];
-    if (backend == null || notificationId is! String || notificationId.isEmpty) {
+    if (backend == null ||
+        notificationId is! String ||
+        notificationId.isEmpty) {
       return;
     }
     getToken().then((token) {
@@ -181,6 +186,8 @@ class FcmService {
   Future<String?> getToken() async {
     if (!await waitForApnsToken()) return null;
     try {
+      // Same reason as onTokenRefresh above: FCM token, not FID.
+      // ignore: deprecated_member_use
       return await FirebaseMessaging.instance.getToken();
     } catch (error) {
       debugPrint('notify_kit: getToken failed: $error');
@@ -204,7 +211,8 @@ class FcmService {
       );
       await Future.delayed(delay);
     }
-    debugPrint('notify_kit: APNS token not available after $maxAttempts attempts');
+    debugPrint(
+        'notify_kit: APNS token not available after $maxAttempts attempts');
     return false;
   }
 

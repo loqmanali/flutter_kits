@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 /// A widget that displays a YouTube video using InAppWebView.
@@ -14,6 +14,8 @@ class YouTubePlayerWidget extends StatelessWidget {
   const YouTubePlayerWidget({
     super.key,
     required this.videoId,
+    // Letterboxing behind video is black in every player, light theme or
+    // dark — this is the medium's convention, not the app's palette.
     this.backgroundColor = Colors.black,
   });
 

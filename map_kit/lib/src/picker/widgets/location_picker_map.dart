@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -124,11 +124,10 @@ class LocationPickerMap extends ConsumerWidget {
             },
             onPositionChanged: (position, hasGesture) {
               if (hasGesture &&
-                  onPositionChanged != null &&
-                  position.center != null) {
+                  onPositionChanged != null) {
                 onPositionChanged!(
-                  position.center!,
-                  position.zoom ?? state.mapZoom,
+                  position.center,
+                  position.zoom,
                 );
               }
             },

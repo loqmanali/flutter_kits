@@ -42,7 +42,7 @@ class LocalService {
     );
 
     await _plugin.initialize(
-      settings,
+      settings: settings,
       onDidReceiveNotificationResponse: (response) {
         if (onTap == null) return;
         runSafely(
@@ -76,10 +76,10 @@ class LocalService {
     Map<String, dynamic>? payload,
   }) async {
     await _plugin.show(
-      id,
-      title,
-      body,
-      _details(),
+      id: id,
+      title: title,
+      body: body,
+      notificationDetails: _details(),
       payload: payload == null ? null : jsonEncode(payload),
     );
   }
@@ -95,17 +95,15 @@ class LocalService {
     Map<String, dynamic>? payload,
   }) async {
     await _plugin.zonedSchedule(
-      id,
-      title,
-      body,
-      nextInstanceOfTime(hour, minute),
-      _details(),
+      id: id,
+      title: title,
+      body: body,
+      scheduledDate: nextInstanceOfTime(hour, minute),
+      notificationDetails: _details(),
       payload: payload == null ? null : jsonEncode(payload),
       // Inexact avoids the SCHEDULE_EXACT_ALARM permission prompt; a daily
       // reminder does not need to-the-second precision.
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
     );
   }
@@ -120,15 +118,13 @@ class LocalService {
     Map<String, dynamic>? payload,
   }) async {
     await _plugin.zonedSchedule(
-      id,
-      title,
-      body,
-      tz.TZDateTime.from(when, tz.local),
-      _details(),
+      id: id,
+      title: title,
+      body: body,
+      scheduledDate: tz.TZDateTime.from(when, tz.local),
+      notificationDetails: _details(),
       payload: payload == null ? null : jsonEncode(payload),
       androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 
@@ -157,7 +153,7 @@ class LocalService {
     );
   }
 
-  Future<void> cancel(int id) => _plugin.cancel(id);
+  Future<void> cancel(int id) => _plugin.cancel(id: id);
 
   Future<void> cancelAll() => _plugin.cancelAll();
 }

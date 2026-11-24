@@ -261,7 +261,7 @@ void main() {
 ### In a Flutter App
 
 ```dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:commerce_kit/example/money_examples.dart';
 
 class ExamplesPage extends StatelessWidget {

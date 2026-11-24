@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Minimal Dart syntax highlighting for the docs' code blocks.
 ///

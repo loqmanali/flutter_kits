@@ -7,8 +7,7 @@ import 'config.dart';
 import 'models.dart';
 
 class NotifyBackendClient {
-  const NotifyBackendClient({http.Client? httpClient})
-      : _httpClient = httpClient;
+  const NotifyBackendClient({this._httpClient});
 
   final http.Client? _httpClient;
 
@@ -86,15 +85,13 @@ class NotifyBackendClient {
     final closeClient = _httpClient == null;
 
     try {
-      final response = await client
-          .get(
-            backend.topicsEndpoint,
-            headers: {
-              'Accept': 'application/json',
-              'X-Api-Key': backend.apiKey,
-            },
-          )
-          .timeout(_timeout);
+      final response = await client.get(
+        backend.topicsEndpoint,
+        headers: {
+          'Accept': 'application/json',
+          'X-Api-Key': backend.apiKey,
+        },
+      ).timeout(_timeout);
 
       if (response.statusCode != 200) {
         throw NotifyBackendException(

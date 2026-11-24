@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../buttons/adaptive_button/adaptive_button.dart';
 
@@ -87,7 +87,7 @@ class AppWarningDialog extends StatelessWidget {
               Expanded(
                 child: AppButton(
                   label: cancelText,
-                  style: AppButtonStyleType.outlined,
+                  style: AppButtonVariant.outlined,
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ),

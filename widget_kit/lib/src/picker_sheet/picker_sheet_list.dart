@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// {@template picker_sheet_list}
 /// Generic body for a [PickerSheetScaffold] driven by a plain (already-loaded)
@@ -53,7 +53,7 @@ class PickerSheetList<T> extends StatelessWidget {
       controller: scrollController,
       padding: padding,
       itemCount: items.length,
-      separatorBuilder: (_, __) => Divider(
+      separatorBuilder: (_, _) => Divider(
         height: 1,
         indent: separatorIndent,
         color: colors.outlineVariant.withValues(alpha: 0.08),

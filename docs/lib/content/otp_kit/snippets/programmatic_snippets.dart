@@ -16,7 +16,7 @@ ref.watch(otpValueProvider(config));        // '1234'
 ref.watch(otpIsCompleteProvider(config));   // true
 ref.watch(otpProgressProvider(config));     // 1.0''';
 
-const String kOverviewQuickStartSnippet = r'''import 'package:flutter/material.dart';
+const String kOverviewQuickStartSnippet = r'''import 'package:material_ui/material_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:otp_kit/otp_kit.dart';
 
@@ -46,8 +46,8 @@ dependencies:
       url: https://github.com/loqmanali/flutter_kits.git
       path: otp_kit
       # Tags are monorepo releases, not per-package versions —
-      # otp_kit 3.2.0 ships inside the v2.0.0 tag.
-      ref: v2.0.0
+      # otp_kit 4.0.0 ships inside the v3.0.0 tag.
+      ref: v3.0.0
 
 # During local development, override with a path dep (git-ignored):
 # dependency_overrides:

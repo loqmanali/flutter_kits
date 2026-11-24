@@ -1,11 +1,11 @@
 name: carousel_kit
 description: A flexible, project-agnostic carousel module for Flutter — image/widget carousels, auto-scroll, indicators, RTL, overlays, and Riverpod-powered state. Drop-in for any project.
-version: 1.1.4
+version: 2.0.0
 publish_to: "none"
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
-  flutter: ">=3.10.0"
+  sdk: ^3.13.0
+  flutter: ">=3.47.0"
 
 dependencies:
   flutter:
@@ -15,6 +15,7 @@ dependencies:
   # Pulled in transitively by flutter_riverpod, but
   # carousel_controller_provider.dart imports it directly, so we declare it
   # explicitly to satisfy the depend_on_referenced_packages lint.
+  material_ui: ^1.11.1
   riverpod: ^3.1.0
 
 dev_dependencies:

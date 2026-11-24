@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import '../../theme/slot_picker_theme.dart';
 
 /// A 3-column grid of years rendered when the user taps the month heading.
@@ -100,7 +100,9 @@ class _YearGridState extends State<YearGrid> {
                 child: Text(
                   year.toString(),
                   style: TextStyle(
-                    color: selected ? Colors.white : t.grey900,
+                    color: selected
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : t.grey900,
                     fontWeight: selected ? FontWeight.w700 : FontWeight.w600,
                     fontSize: 15,
                   ),

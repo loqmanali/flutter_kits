@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 import '../../theme/widget_kit_theme.dart';
 import 'shimmer_shape_type.dart';
