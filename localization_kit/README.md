@@ -51,7 +51,7 @@ host app and run `flutter gen-l10n`. Nothing changes.
 ### 2) Configure the runtime once in `main()`
 
 ```dart
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:localization_kit/localization_kit.dart';
 
