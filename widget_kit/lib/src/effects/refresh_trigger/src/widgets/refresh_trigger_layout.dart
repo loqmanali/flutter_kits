@@ -170,45 +170,25 @@ class RefreshTriggerLayout extends StatelessWidget {
           _animatedExtent(
             duration,
             refreshTarget,
-            (context, raw, resisted) => _positionEdge(
-              _indicator(context, true, raw),
-              reverse,
-              resisted,
+            (context, raw, resisted) => _EdgePositioned(
+              vertical: _vertical,
+              atEnd: reverse,
+              extent: resisted,
+              child: _indicator(context, true, raw),
             ),
           ),
         if (enableLoadMore)
           _animatedExtent(
             duration,
             loadTarget,
-            (context, raw, resisted) => _positionEdge(
-              _indicator(context, false, raw),
-              !reverse,
-              resisted,
+            (context, raw, resisted) => _EdgePositioned(
+              vertical: _vertical,
+              atEnd: !reverse,
+              extent: resisted,
+              child: _indicator(context, false, raw),
             ),
           ),
       ],
-    );
-  }
-
-  /// Pins [indicator] to one edge of the stack and slides it in by [extent].
-  Widget _positionEdge(Widget indicator, bool atEnd, double extent) {
-    final slide = _vertical
-        ? Offset(0, atEnd ? -extent : extent)
-        : Offset(atEnd ? -extent : extent, 0);
-    final hidden =
-        _vertical ? Offset(0, atEnd ? 1 : -1) : Offset(atEnd ? 1 : -1, 0);
-
-    return Positioned(
-      top: _vertical ? (atEnd ? null : 0) : 0,
-      bottom: _vertical ? (atEnd ? 0 : null) : 0,
-      left: _vertical ? 0 : (atEnd ? null : 0),
-      right: _vertical ? 0 : (atEnd ? 0 : null),
-      child: ClipRect(
-        child: FractionalTranslation(
-          translation: hidden,
-          child: Transform.translate(offset: slide, child: indicator),
-        ),
-      ),
     );
   }
 
@@ -221,10 +201,11 @@ class RefreshTriggerLayout extends StatelessWidget {
         ? _animatedExtent(
             duration,
             refreshTarget,
-            (context, raw, resisted) => _insetSlot(
-              _indicator(context, true, raw),
-              resisted,
-              true,
+            (context, raw, resisted) => _InsetSlot(
+              vertical: _vertical,
+              atEnd: reverse,
+              extent: resisted,
+              child: _indicator(context, true, raw),
             ),
           )
         : const SizedBox.shrink();
@@ -233,10 +214,11 @@ class RefreshTriggerLayout extends StatelessWidget {
         ? _animatedExtent(
             duration,
             loadTarget,
-            (context, raw, resisted) => _insetSlot(
-              _indicator(context, false, raw),
-              resisted,
-              false,
+            (context, raw, resisted) => _InsetSlot(
+              vertical: _vertical,
+              atEnd: !reverse,
+              extent: resisted,
+              child: _indicator(context, false, raw),
             ),
           )
         : const SizedBox.shrink();
@@ -248,25 +230,75 @@ class RefreshTriggerLayout extends StatelessWidget {
 
     return _vertical ? Column(children: children) : Row(children: children);
   }
+}
 
-  /// A layout slot that grows to [extent] while letting the indicator keep its
-  /// natural size (clipped, anchored to the edge it slides in from).
-  Widget _insetSlot(Widget indicator, double extent, bool isHeader) {
-    final atEnd = isHeader ? reverse : !reverse;
+/// Pins [child] to one edge of the stack and slides it in by [extent].
+class _EdgePositioned extends StatelessWidget {
+  const _EdgePositioned({
+    required this.vertical,
+    required this.atEnd,
+    required this.extent,
+    required this.child,
+  });
 
+  final bool vertical;
+  final bool atEnd;
+  final double extent;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final slide = vertical
+        ? Offset(0, atEnd ? -extent : extent)
+        : Offset(atEnd ? -extent : extent, 0);
+    final hidden =
+        vertical ? Offset(0, atEnd ? 1 : -1) : Offset(atEnd ? 1 : -1, 0);
+
+    return Positioned(
+      top: vertical ? (atEnd ? null : 0) : 0,
+      bottom: vertical ? (atEnd ? 0 : null) : 0,
+      left: vertical ? 0 : (atEnd ? null : 0),
+      right: vertical ? 0 : (atEnd ? 0 : null),
+      child: ClipRect(
+        child: FractionalTranslation(
+          translation: hidden,
+          child: Transform.translate(offset: slide, child: child),
+        ),
+      ),
+    );
+  }
+}
+
+/// A layout slot that grows to [extent] while letting the indicator keep its
+/// natural size (clipped, anchored to the edge it slides in from).
+class _InsetSlot extends StatelessWidget {
+  const _InsetSlot({
+    required this.vertical,
+    required this.atEnd,
+    required this.extent,
+    required this.child,
+  });
+
+  final bool vertical;
+  final bool atEnd;
+  final double extent;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
     return SizedBox(
-      height: _vertical ? extent : null,
-      width: _vertical ? null : extent,
+      height: vertical ? extent : null,
+      width: vertical ? null : extent,
       child: ClipRect(
         child: OverflowBox(
-          alignment: _vertical
+          alignment: vertical
               ? (atEnd ? Alignment.topCenter : Alignment.bottomCenter)
               : (atEnd ? Alignment.centerLeft : Alignment.centerRight),
           minHeight: 0,
           minWidth: 0,
-          maxHeight: _vertical ? double.infinity : null,
-          maxWidth: _vertical ? null : double.infinity,
-          child: indicator,
+          maxHeight: vertical ? double.infinity : null,
+          maxWidth: vertical ? null : double.infinity,
+          child: child,
         ),
       ),
     );

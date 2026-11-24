@@ -14,7 +14,10 @@ class BezierHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = this.color ?? Theme.of(context).colorScheme.primary;
+    final scheme = Theme.of(context).colorScheme;
+    final color = this.color ?? scheme.primary;
+    // Glyphs sit on the painted blob, so they follow its fill colour.
+    final onColor = scheme.onPrimary;
 
     return AnimatedBuilder(
       animation: stage.extent,
@@ -29,18 +32,17 @@ class BezierHeader extends StatelessWidget {
           ),
           child: Center(
             child: switch (stage.stage) {
-              TriggerStage.refreshing => const SizedBox(
+              TriggerStage.refreshing => SizedBox(
                   width: 20,
                   height: 20,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
-                    color: Colors.white,
+                    color: onColor,
                   ),
                 ),
               TriggerStage.completed =>
-                const Icon(Icons.check, color: Colors.white, size: 24),
-              TriggerStage.failed =>
-                const Icon(Icons.close, color: Colors.white, size: 24),
+                Icon(Icons.check, color: onColor, size: 24),
+              TriggerStage.failed => Icon(Icons.close, color: onColor, size: 24),
               _ => null,
             },
           ),

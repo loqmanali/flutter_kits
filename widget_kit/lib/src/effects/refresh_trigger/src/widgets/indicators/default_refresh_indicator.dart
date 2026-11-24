@@ -31,13 +31,52 @@ class _DefaultRefreshIndicatorState extends State<DefaultRefreshIndicator> {
   static const _kPadSmall = EdgeInsets.all(6);
   static const _kAnimDuration = Duration(milliseconds: 250);
 
-  Widget _spacerW(double w) => SizedBox(width: w);
+  @override
+  Widget build(BuildContext context) {
+    final isHeader = widget.isHeader;
+    final Widget child = switch (widget.stage.stage) {
+      TriggerStage.refreshing => _RefreshingRow(isHeader: isHeader),
+      TriggerStage.completed => _CompletedRow(isHeader: isHeader),
+      TriggerStage.failed => _FailedRow(isHeader: isHeader),
+      TriggerStage.pulling => _PullingRow(
+          stage: widget.stage,
+          isHeader: isHeader,
+        ),
+      TriggerStage.idle => _IdleRow(stage: widget.stage, isHeader: isHeader),
+    };
 
-  Widget _buildRefreshing(BuildContext context) {
+    final card = Container(
+      padding: widget.stage.stage == TriggerStage.pulling ? _kPadSmall : _kPadH,
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Theme.of(context).dividerColor.withValues(alpha: 0.4),
+        ),
+      ),
+      child: AnimatedSwitcher(
+        duration: MediaQuery.disableAnimationsOf(context)
+            ? Duration.zero
+            : _kAnimDuration,
+        child: KeyedSubtree(key: ValueKey(widget.stage.stage), child: child),
+      ),
+    );
+
+    return Center(child: card);
+  }
+}
+
+class _RefreshingRow extends StatelessWidget {
+  const _RefreshingRow({required this.isHeader});
+
+  final bool isHeader;
+
+  @override
+  Widget build(BuildContext context) {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Flexible(child: Text(widget.isHeader ? 'Refreshing...' : 'Loading...')),
+        Flexible(child: Text(isHeader ? 'Refreshing...' : 'Loading...')),
         const SizedBox(width: 8),
         const SizedBox(
           width: 16,
@@ -47,14 +86,21 @@ class _DefaultRefreshIndicatorState extends State<DefaultRefreshIndicator> {
       ],
     );
   }
+}
 
-  Widget _buildCompleted(BuildContext context) {
+class _CompletedRow extends StatelessWidget {
+  const _CompletedRow({required this.isHeader});
+
+  final bool isHeader;
+
+  @override
+  Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.onSurface;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Flexible(child: Text(widget.isHeader ? 'Completed' : 'Loaded')),
-        _spacerW(8),
+        Flexible(child: Text(isHeader ? 'Completed' : 'Loaded')),
+        const SizedBox(width: 8),
         SizedBox(
           width: 24,
           height: 16,
@@ -80,64 +126,82 @@ class _DefaultRefreshIndicatorState extends State<DefaultRefreshIndicator> {
       ],
     );
   }
+}
 
-  Widget _buildFailed(BuildContext context) {
+class _FailedRow extends StatelessWidget {
+  const _FailedRow({required this.isHeader});
+
+  final bool isHeader;
+
+  @override
+  Widget build(BuildContext context) {
     final color = Theme.of(context).colorScheme.error;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Flexible(child: Text(widget.isHeader ? 'Failed' : 'Load failed')),
-        _spacerW(8),
+        Flexible(child: Text(isHeader ? 'Failed' : 'Load failed')),
+        const SizedBox(width: 8),
         Icon(Icons.error_outline, size: 16, color: color),
       ],
     );
   }
+}
 
-  Widget _buildPulling(BuildContext context) {
+class _PullingRow extends StatelessWidget {
+  const _PullingRow({required this.stage, required this.isHeader});
+
+  final RefreshTriggerStage stage;
+  final bool isHeader;
+
+  @override
+  Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: widget.stage.extent,
+      animation: stage.extent,
       builder: (context, child) {
-        final v = widget.stage.extentValue.clamp(0.0, 1.0);
+        final v = stage.extentValue.clamp(0.0, 1.0);
         double angle;
-        if (widget.stage.direction == Axis.vertical) {
+        if (stage.direction == Axis.vertical) {
           // 0 -> 1 (0 -> 180)
-          angle = widget.isHeader ? -math.pi * v : math.pi * v;
+          angle = isHeader ? -math.pi * v : math.pi * v;
         } else {
           // 0 -> 1 (90 -> 270)
-          angle = widget.isHeader
+          angle = isHeader
               ? (-math.pi / 2 + -math.pi * v)
               : (math.pi / 2 + math.pi * v);
         }
 
-        final icon =
-            widget.isHeader ? Icons.arrow_downward : Icons.arrow_upward;
+        final icon = isHeader ? Icons.arrow_downward : Icons.arrow_upward;
 
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Transform.rotate(angle: angle, child: Icon(icon, size: 18)),
-            _spacerW(8),
+            const SizedBox(width: 8),
             Flexible(
               child: Text(
                 v < 1
-                    ? (widget.isHeader
-                        ? 'Pull to refresh'
-                        : 'Pull to load more')
-                    : (widget.isHeader
-                        ? 'Release to refresh'
-                        : 'Release to load'),
+                    ? (isHeader ? 'Pull to refresh' : 'Pull to load more')
+                    : (isHeader ? 'Release to refresh' : 'Release to load'),
               ),
             ),
-            _spacerW(8),
+            const SizedBox(width: 8),
             Transform.rotate(angle: angle, child: Icon(icon, size: 18)),
           ],
         );
       },
     );
   }
+}
 
-  Widget _buildIdle(BuildContext context) {
-    if (!widget.isHeader && widget.stage.noMoreData) {
+class _IdleRow extends StatelessWidget {
+  const _IdleRow({required this.stage, required this.isHeader});
+
+  final RefreshTriggerStage stage;
+  final bool isHeader;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!isHeader && stage.noMoreData) {
       return const Row(
         mainAxisSize: MainAxisSize.min,
         children: [Flexible(child: Text('No more data'))],
@@ -147,51 +211,9 @@ class _DefaultRefreshIndicatorState extends State<DefaultRefreshIndicator> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Flexible(
-          child:
-              Text(widget.isHeader ? 'Pull to refresh' : 'Pull to load more'),
+          child: Text(isHeader ? 'Pull to refresh' : 'Pull to load more'),
         ),
       ],
     );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    Widget child;
-    switch (widget.stage.stage) {
-      case TriggerStage.refreshing:
-        child = _buildRefreshing(context);
-        break;
-      case TriggerStage.completed:
-        child = _buildCompleted(context);
-        break;
-      case TriggerStage.failed:
-        child = _buildFailed(context);
-        break;
-      case TriggerStage.pulling:
-        child = _buildPulling(context);
-        break;
-      case TriggerStage.idle:
-        child = _buildIdle(context);
-        break;
-    }
-
-    final card = Container(
-      padding: widget.stage.stage == TriggerStage.pulling ? _kPadSmall : _kPadH,
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: Theme.of(context).dividerColor.withValues(alpha: 0.4),
-        ),
-      ),
-      child: AnimatedSwitcher(
-        duration: MediaQuery.disableAnimationsOf(context)
-            ? Duration.zero
-            : _kAnimDuration,
-        child: KeyedSubtree(key: ValueKey(widget.stage.stage), child: child),
-      ),
-    );
-
-    return Center(child: card);
   }
 }
